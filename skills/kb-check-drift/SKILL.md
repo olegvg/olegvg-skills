@@ -9,11 +9,13 @@ description: Use when checking whether .kb/ is out of date with the corpus. Read
 
 User wants to know whether the KB is stale without committing to a rewrite. Run this before a query to decide whether to trust the KB, or periodically to spot drift.
 
-**Read-only.** This skill NEVER modifies `.kb/` or `.kb-state.json`. If changes are warranted, emit a list of `/kb-refresh <path>` commands for the user to run.
+**Read-only.** This skill NEVER modifies `.kb/` content, summaries, indexes, or `.kb-state.json`. If changes are warranted, emit a list of refresh commands for the user to run.
+
+The one exception: when invoked by `kb-maintain` or with `--write-artifact`, the skill writes an opt-in `.kb/.drift-report.json` so the downstream `kb-refresh` can reuse the diff/grep work. The artifact is ephemeral and recomputable — see [references/drift-report-artifact.md](references/drift-report-artifact.md).
 
 ## Input
 
-None beyond the corpus context.
+- **`--write-artifact`** (optional) — write `.kb/.drift-report.json` after computing the report. Implied when invoked by `kb-maintain`.
 
 ## Workflow
 
@@ -31,15 +33,14 @@ Run:
 
 ```bash
 git -C <corpus-root> log --stat <last_linted_sha>..HEAD
+git -C <corpus-root> diff --name-status <last_linted_sha>..HEAD
 ```
 
-Capture the list of changed files, rename/copy stats, and commit messages.
+Capture the list of changed files, rename/copy stats, deletions, additions, and commit messages.
 
 ### 3. Apply the heuristic
 
-The heuristic is a checklist. **Tune it by editing this file.** The checklist below is the default.
-
-For each signal, list the affected areas:
+The heuristic is a checklist. **Tune it by editing this file.** The default checklist:
 
 - **New files above threshold** — if a single directory or area saw ≥5 new files since last refresh, flag that area.
 - **File renames or moves** — any rename under a directory referenced in `.kb/indexes/` is a flag. Index references are stale by definition.
@@ -48,11 +49,13 @@ For each signal, list the affected areas:
 - **New top-level directory** — may mean a new area needs an index.
 - **Migration / schema files** (e.g. `migrations/**`, `*.sql`, `schema.*`) — semantic shifts likely; any area touching data is suspect.
 - **Deleted files referenced in `.kb/`** — hard flag. The KB points at something that no longer exists.
-- **Completed plan with no decision record** — if a plan file under `docs/plans/` (or similar) has a sibling checklist with all items ticked, and no matching file exists in `.kb/decisions/` (match by slug), recommend `/kb-record-decision <plan-path>`. Soft flag — not every plan yields a durable decision.
+- **Completed plan with no decision record** — if a plan file under `docs/plans/` (or similar) has a sibling checklist with all items ticked, and no matching file exists in `.kb/decisions/` (match by slug), recommend `kb-record-decision <plan-path>`. Soft flag — not every plan yields a durable decision.
+
+Tuning thresholds and signal rationale live in [references/heuristic.md](references/heuristic.md). Add or remove signals here as the user's corpus needs.
 
 ### 4. Report
 
-Emit a structured list. Example shape:
+Emit a structured report. Example shape:
 
 ```
 Drift candidates (KB last refreshed at <timestamp>, SHA <short-sha>):
@@ -76,17 +79,30 @@ Decision candidates:
 
 If no signals trip: report "no drift candidates. Last refresh at `<timestamp>` is current."
 
-### 5. Do NOT advance state
+When multiple refresh candidates exist, recommend a **single batched call** in the report (e.g. `/kb-refresh src/billing/ src/auth/ src/search/`) — the refresh skill accepts multiple paths in one invocation and does one `git diff` plus one state advance. Sequential calls per path are wasteful.
 
-Do not touch `.kb/.kb-state.json`. Drift remains open until `/kb-refresh` resolves it. That separation is the point of this skill.
+### 5. Optionally write the artifact
+
+If invoked with `--write-artifact` (or by `kb-maintain`), write `.kb/.drift-report.json` after step 4. Schema and lifecycle: [references/drift-report-artifact.md](references/drift-report-artifact.md).
+
+Write atomically: write `.kb/.drift-report.json.tmp` first, then `mv` to the final name. The artifact must never be a partial file.
+
+Users should add `.kb/.drift-report.json` to their corpus `.gitignore` — the artifact is ephemeral, recomputable from git history, and would cause merge conflicts otherwise.
+
+### 6. Do NOT advance state
+
+Do not touch `.kb/.kb-state.json`. Drift remains open until `kb-refresh` resolves it. That separation is the point of this skill.
 
 ## Discipline
 
-- **Read-only, always.** If you're about to write to `.kb/`, stop — wrong skill.
-- **Report, don't decide.** The user chooses whether to refresh. Do not run `/kb-refresh` automatically even on a hard flag.
-- **Heuristic is policy.** If it's misfiring on the user's corpus, propose an edit to this file.
+- **Read-only against `.kb/` content, always.** Summaries, indexes, decisions, `.kb-state.json` — never written. The only write is the opt-in drift artifact.
+- **Report, don't decide.** The user chooses whether to refresh. Do not run `kb-refresh` automatically even on a hard flag.
+- **Heuristic is policy.** If it's misfiring on the user's corpus, propose an edit to this file or [references/heuristic.md](references/heuristic.md).
+- **Batched recommendation by default.** When the report has multiple refresh candidates, suggest one `kb-refresh` call with all paths — not N separate calls.
 
 ## References
 
+- Heuristic signals and tuning: [references/heuristic.md](references/heuristic.md)
+- Drift report artifact schema: [references/drift-report-artifact.md](references/drift-report-artifact.md)
 - Refresh strategy rationale: [docs/refresh-strategy.md](../../docs/refresh-strategy.md)
-- Refresh command: [skills/kb-refresh/SKILL.md](../kb-refresh/SKILL.md)
+- Refresh: invoke the `kb-refresh` skill (or `/kb-refresh`).

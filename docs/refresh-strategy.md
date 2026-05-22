@@ -58,4 +58,23 @@ The heuristic is **policy, not code**. It lives in `skills/kb-check-drift/SKILL.
 
 - `/kb-check-drift` reads this but does not write it.
 - Only `/kb-refresh` writes it, and only after successful refresh. A refresh that fails halfway must not advance state.
+- `/kb-refresh` accepts `--no-advance-state` so an orchestrator can chain multiple writes against a single base SHA and advance state once at the end.
 - `schema_version` is loose intentionally — future versions may add per-area refresh timestamps.
+
+## Optional drift artifact
+
+When `/kb-check-drift` is invoked by `/kb-maintain` (or with `--write-artifact`), it also writes `.kb/.drift-report.json` — a structured copy of its findings. The downstream `/kb-refresh` reuses this artifact if it matches the current HEAD and base SHA, skipping its own `git diff` and `.kb/` greps.
+
+This lets a `drift → refresh` chain do the diff work exactly once instead of twice. The artifact is ephemeral and recomputable from git history; it stays out of git via `.gitignore`. A stale artifact is silently ignored by consumers — there is no "freshness warning" surface.
+
+See [skills/kb-check-drift/references/drift-report-artifact.md](../skills/kb-check-drift/references/drift-report-artifact.md) for the schema and lifecycle.
+
+## Batched refresh
+
+`/kb-refresh` accepts **multiple paths in a single invocation** and prefers that form over N sequential calls. The drift report's recommendation is rendered as one batched call when multiple candidates exist:
+
+```
+Recommendation: /kb-refresh src/billing/ src/auth/ src/search/
+```
+
+This produces one `git diff` over the union of scopes, one round of `.kb/` greps, and one state advance — instead of three of each. The orchestrator (`/kb-maintain`) follows the same convention.

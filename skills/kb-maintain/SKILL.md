@@ -49,11 +49,9 @@ After it returns, surface any refresh follow-up it recommended and ask whether t
 
 ### 2c. Discovery path — drift-first
 
-Invoke the `kb-check-drift` skill. The drift report is read-only and gives the user a maintenance menu.
+Invoke the `kb-check-drift` skill with `--write-artifact` so it writes `.kb/.drift-report.json` alongside the human-readable report. `kb-refresh` will reuse the artifact in step 4, skipping a second `git diff` over the same range.
 
-If the user has the optional drift-report artifact enabled, `kb-check-drift` will have written `.kb/.drift-report.json` for downstream skills to reuse. `kb-refresh` will pick it up automatically when scope matches.
-
-Then go to step 3.
+The drift report is read-only and gives the user a maintenance menu. Then go to step 3.
 
 ### 3. Propose an explicit maintenance plan (discovery path only)
 
