@@ -6,10 +6,10 @@ A Claude Code and Codex plugin that packages the three-layer knowledge base patt
 
 ## What's inside
 
-- **Skills** — `kb-ingest`, `kb-query`, `kb-lint`, `kb-check-drift`, `kb-distill`, `kb-demo`, `kb-bench`. The pattern codified.
-- **Commands** — `/kb-ingest`, `/kb-query`, `/kb-lint`, `/kb-check-drift`, `/kb-distill`, `/kb-demo`, `/kb-bench`. Thin wrappers over the skills.
+- **Skills** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`, `kb-demo`, `kb-bench`. The pattern codified.
+- **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`, `/kb-demo`, `/kb-bench`. Thin wrappers over the skills.
 - **Templates** — starter shapes for indexes, summaries, decisions, `_root.md`, state. See [templates/README.md](templates/README.md) for manual-build steps.
-- **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [lint strategy](docs/lint-strategy.md).
+- **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [refresh strategy](docs/refresh-strategy.md).
 
 ## Install
 
@@ -35,14 +35,14 @@ Codex loads the bundled skills from `skills/`. The `commands/` directory is kept
 
 Claude Desktop doesn't load Claude Code plugins, so runtime skills are published as individual zips on the [Releases page](https://github.com/olegvg/kb-for-agents/releases). Download and upload the ones you need via the Claude Desktop skill UI:
 
-- `kb-ingest-<version>.zip`
+- `kb-build-<version>.zip`
 - `kb-query-<version>.zip`
-- `kb-lint-<version>.zip`
+- `kb-refresh-<version>.zip`
 - `kb-check-drift-<version>.zip`
 
 `SHA256SUMS` is attached to each release — verify with `sha256sum -c SHA256SUMS`.
 
-`kb-distill`, `kb-demo`, and `kb-bench` are Claude Code–only: distill relies on the plan-document layout, and demo/bench depend on the bundled notes-corpus.
+`kb-record-decision`, `kb-maintain`, `kb-demo`, and `kb-bench` are Claude Code–only: decision recording relies on the plan-document layout and orchestration, while demo/bench depend on the bundled notes-corpus.
 
 ## Quickstart
 
@@ -70,7 +70,7 @@ prints a side-by-side table. Reference traces in
 In any Claude Code session opened at your corpus root:
 
 ```
-/kb-ingest .
+/kb-build .
 /kb-query where are fees charged?
 ```
 
@@ -78,13 +78,13 @@ After you've made changes to the corpus:
 
 ```
 /kb-check-drift
-/kb-lint src/billing/
+/kb-refresh src/billing/
 ```
 
 When a planned piece of work ships and you want its key choices preserved:
 
 ```
-/kb-distill docs/plans/2026-03-19-1400/plan-billing-rewrite.md
+/kb-record-decision docs/plans/2026-03-19-1400/plan-billing-rewrite.md
 ```
 
 ## How it works
@@ -107,12 +107,12 @@ A starter kit: skills, commands, templates, conceptual docs. Patterns codified s
 
 ## What this is not
 
-A runnable benchmark, a bundled example corpus, a RAG library, or a general-purpose agent framework. Proof of effectiveness lives in the surrounding article and posts, not in this repo.
+A RAG library or a general-purpose agent framework. The bundled demo and benchmark are examples for exercising the pattern, not a production retrieval system.
 
 ## Requirements
 
 - Claude Code or Codex with skills support.
-- A corpus you want to document. A git-backed corpus is strongly recommended — `/kb-lint` and `/kb-check-drift` both depend on git history.
+- A corpus you want to document. A git-backed corpus is strongly recommended — `/kb-refresh` and `/kb-check-drift` both depend on git history.
 
 ## License
 

@@ -4,7 +4,7 @@
 
 **Goal:** Add a built-in demo corpus, an orchestrator skill `/kb-demo`, and a benchmark runner `/kb-bench` so that anyone installing the plugin can experience the three-layer KB pattern on a non-trivial corpus without preparing one.
 
-**Architecture:** Demo corpus lives under `examples/notes-corpus/`. Generator script produces ~150–200 markdown notes deterministically. Pre-built `.kb/` is committed alongside. New skills wrap existing agnostic skills (`kb-ingest`, `kb-query`) with the demo path baked in. Benchmark runner produces side-by-side traces (with KB vs grep-only baseline) for fixed tasks. No automated test suite — verification is by reading and dogfooding, per repo convention (see CLAUDE.md).
+**Architecture:** Demo corpus lives under `examples/notes-corpus/`. Generator script produces ~150–200 markdown notes deterministically. Pre-built `.kb/` is committed alongside. New skills wrap existing agnostic skills (`kb-build`, `kb-query`) with the demo path baked in. Benchmark runner produces side-by-side traces (with KB vs grep-only baseline) for fixed tasks. No automated test suite — verification is by reading and dogfooding, per repo convention (see CLAUDE.md).
 
 **Tech Stack:** Markdown skills/commands. Python 3.11+ (single stdlib-only generator script, no dependencies). Git for state tracking.
 
@@ -156,7 +156,7 @@ Committed `notes/` is the source of truth; regeneration is optional.
 ## Pre-built `.kb/`
 
 The `.kb/` directory in this folder is the result of running
-`/kb-ingest examples/notes-corpus/` once and committing the output.
+`/kb-build examples/notes-corpus/` once and committing the output.
 To rebuild: delete `.kb/` and re-run the skill.
 ```
 
@@ -289,14 +289,14 @@ git commit -m "feat: generate 150-note synthetic demo corpus"
 - Create (via skill): `examples/notes-corpus/.kb/summaries/<area>/*.md`
 - Create (via skill): `examples/notes-corpus/.kb/.kb-state.json`
 
-This task dogfoods `kb-ingest` against the freshly generated corpus.
+This task dogfoods `kb-build` against the freshly generated corpus.
 
-- [ ] **Step 1: Run `kb-ingest` against the corpus**
+- [ ] **Step 1: Run `kb-build` against the corpus**
 
 In a Claude Code session with the plugin installed:
 
 ```
-/kb-ingest examples/notes-corpus/
+/kb-build examples/notes-corpus/
 ```
 
 The skill executes its three-pass workflow (survey → parallel deep-ingest → main-agent index assembly). Produces `.kb/` inside the corpus.
@@ -710,9 +710,9 @@ Wait for the user to choose 1–5 (or quit).
   and print results inline rather than persisting.
 
 - **4:** Confirm: "This will delete `examples/notes-corpus/.kb/` and
-  rebuild it via `/kb-ingest`. The pre-built KB is the expected
+  rebuild it via `/kb-build`. The pre-built KB is the expected
   default state. Continue? (y/N)". On `y`, `rm -rf
-  examples/notes-corpus/.kb/` then invoke `kb-ingest` on the corpus.
+  examples/notes-corpus/.kb/` then invoke `kb-build` on the corpus.
   On `N` or anything else, abort.
 
 - **5:** Invoke `kb-bench` with no arguments (runs all tasks).
@@ -724,7 +724,7 @@ Offer to return to the menu for another option, or stop.
 ## Hard limits
 
 - Operates only on `examples/notes-corpus/`. Never accept a different
-  corpus path — that's what `/kb-query`, `/kb-ingest`, `/kb-bench`
+  corpus path — that's what `/kb-query`, `/kb-build`, `/kb-bench`
   are for.
 - Never write outside `examples/notes-corpus/` or
   `benchmarks/notes-corpus/runs/`.

@@ -15,14 +15,14 @@ This spec adds three things to the existing plugin:
 2. A demo orchestrator skill `/kb-demo` that gives users guided entry points
 3. A benchmark runner `/kb-bench` that produces side-by-side traces
 
-Out of scope: changes to existing skills (`kb-ingest`, `kb-query`, `kb-lint`, `kb-check-drift`, `kb-distill`), changes to the three-layer concept, additional example corpora.
+Out of scope: changes to existing skills (`kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `kb-record-decision`), changes to the three-layer concept, additional example corpora.
 
 ## Alignment with existing concept
 
 The architecture preserves everything in [docs/concept.md](../concept.md):
 
 - `.kb/` lives inside the corpus, not in the plugin. The demo corpus follows the same rule — its `.kb/` lives inside `examples/notes-corpus/`, not in plugin root.
-- Three layers + decisions store, indexes-first navigation, manual lint, semantic grouping — all unchanged.
+- Three layers + decisions store, indexes-first navigation, manual refresh, semantic grouping — all unchanged.
 - The plugin remains stateless with respect to any specific corpus. New skills (`kb-demo`, `kb-bench`) take the demo corpus path as a hardcoded internal default, but underlying operations still go through the agnostic core skills.
 
 ## Repo layout (delta only)
@@ -80,7 +80,7 @@ Several topics intentionally appear across multiple note types — for example, 
 
 ### Pre-built `.kb/`
 
-`examples/notes-corpus/.kb/` is committed in its expected post-ingest state. Users see the result immediately on plugin install. Anyone who wants to see ingest in action deletes `.kb/` and runs `/kb-ingest examples/notes-corpus/`.
+`examples/notes-corpus/.kb/` is committed in its expected post-build state. Users see the result immediately on plugin install. Anyone who wants to see the build flow in action deletes `.kb/` and runs `/kb-build examples/notes-corpus/`.
 
 This is a deliberate choice: lowering the barrier to first impression matters more than forcing every user through the build step. The build step is one command away.
 
@@ -92,7 +92,7 @@ Single command, no arguments. Opens an interactive menu:
 1. Inspect the demo corpus structure (overview of notes/ and .kb/)
 2. Ask a question through the KB        → /kb-query examples/notes-corpus/ <Q>
 3. Compare KB vs grep on the same Q      → invoke kb-bench for one ad-hoc Q
-4. Rebuild .kb/ from scratch             → delete + /kb-ingest examples/notes-corpus/
+4. Rebuild .kb/ from scratch             → delete + /kb-build examples/notes-corpus/
 5. Run the benchmark suite               → /kb-bench
 ```
 
@@ -162,7 +162,7 @@ None blocking implementation. Two for after first release:
 ## Implementation order
 
 1. `examples/notes-corpus/generate.py` + generated `notes/`
-2. Run `/kb-ingest` on the corpus, commit resulting `.kb/`
+2. Run `/kb-build` on the corpus, commit resulting `.kb/`
 3. `benchmarks/notes-corpus/tasks.md` (8–12 tasks)
 4. Record reference traces by running each task manually with both modes; commit to `traces/`
 5. `skills/kb-bench/` + `commands/kb-bench.md`

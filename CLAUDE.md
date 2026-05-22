@@ -34,21 +34,22 @@ Why three layers: progressive disclosure. See [docs/concept.md](docs/concept.md)
 - `skills/<name>/SKILL.md` — each skill is a single markdown file with YAML frontmatter (`name`, `description`). The `description` field is what Claude Code matches against to auto-invoke the skill; it must include trigger phrases (English + Russian in this repo).
 - `commands/<name>.md` — thin slash-command wrappers. Each one is essentially `Invoke the <name> skill with $ARGUMENTS`. Do not duplicate skill logic into the command file.
 - `templates/` — starter shapes for `_root.md`, area indexes, summaries, decisions. Referenced by the skills. Users can also hand-copy them (see [templates/README.md](templates/README.md)).
-- `docs/` — pattern rationale. [concept.md](docs/concept.md), [navigation-rules.md](docs/navigation-rules.md), [lint-strategy.md](docs/lint-strategy.md). These drive the skills, not the reverse — if you change a skill's behavior, check whether the corresponding doc still holds, and update the doc if not.
+- `docs/` — pattern rationale. [concept.md](docs/concept.md), [navigation-rules.md](docs/navigation-rules.md), [refresh-strategy.md](docs/refresh-strategy.md). These drive the skills, not the reverse — if you change a skill's behavior, check whether the corresponding doc still holds, and update the doc if not.
 
-## The five skills and how they relate
+## The skills and how they relate
 
 | Skill | Mode | Writes `.kb/`? | Writes `.kb-state.json`? |
 |---|---|---|---|
-| `kb-ingest` | one-shot, fresh build | yes (creates) | yes (initializes) |
+| `kb-build` | one-shot, fresh build | yes (creates) | yes (initializes) |
 | `kb-query` | read-only | no | no |
-| `kb-lint` | scoped, manual | yes (updates) | yes (advances `last_linted_sha`) |
+| `kb-refresh` | scoped, manual | yes (updates) | yes (advances `last_linted_sha`) |
 | `kb-check-drift` | read-only | **no** | **no** |
-| `kb-distill` | manual, post-plan | yes (adds decision + updates summaries) | no |
+| `kb-record-decision` | manual, post-plan | yes (adds decision + updates summaries) | no |
+| `kb-maintain` | orchestrated, manual | delegates only | delegates only |
 
-The `kb-check-drift` / `kb-lint` split is deliberate — drift detection is read-only and reports candidates; only `kb-lint` mutates and advances state. Never collapse them. See [docs/lint-strategy.md](docs/lint-strategy.md).
+The `kb-check-drift` / `kb-refresh` split is deliberate — drift detection is read-only and reports candidates; only `kb-refresh` mutates and advances state. Never collapse them. See [docs/refresh-strategy.md](docs/refresh-strategy.md).
 
-`kb-ingest` uses a strict three-pass workflow (survey → parallel subagent deep-ingest → main-agent index assembly). The main agent never reads full file bodies in passes 1 or 3 — that is the context-window guarantee of the pattern. Do not collapse the passes even on small corpora.
+`kb-build` uses a strict three-pass workflow (survey → parallel subagent deep-build → main-agent index assembly). The main agent never reads full file bodies in passes 1 or 3 — that is the context-window guarantee of the pattern. Do not collapse the passes even on small corpora.
 
 ## When editing skills
 

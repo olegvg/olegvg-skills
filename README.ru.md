@@ -6,10 +6,10 @@
 
 ## Что внутри
 
-- **Навыки (skills)** — `kb-ingest`, `kb-query`, `kb-lint`, `kb-check-drift`, `kb-distill`, `kb-demo`, `kb-bench`. Паттерн, закреплённый в коде.
-- **Команды** — `/kb-ingest`, `/kb-query`, `/kb-lint`, `/kb-check-drift`, `/kb-distill`, `/kb-demo`, `/kb-bench`. Тонкие обёртки над навыками.
+- **Навыки (skills)** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`, `kb-demo`, `kb-bench`. Паттерн, закреплённый в коде.
+- **Команды** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`, `/kb-demo`, `/kb-bench`. Тонкие обёртки над навыками.
 - **Шаблоны** — стартовые заготовки для индексов, саммари, решений, `_root.md`, состояния. Шаги для ручной сборки см. в [templates/README.md](templates/README.md).
-- **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия линтинга](docs/lint-strategy.md).
+- **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия обновления](docs/refresh-strategy.md).
 
 ## Установка
 
@@ -35,14 +35,14 @@ Codex загружает навыки из `skills/`. Директория `comm
 
 Claude Desktop не загружает плагины Claude Code, поэтому runtime-навыки выкладываются отдельными zip-архивами на странице [Releases](https://github.com/olegvg/kb-for-agents/releases). Скачай нужные и загрузи через UI навыков Claude Desktop:
 
-- `kb-ingest-<version>.zip`
+- `kb-build-<version>.zip`
 - `kb-query-<version>.zip`
-- `kb-lint-<version>.zip`
+- `kb-refresh-<version>.zip`
 - `kb-check-drift-<version>.zip`
 
 К каждому релизу приложен `SHA256SUMS` — проверка через `sha256sum -c SHA256SUMS`.
 
-`kb-distill`, `kb-demo` и `kb-bench` — только для Claude Code: distill опирается на формат plan-документов, demo/bench зависят от встроенного notes-corpus.
+`kb-record-decision`, `kb-maintain`, `kb-demo` и `kb-bench` — только для Claude Code: запись решений опирается на формат plan-документов и orchestration, demo/bench зависят от встроенного notes-corpus.
 
 ## Быстрый старт
 
@@ -70,7 +70,7 @@ Claude Desktop не загружает плагины Claude Code, поэтом�
 В любой сессии Claude Code, открытой в корне вашего корпуса:
 
 ```
-/kb-ingest .
+/kb-build .
 /kb-query where are fees charged?
 ```
 
@@ -78,13 +78,13 @@ Claude Desktop не загружает плагины Claude Code, поэтом�
 
 ```
 /kb-check-drift
-/kb-lint src/billing/
+/kb-refresh src/billing/
 ```
 
 Когда запланированная работа завершена и нужно сохранить её ключевые решения:
 
 ```
-/kb-distill docs/plans/2026-03-19-1400/plan-billing-rewrite.md
+/kb-record-decision docs/plans/2026-03-19-1400/plan-billing-rewrite.md
 ```
 
 ## Как это работает
@@ -107,12 +107,12 @@ Claude Desktop не загружает плагины Claude Code, поэтом�
 
 ## Что это не
 
-Это не запускаемый бенчмарк, не готовый пример корпуса, не RAG-библиотека и не универсальный фреймворк для агентов. Подтверждение эффективности — в сопутствующей статье и постах, а не в этом репозитории.
+Это не RAG-библиотека и не универсальный фреймворк для агентов. Встроенные демо и бенчмарк нужны, чтобы потрогать паттерн, а не как production retrieval system.
 
 ## Требования
 
 - Claude Code или Codex с поддержкой skills.
-- Корпус, который вы хотите задокументировать. Корпус с git-историей настоятельно рекомендуется — `/kb-lint` и `/kb-check-drift` оба зависят от git-истории.
+- Корпус, который вы хотите задокументировать. Корпус с git-историей настоятельно рекомендуется — `/kb-refresh` и `/kb-check-drift` оба зависят от git-истории.
 
 ## Лицензия
 

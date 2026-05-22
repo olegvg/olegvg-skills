@@ -1,6 +1,6 @@
 # Templates — Manual Build
 
-If you want to build `.kb/` by hand instead of running `/kb-ingest`, copy from here.
+If you want to build `.kb/` by hand instead of running `/kb-build`, copy from here.
 
 ## Minimum viable layout
 
@@ -9,7 +9,7 @@ If you want to build `.kb/` by hand instead of running `/kb-ingest`, copy from h
 ├── indexes/
 │   └── _root.md
 ├── summaries/
-├── decisions/           ← populated by /kb-distill, not by hand
+├── decisions/           ← populated by /kb-record-decision, not by hand
 └── .kb-state.json
 ```
 
@@ -18,7 +18,7 @@ If you want to build `.kb/` by hand instead of running `/kb-ingest`, copy from h
 1. Copy `_root.template.md` to `.kb/indexes/_root.md`. Replace the placeholder areas with the real areas in your corpus.
 2. For each area: copy `index.template.md` to `.kb/indexes/<area>.md`. Fill in the "when to enter" and leaves.
 3. For each leaf: copy `summary.template.md` to `.kb/summaries/<area>/<leaf>.md`. Write the prose.
-4. Create an empty `.kb/decisions/` directory. Decision records land here when you run `/kb-distill` against a completed plan. You can also hand-author them using `decision.template.md`, but the skill is the expected path.
+4. Create an empty `.kb/decisions/` directory. Decision records land here when you run `/kb-record-decision` against a completed plan. You can also hand-author them using `decision.template.md`, but the skill is the expected path.
 5. Copy `.kb-state.template.json` to `.kb/.kb-state.json`. Set `last_linted_sha` to your current git SHA: `git rev-parse HEAD`. Set `last_linted_at` to the current UTC ISO-8601 timestamp.
 
 ## Rules

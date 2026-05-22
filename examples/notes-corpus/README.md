@@ -32,5 +32,5 @@ Committed `notes/` is the source of truth; regeneration is optional.
 ## Pre-built `.kb/`
 
 The `.kb/` directory in this folder is the result of running
-`/kb-ingest examples/notes-corpus/` once and committing the output.
+`/kb-build examples/notes-corpus/` once and committing the output.
 To rebuild: delete `.kb/` and re-run the skill.

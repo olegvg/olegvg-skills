@@ -26,15 +26,15 @@ Once the agent is inside a summary and sees a reference to a related summary, it
 
 Auto-doc tools group by directory. That fails because agents receive questions by task surface, not by filesystem layout. "Where are fees charged?" crosses three directories. The ingest skill groups summaries by **what a user would ask about them**, not by where the files sit on disk.
 
-## Why manual lint
+## Why manual refresh
 
-Automatic doc regeneration on every commit produces two failure modes: stale docs (if lint is slow) and irrelevant churn (if lint is eager). Manual, trigger-based lint with a separate read-only drift-checker gives the user explicit control. See [lint-strategy.md](lint-strategy.md).
+Automatic doc regeneration on every commit produces two failure modes: stale docs (if refresh is slow) and irrelevant churn (if refresh is eager). Manual, trigger-based refresh with a separate read-only drift-checker gives the user explicit control. See [refresh-strategy.md](refresh-strategy.md).
 
 ## Why plans are excluded but decisions are included
 
 Plans (`docs/plans/**` and similar timestamped journals) are operational artifacts: steps, drafts, abandoned branches, debate about alternatives. 90% of a plan's content is noise to anyone who didn't execute it. Ingesting plans into the KB produces muddled summaries that mix current state with historical intent.
 
-But a completed plan contains something that *is* durable knowledge: the decision made and its rationale. `/kb-distill` extracts that 10% — decision, context, rejected alternatives, consequences — into a standalone record in `.kb/decisions/`. Plans stay in `docs/plans/` as a journal; decisions move into the KB as knowledge.
+But a completed plan contains something that *is* durable knowledge: the decision made and its rationale. `/kb-record-decision` extracts that 10% — decision, context, rejected alternatives, consequences — into a standalone record in `.kb/decisions/`. Plans stay in `docs/plans/` as a journal; decisions move into the KB as knowledge.
 
 The query "how does X work now, and based on what decisions?" resolves via a single navigation: agent enters via `_root.md`, picks the relevant area index, reads the summary for X, follows the references from the summary's `## Key decisions` section into the decision records. No separate "decisions" area to ambiguate routing — the decision is always reached through the thing it affects.
 
