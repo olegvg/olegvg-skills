@@ -27,7 +27,7 @@ npx skills add olegvg/kb-for-agents
 2. **Summaries** (`.kb/summaries/<area>/*.md`) — prose, one topic per file, freeform size.
 3. **Indexes** (`.kb/indexes/*.md`) — navigation, **≤300 tokens per file**, signposts only, no prose. Entry point `.kb/indexes/_root.md`.
 
-Plus **decisions** (`.kb/decisions/*.md`) — distilled records from completed plans. Decisions are NOT a fourth layer: they are referenced from the summaries they affect via `## Key decisions` sections, never listed as a top-level area in `_root.md`. The agent reaches a decision by navigating indexes → summary → following a reference.
+Plus **decisions** (`.kb/decisions/*.md`) — distilled records from completed plans. Decisions are NOT a fourth layer and never appear as a top-level area in `_root.md`. The link between a decision and the summaries it affects lives in the decision record's `## Affected areas` block — summaries themselves are never edited when a decision is recorded. Agents find decisions for a summary by greping `.kb/decisions/` for the summary's path; `kb-query` does this lookup automatically.
 
 Why three layers: progressive disclosure. See [docs/concept.md](docs/concept.md).
 
@@ -61,7 +61,7 @@ When editing a skill or adding a new one, both pathways must keep working. Two p
 | `kb-query` | read-only | no | no |
 | `kb-refresh` | scoped, manual | yes (updates) | yes (advances `last_linted_sha`) |
 | `kb-check-drift` | read-only | **no** | **no** |
-| `kb-record-decision` | manual, post-plan | yes (adds decision + updates summaries) | no |
+| `kb-record-decision` | manual, post-plan | yes (adds decision only — never edits summaries) | no |
 | `kb-maintain` | orchestrated, manual | delegates only | delegates only |
 
 The `kb-check-drift` / `kb-refresh` split is deliberate — drift detection is read-only and reports candidates; only `kb-refresh` mutates and advances state. Never collapse them. See [docs/refresh-strategy.md](docs/refresh-strategy.md).

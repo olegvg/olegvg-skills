@@ -33,13 +33,31 @@ Typical count: 1 for focused questions, 2–3 for questions that cross domains. 
 
 From the area indexes, pick the specific leaf summaries to read. Read them.
 
-### 4. Follow warm references freely — including into decisions
+### 4. Follow warm references freely
 
-Once inside a summary, if you see a reference to another summary, or a `## Key decisions` section linking to records in `.kb/decisions/`, you may jump directly without returning to the index level.
+Once inside a summary, you may follow direct references to other summaries without returning to the index level. This relaxation is intentional — see [docs/navigation-rules.md](../../docs/navigation-rules.md). The indexes earn their keep on cold start; warm references are cheap.
 
-This relaxation is intentional — see [docs/navigation-rules.md](../../docs/navigation-rules.md). The indexes earn their keep on cold start; warm references are cheap.
+### 4a. Surface decisions for the current summary
 
-For questions of the form "how does X work now, and why was it built that way?" — expect to navigate summary → decision records linked from the summary's `## Key decisions` section. Both halves of the answer live along one navigation path.
+After reading a summary, also check whether any decision records reference it. Decisions live in `.kb/decisions/<YYYY-MM-slug>.md`; each record's `## Affected areas` block names the summaries it shapes. The lookup is one grep:
+
+```bash
+grep -l "<path-to-current-summary>" .kb/decisions/
+```
+
+Read whichever records the grep returns. **Do not** look for a `## Key decisions` section inside the summary — the linkage lives in the decision record, not in the summary. Decisions are immutable history; summaries describe the present.
+
+For questions of the form "how does X work now, and why was it built that way?" — read the summary for X, then the decisions returned by the grep above. Both halves of the answer live along one navigation path.
+
+### Direct mode: `--decisions-for <summary-path>` (no question)
+
+If the user invokes the skill with a literal `--decisions-for <summary-path>` (or the equivalent natural-language form: "what decisions shaped `<summary-path>`?"), skip steps 1–4 and run the grep against `.kb/decisions/` directly:
+
+```bash
+grep -l "<summary-path>" .kb/decisions/ | xargs -I {} sh -c 'echo "## {}"; cat {}'
+```
+
+This is the explicit form of step 4a — a one-shot lookup with no indexes-first read. Print or summarize the matching records in order of filename (newest YYYY-MM first). If grep returns nothing, say so: "no decisions reference `<summary-path>` yet" is a valid answer.
 
 ### 5. Answer
 

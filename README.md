@@ -94,9 +94,9 @@ The plugin builds a `.kb/` directory **inside your corpus** (not inside the plug
 2. **Summaries** (`.kb/summaries/<area>/*.md`) — prose per topic, one file each.
 3. **Indexes** (`.kb/indexes/*.md`) — navigation, ≤300 tokens per file. Entry point is `.kb/indexes/_root.md`.
 
-Alongside: **Decisions** (`.kb/decisions/*.md`) — distilled records extracted from completed plans. Referenced from the summaries they affect via `## Key decisions` sections, not surfaced as a separate top-level area.
+Alongside: **Decisions** (`.kb/decisions/*.md`) — distilled records extracted from completed plans. Each record names the summaries it affects in its own `## Affected areas` block; summaries themselves are never edited when a decision is recorded. Agents find decisions for a summary by greping `.kb/decisions/` for that summary's path; `kb-query` does this lookup automatically.
 
-The agent reads indexes first on any query, then descends. If the question is "how does X work, and why was it built that way?", the navigation lands on a summary and follows its decision references. Context stays bounded and the navigation path is reviewable.
+The agent reads indexes first on any query, then descends. If the question is "how does X work, and why was it built that way?", the navigation lands on a summary, and the decisions backreferenced from that summary surface in the same pass. Context stays bounded and the navigation path is reviewable.
 
 See [docs/concept.md](docs/concept.md) for the full argument.
 

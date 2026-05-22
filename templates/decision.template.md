@@ -21,6 +21,16 @@ What changes as a result: code shape, process, follow-on obligations, trade-offs
 - `.kb/summaries/<area-a>/<leaf>.md`
 - `.kb/summaries/<area-b>/<leaf>.md`
 
+<!--
+The Affected areas list is the ONLY linkage between this decision and the
+summaries it shapes. Summaries themselves are never edited when a decision
+is recorded — agents find decisions for a summary by greping .kb/decisions/
+for that summary's path.
+
+If a summary path here does not yet exist (the decision created a new area),
+list the intended future path and flag it as a refresh follow-up.
+-->
+
 ## Source plan
 
 `docs/plans/<timestamp>/plan-<slug>.md`

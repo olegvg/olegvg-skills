@@ -26,4 +26,4 @@ If you want to build `.kb/` by hand instead of running `/kb-build`, copy from he
 - Index files are ≤300 tokens. Signposts, not content.
 - Summary files: one topic per file. No size limit, but split if you're mixing unrelated concerns.
 - `_root.md` is the agent's first read on any query. Keep it honest — if an area disappears, remove it from `_root.md`.
-- `decisions/` is never referenced from `_root.md`. Decision records are discovered via `## Key decisions` sections inside summaries that they affect.
+- `decisions/` is never referenced from `_root.md`. Each decision record names the summaries it shapes in its own `## Affected areas` block; agents find decisions for a given summary by greping `.kb/decisions/` for that summary's path. Summaries themselves never list decisions — the link lives in the immutable side.

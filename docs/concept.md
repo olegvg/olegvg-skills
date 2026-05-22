@@ -8,7 +8,7 @@ This plugin encodes a pattern for giving an agent navigable knowledge of a corpu
 2. **Summaries (Layer 2)** — prose explanations, one topic per file. Freeform size. Optional Mermaid diagrams. Live under `.kb/summaries/<area>/`.
 3. **Indexes (Layer 3)** — navigation. Maximum 300 tokens per file. Signposts only, no prose content. Live under `.kb/indexes/`. Entry point is `.kb/indexes/_root.md`.
 
-Alongside the three layers is a **decisions** store — distilled records extracted from completed plans, living under `.kb/decisions/`. Decisions are not a fourth layer: they are referenced from the summaries they affect via a `## Key decisions` section, not surfaced as a top-level area in `_root.md`. The agent finds them by navigating normally (indexes → summary) and following the reference.
+Alongside the three layers is a **decisions** store — distilled records extracted from completed plans, living under `.kb/decisions/`. Decisions are not a fourth layer: each record names the summaries it affects in its own `## Affected areas` block, and that backreference is the only link between a decision and a summary. The agent finds decisions for a summary by greping `.kb/decisions/` for the summary's path. Summaries themselves are not modified when a decision is recorded — they describe the present, decisions describe how the present was chosen.
 
 ## Why three layers
 
@@ -46,7 +46,9 @@ Plans (`docs/plans/**` and similar timestamped journals) are operational artifac
 
 But a completed plan contains something that *is* durable knowledge: the decision made and its rationale. `/kb-record-decision` extracts that 10% — decision, context, rejected alternatives, consequences — into a standalone record in `.kb/decisions/`. Plans stay in `docs/plans/` as a journal; decisions move into the KB as knowledge.
 
-The query "how does X work now, and based on what decisions?" resolves via a single navigation: agent enters via `_root.md`, picks the relevant area index, reads the summary for X, follows the references from the summary's `## Key decisions` section into the decision records. No separate "decisions" area to ambiguate routing — the decision is always reached through the thing it affects.
+The query "how does X work now, and based on what decisions?" resolves via a single navigation: agent enters via `_root.md`, picks the relevant area index, reads the summary for X, then greps `.kb/decisions/` for that summary's path to find the records that shaped it. No separate "decisions" area to ambiguate routing — the decision is reached through the thing it affects, but the linkage lives in the decision record (in its `Affected areas` list), not in the summary.
+
+This asymmetry is deliberate: a summary tracks the present and gets refreshed as code changes, while a decision is immutable history. Putting forward links in the summary would mean editing N summaries every time a cross-cutting decision is recorded, which is the single most expensive operation in `kb-record-decision`. The backreference lives in the immutable side; the mutable side stays untouched.
 
 ## The `.kb/` directory lives in the corpus, not in this plugin
 

@@ -8,15 +8,27 @@ This is enforced in the `kb-query` skill and observable in traces: every first-t
 
 ## Warm-reference relaxation
 
-Once the agent is working inside a summary (Layer 2), it may follow direct references to other summaries **or to decision records in `.kb/decisions/`** without returning to the index level.
+Once the agent is working inside a summary (Layer 2), it may follow direct references to other summaries without returning to the index level.
 
-Examples:
-- Reading `summaries/auth/session.md` and finding a link to `summaries/billing/refunds.md` — the agent may jump straight there.
-- Reading `summaries/billing/fee-calculation.md` and finding a `## Key decisions` section linking to `decisions/2026-03-fee-calculation-rewrite.md` — the agent may follow the link directly.
+Example: reading `summaries/auth/session.md` and finding a link to `summaries/billing/refunds.md` — the agent may jump straight there.
 
-This relaxation is intentional. Strict indexes-only navigation would require the agent to re-enter through `_root.md` for every related concept — expensive and pedantic. The indexes earn their keep on cold start; once warm, references between summaries (and from summaries into decisions) are cheap.
+This relaxation is intentional. Strict indexes-only navigation would require the agent to re-enter through `_root.md` for every related concept — expensive and pedantic. The indexes earn their keep on cold start; once warm, references between summaries are cheap.
 
-This is how the query "how does X work now, and why was it built that way?" resolves: indexes → area index → summary for X → decision records linked from the summary. Current state and historical rationale along one navigation path.
+## Decisions: backreference, not forward link
+
+Decisions live in `.kb/decisions/<YYYY-MM-slug>.md`. Each record names the summaries it shapes in its own `## Affected areas` block. **Summaries themselves are not edited when a decision is recorded** — they describe the present, decisions describe how the present was chosen.
+
+When the agent is inside a summary and wants to know what decisions shaped it, the query is one grep:
+
+```bash
+grep -l "<path-to-current-summary>" .kb/decisions/
+```
+
+This returns the list of records to read. The agent may follow those records freely under warm-reference relaxation — entering a decision through its summary is still a warm reference, just one that resolves via grep instead of an inline `[link]`.
+
+`kb-query` performs this lookup automatically when reading a summary, so callers do not need to grep by hand — see the `--decisions-for` mode in that skill.
+
+The query "how does X work now, and why was it built that way?" resolves: indexes → area index → summary for X → backreference grep into `.kb/decisions/` → read the records returned. Current state and historical rationale along one navigation path, with the linkage stored in the immutable side (decisions) rather than the mutable side (summaries).
 
 ## What the rules buy
 
