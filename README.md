@@ -6,8 +6,8 @@ A Claude Code and Codex plugin that packages the three-layer knowledge base patt
 
 ## What's inside
 
-- **Skills** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`, `kb-demo`, `kb-bench`. The pattern codified.
-- **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`, `/kb-demo`, `/kb-bench`. Thin wrappers over the skills.
+- **Skills** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`. The pattern codified.
+- **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Thin wrappers over the skills.
 - **Templates** — starter shapes for indexes, summaries, decisions, `_root.md`, state. See [templates/README.md](templates/README.md) for manual-build steps.
 - **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [refresh strategy](docs/refresh-strategy.md).
 
@@ -20,7 +20,7 @@ A Claude Code and Codex plugin that packages the three-layer knowledge base patt
 /plugin install kb-for-agents@kb-for-agents
 ```
 
-Installs every skill and slash command, including the demo and benchmark against the bundled notes-corpus.
+Installs every skill and slash command.
 
 ### Codex marketplace
 
@@ -42,30 +42,9 @@ Claude Desktop doesn't load Claude Code plugins, so runtime skills are published
 
 `SHA256SUMS` is attached to each release — verify with `sha256sum -c SHA256SUMS`.
 
-`kb-record-decision`, `kb-maintain`, `kb-demo`, and `kb-bench` are Claude Code–only: decision recording relies on the plan-document layout and orchestration, while demo/bench depend on the bundled notes-corpus.
+`kb-record-decision` and `kb-maintain` are Claude Code–only: decision recording relies on the plan-document layout and orchestration.
 
 ## Quickstart
-
-### Try it without setup
-
-After installing the plugin, run:
-
-`/kb-demo`
-
-This opens a 5-option menu against a built-in 150-note synthetic corpus
-in `examples/notes-corpus/`. You can inspect the structure, ask
-questions through the KB, compare against a grep-only baseline, rebuild
-the KB from scratch, or run the full benchmark suite.
-
-For honest comparison numbers on fixed tasks:
-
-`/kb-bench`
-
-Runs the 10 benchmark questions in two modes (with KB / grep-only) and
-prints a side-by-side table. Reference traces in
-`benchmarks/notes-corpus/traces/` are the calibrated baseline.
-
-### Apply to your own corpus
 
 In any Claude Code session opened at your corpus root:
 
@@ -97,7 +76,7 @@ The plugin builds a `.kb/` directory **inside your corpus** (not inside the plug
 
 Alongside: **Decisions** (`.kb/decisions/*.md`) — distilled records extracted from completed plans. Referenced from the summaries they affect via `## Key decisions` sections, not surfaced as a separate top-level area.
 
-The agent reads indexes first on any query, then descends. If the question is "how does X work, and why was it built that way?", the navigation lands on a summary and follows its decision references. Context stays bounded; navigation is observable in traces.
+The agent reads indexes first on any query, then descends. If the question is "how does X work, and why was it built that way?", the navigation lands on a summary and follows its decision references. Context stays bounded and the navigation path is reviewable.
 
 See [docs/concept.md](docs/concept.md) for the full argument.
 
@@ -107,7 +86,7 @@ A starter kit: skills, commands, templates, conceptual docs. Patterns codified s
 
 ## What this is not
 
-A RAG library or a general-purpose agent framework. The bundled demo and benchmark are examples for exercising the pattern, not a production retrieval system.
+A RAG library or a general-purpose agent framework.
 
 ## Requirements
 
