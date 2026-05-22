@@ -23,7 +23,7 @@
   "interface": {
     "displayName": "KB for Agents",
     "shortDescription": "Three-layer knowledge bases for agent navigation",
-    "longDescription": "Build, query, lint, and maintain a three-layer knowledge base inside a codebase or notes corpus so agents can navigate large context through indexes, summaries, and decision records.",
+    "longDescription": "Build, query, refresh, record decisions, and maintain a three-layer knowledge base inside a codebase or notes corpus so agents can navigate large context through indexes, summaries, and decision records.",
     "developerName": "Oleg Gaidukov",
     "category": "Coding",
     "capabilities": [

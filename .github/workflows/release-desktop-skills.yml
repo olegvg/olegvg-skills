@@ -28,12 +28,14 @@ jobs:
           TAG="${{ inputs.tag || github.ref_name }}"
           VERSION="${TAG#v}"
 
-          # Skills shipped to Claude Desktop. kb-distill is intentionally excluded.
-          SKILLS=(kb-ingest kb-query kb-lint kb-check-drift)
+          # Skills shipped to Claude Desktop. kb-record-decision, kb-maintain,
+          # kb-demo, and kb-bench are intentionally excluded — they depend on
+          # plan-document layout, orchestration, or the bundled notes-corpus.
+          SKILLS=(kb-build kb-query kb-refresh kb-check-drift)
 
           # Templates each skill needs copied alongside its SKILL.md.
           declare -A TEMPLATES=(
-            [kb-ingest]="_root.template.md index.template.md summary.template.md .kb-state.template.json"
+            [kb-build]="_root.template.md index.template.md summary.template.md .kb-state.template.json"
           )
 
           mkdir -p dist staging
