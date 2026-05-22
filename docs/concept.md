@@ -30,6 +30,16 @@ Auto-doc tools group by directory. That fails because agents receive questions b
 
 Automatic doc regeneration on every commit produces two failure modes: stale docs (if refresh is slow) and irrelevant churn (if refresh is eager). Manual, trigger-based refresh with a separate read-only drift-checker gives the user explicit control. See [refresh-strategy.md](refresh-strategy.md).
 
+## Summary stability contract
+
+A summary survives normal edits to its source files only if its prose does not cite line numbers. Refresh costs scale with how much of the summary has to change when a source file is edited — and most edits shift line numbers without changing what the file *does*. The contract:
+
+- **Reference code by symbol name in the body.** Functions, classes, modules, constants — by name in prose (`run_analysis`, `BillingService.refund`). Renames are caught by grep; line shifts are not events.
+- **Pin precise line numbers only in `## References` at the end of the file.** Group them by symbol or section so a refresh can patch one block instead of rewriting paragraphs.
+- **No inline `file.ext:123` citations in the body.** They become wrong the moment the next commit touches that file.
+
+This is enforceable by convention, not by code. It is the single biggest determinant of refresh cost on a maturing corpus — when prose cites lines everywhere, refresh becomes a full rewrite; when prose cites symbols, refresh becomes a targeted patch on References. See [templates/summary.template.md](../templates/summary.template.md) for the shape.
+
 ## Why plans are excluded but decisions are included
 
 Plans (`docs/plans/**` and similar timestamped journals) are operational artifacts: steps, drafts, abandoned branches, debate about alternatives. 90% of a plan's content is noise to anyone who didn't execute it. Ingesting plans into the KB produces muddled summaries that mix current state with historical intent.
