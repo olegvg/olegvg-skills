@@ -14,7 +14,15 @@
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
-      }
+      },
+      "skills": [
+        "./skills/kb-build",
+        "./skills/kb-query",
+        "./skills/kb-refresh",
+        "./skills/kb-check-drift",
+        "./skills/kb-record-decision",
+        "./skills/kb-maintain"
+      ]
     }
   ]
 }

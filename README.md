@@ -7,11 +7,31 @@ A Claude Code and Codex plugin that packages the three-layer knowledge base patt
 ## What's inside
 
 - **Skills** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`. The pattern codified.
-- **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Thin wrappers over the skills.
+- **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Thin wrappers over the skills. *(Claude Code only — installed via the plugin pathway, not via `npx skills add`.)*
 - **Templates** — starter shapes for indexes, summaries, decisions, `_root.md`, state. See [templates/README.md](templates/README.md) for manual-build steps.
 - **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [refresh strategy](docs/refresh-strategy.md).
 
 ## Install
+
+### Any agent via `npx skills add` (vercel-labs/skills CLI)
+
+The six runtime skills follow the [agentskills.io](https://agentskills.io) spec and can be installed into 50+ agents through the [`skills` CLI](https://github.com/vercel-labs/skills):
+
+```bash
+# List what's available in the repo
+npx skills add olegvg/kb-for-agents --list
+
+# Install everything to your detected agents (project scope)
+npx skills add olegvg/kb-for-agents
+
+# Install one skill into Claude Code globally
+npx skills add olegvg/kb-for-agents --skill kb-query -a claude-code -g -y
+
+# Install across multiple agents at once
+npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
+```
+
+This pathway installs **skills only**, not slash commands. The Claude Code `/kb-*` commands are available only via the `/plugin install` route below. Skills are still auto-invoked by trigger phrases — see each skill's `description` for the English and Russian phrases that activate it.
 
 ### Claude Code (full plugin)
 
@@ -20,7 +40,7 @@ A Claude Code and Codex plugin that packages the three-layer knowledge base patt
 /plugin install kb-for-agents@kb-for-agents
 ```
 
-Installs every skill and slash command.
+Installs every skill and slash command. Use this path when you want the `/kb-*` commands alongside the skills.
 
 ### Codex marketplace
 

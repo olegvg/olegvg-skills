@@ -9,8 +9,12 @@ A Claude Code and Codex plugin — **markdown only, no build system, no test sui
 Install locally to dogfood changes:
 
 ```
+# Claude Code (plugin — skills + slash commands)
 /plugin marketplace add olegvg/kb-for-agents
 /plugin install kb-for-agents@kb-for-agents
+
+# Any agent (skills only, via vercel-labs/skills CLI)
+npx skills add olegvg/kb-for-agents
 ```
 
 ## Critical architectural invariant
@@ -26,6 +30,19 @@ Install locally to dogfood changes:
 Plus **decisions** (`.kb/decisions/*.md`) — distilled records from completed plans. Decisions are NOT a fourth layer: they are referenced from the summaries they affect via `## Key decisions` sections, never listed as a top-level area in `_root.md`. The agent reaches a decision by navigating indexes → summary → following a reference.
 
 Why three layers: progressive disclosure. See [docs/concept.md](docs/concept.md).
+
+## Two install pathways, one source of truth
+
+The runtime skills under `skills/` are the source of truth. They install through:
+
+1. `/plugin install kb-for-agents@kb-for-agents` — Claude Code plugin pathway. Installs skills **and** the slash commands under `commands/`. This is the dogfood path.
+2. `npx skills add olegvg/kb-for-agents` — [vercel-labs/skills](https://github.com/vercel-labs/skills) CLI pathway. Installs skills into any of 50+ agents (Claude Code, Codex, Cursor, OpenCode, …). Does **not** install slash commands.
+
+When editing a skill or adding a new one, both pathways must keep working. Two practical consequences:
+
+- A skill's body must not assume a sibling `commands/<x>.md` exists. Refer to sibling skills by name (e.g., "invoke the `kb-refresh` skill"), not by `/<command>` syntax. A parenthetical fallback to `/<command>` is fine.
+- A skill must not depend on assets that don't ship inside its own directory. The `npx skills add` CLI installs `skills/<name>/` only; sibling repo directories (templates, examples, benchmarks) are not bundled. If a skill needs bundled assets and cannot be made standalone, mark it `metadata.internal: true` in the frontmatter — the CLI will then hide it from default discovery (override via `INSTALL_INTERNAL_SKILLS=1`).
+- YAML frontmatter must be valid under strict YAML 1.2. Avoid unquoted `: ` (colon-space) inside `description` values — strict parsers (such as the one the `skills` CLI uses) treat it as a key-value separator and drop the skill. Claude Code's parser is lenient and will still load it, so this fails silently on the cross-agent install path. Use `—` or rephrase to remove `: `.
 
 ## Repo layout
 
@@ -60,10 +77,12 @@ The `kb-check-drift` / `kb-refresh` split is deliberate — drift detection is r
 
 ## When adding a new skill
 
-1. Create `skills/<name>/SKILL.md` with frontmatter (`name`, `description` with trigger phrases).
+1. Create `skills/<name>/SKILL.md` with frontmatter (`name`, `description` with trigger phrases). Keep `description` free of unquoted `: ` to stay parseable by strict YAML.
 2. Create `commands/<name>.md` as a thin wrapper invoking the skill with `$ARGUMENTS`.
-3. Update the "What's inside" and "Quickstart" sections in [README.md](README.md).
+3. Update the "What's inside" and "Quickstart" sections in [README.md](README.md) and [README.ru.md](README.ru.md).
 4. If the skill represents a new pattern concept, add rationale to `docs/` — don't bury it only in the skill file.
+5. Add the new skill to the `skills` array in `.claude-plugin/marketplace.json` so plugin-manifest discovery sees it explicitly.
+6. If the skill depends on assets bundled inside this repo (e.g., demo corpora, benchmarks), set `metadata.internal: true` in its frontmatter so `npx skills add` does not expose a broken standalone skill.
 
 ## Verifying changes
 
@@ -72,4 +91,4 @@ No automated tests. Verification is by reading:
 - Do the commands still one-line-wrap the skills?
 - Does the README's Quickstart still work against a throwaway corpus?
 
-For behavior changes, dogfood against a real corpus via `/plugin install` before committing.
+For behavior changes, dogfood against a real corpus via `/plugin install` before committing. Also run `npx skills add ./ --list` to confirm every runtime skill is still picked up by the cross-agent CLI — strict YAML parse errors only surface there.

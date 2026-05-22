@@ -1,6 +1,6 @@
 ---
 name: kb-maintain
-description: Use when the user wants a guided maintenance pass over .kb/: check drift, choose refresh paths, and optionally record shipped decisions. Orchestrates kb-check-drift, kb-refresh, and kb-record-decision without hiding write boundaries. Triggers on "maintain the kb", "update and record decisions", "обслужить kb", "проверить и обновить базу знаний".
+description: Use when the user wants a guided maintenance pass over .kb/ — check drift, choose refresh paths, and optionally record shipped decisions. Orchestrates kb-check-drift, kb-refresh, and kb-record-decision without hiding write boundaries. Triggers on "maintain the kb", "update and record decisions", "обслужить kb", "проверить и обновить базу знаний".
 ---
 
 # kb-maintain — Guided KB Maintenance Flow
@@ -23,7 +23,7 @@ If the user's intent is ambiguous, ask one short clarification before writing an
 
 ### 1. Check state and drift
 
-If `.kb/` does not exist, stop and suggest `/kb-build`.
+If `.kb/` does not exist, stop and suggest invoking the `kb-build` skill (or `/kb-build` if the user has the Claude Code plugin installed).
 
 Invoke `kb-check-drift` first unless the user explicitly supplied a narrow path and asked to refresh it immediately. The drift report is read-only and gives the user a maintenance menu.
 
@@ -31,15 +31,15 @@ Invoke `kb-check-drift` first unless the user explicitly supplied a narrow path 
 
 Turn the drift report into a short ordered plan:
 
-1. Refresh candidates: `/kb-refresh <path>` commands.
-2. Decision candidates: `/kb-record-decision <plan-path>` commands.
+1. Refresh candidates: invoke the `kb-refresh` skill with `<path>`.
+2. Decision candidates: invoke the `kb-record-decision` skill with `<plan-path>`.
 3. Any hard flags that should block work until the user resolves them.
 
 Ask the user to approve the plan before invoking any writing skill.
 
 ### 3. Run approved refreshes
 
-For each approved path, invoke `kb-refresh <path>`.
+For each approved path, invoke the `kb-refresh` skill with `<path>` as input.
 
 Rules:
 
@@ -49,7 +49,7 @@ Rules:
 
 ### 4. Run approved decision records
 
-For each approved completed plan, invoke `kb-record-decision <plan-path>`.
+For each approved completed plan, invoke the `kb-record-decision` skill with `<plan-path>` as input.
 
 Rules:
 

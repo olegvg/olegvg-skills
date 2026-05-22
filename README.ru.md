@@ -7,11 +7,31 @@
 ## Что внутри
 
 - **Навыки (skills)** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`. Паттерн, закреплённый в коде.
-- **Команды** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Тонкие обёртки над навыками.
+- **Команды** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Тонкие обёртки над навыками. *(Только Claude Code — устанавливаются через плагин, не через `npx skills add`.)*
 - **Шаблоны** — стартовые заготовки для индексов, саммари, решений, `_root.md`, состояния. Шаги для ручной сборки см. в [templates/README.md](templates/README.md).
 - **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия обновления](docs/refresh-strategy.md).
 
 ## Установка
+
+### Любой агент через `npx skills add` (vercel-labs/skills CLI)
+
+Шесть runtime-навыков соответствуют спецификации [agentskills.io](https://agentskills.io) и устанавливаются в 50+ агентов через [`skills` CLI](https://github.com/vercel-labs/skills):
+
+```bash
+# Посмотреть, какие навыки доступны в репозитории
+npx skills add olegvg/kb-for-agents --list
+
+# Установить всё в обнаруженные агенты (на проект)
+npx skills add olegvg/kb-for-agents
+
+# Установить один навык в Claude Code глобально
+npx skills add olegvg/kb-for-agents --skill kb-query -a claude-code -g -y
+
+# Установить сразу в несколько агентов
+npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
+```
+
+Этот путь устанавливает **только навыки**, без слэш-команд. Команды `/kb-*` Claude Code доступны только через `/plugin install` ниже. Навыки всё равно срабатывают по триггер-фразам — см. поле `description` каждого навыка для русских и английских фраз.
 
 ### Claude Code (плагин целиком)
 
@@ -20,7 +40,7 @@
 /plugin install kb-for-agents@kb-for-agents
 ```
 
-Ставит все навыки и слэш-команды.
+Ставит все навыки и слэш-команды. Используй этот путь, если нужны команды `/kb-*` вместе с навыками.
 
 ### Codex marketplace
 
