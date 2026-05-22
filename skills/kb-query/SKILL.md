@@ -9,7 +9,7 @@ description: Use when answering a question against a .kb/ knowledge base. Enforc
 
 User asks a question about a corpus that has a `.kb/` directory. The knowledge base exists — you're reading it, not building it.
 
-If `.kb/` does not exist, suggest `/kb-ingest` and stop.
+If `.kb/` does not exist, suggest `/kb-build` and stop.
 
 ## Input
 
@@ -48,17 +48,17 @@ Answer the question using what you read. Cite sources (file paths, line numbers)
 ## Discipline
 
 - **Always `_root.md` first on cold start.** Observable in traces. If you skipped it, you broke the pattern.
-- **Bounded summary reads.** If you find yourself wanting to open 5+ summaries, stop. Either the question is too broad (ask the user to narrow) or an index is pointing at too many leaves (lint candidate).
+- **Bounded summary reads.** If you find yourself wanting to open 5+ summaries, stop. Either the question is too broad (ask the user to narrow) or an index is pointing at too many leaves (refresh candidate).
 - **If nothing matches, say so.** Don't hallucinate an answer. "The KB has no coverage for this — the answer isn't here" is valid.
 
-## When to suggest re-lint
+## When to suggest refresh
 
 If during a query you discover:
 - A summary references a file that no longer exists.
 - An index points at a summary that's missing.
 - The content in a summary contradicts what's in the sources.
 
-…suggest `/kb-check-drift` to the user before trusting the answer.
+...suggest `/kb-check-drift` to the user before trusting the answer.
 
 ## References
 

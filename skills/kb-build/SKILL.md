@@ -1,9 +1,9 @@
 ---
-name: kb-ingest
-description: Use when building a fresh three-layer knowledge base for a corpus. Walks the corpus, groups files by semantic domain, writes summaries and indexes into .kb/. Triggers on "ingest the corpus", "build the knowledge base", "создать kb", "сгенерировать базу знаний".
+name: kb-build
+description: Use when building a fresh three-layer knowledge base for a corpus. Walks the corpus, groups files by semantic domain, writes summaries and indexes into .kb/. Triggers on "build the knowledge base", "map this corpus", "ingest the corpus", "создать kb", "сгенерировать базу знаний".
 ---
 
-# kb-ingest — Build a Three-Layer Knowledge Base
+# kb-build — Build a Three-Layer Knowledge Base
 
 ## When to use
 
@@ -23,15 +23,15 @@ If `.kb/` already exists at the target path, STOP. Ask the user whether to overw
 ├── indexes/<area>.md       (one per semantic domain)
 ├── summaries/<area>/overview.md
 ├── summaries/<area>/<leaf>.md
-├── decisions/              (empty directory — populated only by /kb-distill)
+├── decisions/              (empty directory — populated only by /kb-record-decision)
 └── .kb-state.json
 ```
 
 ## Default exclusions
 
-Timestamp-based journals and vendored directories are excluded by default. These are not knowledge — they are operational noise that muddles semantic grouping. Never ingest:
+Timestamp-based journals and vendored directories are excluded by default. These are not knowledge — they are operational noise that muddles semantic grouping. Never build from:
 
-- `docs/plans/**`, `docs/specs/**` (dated planning artifacts — distill via `/kb-distill` instead)
+- `docs/plans/**`, `docs/specs/**` (dated planning artifacts — record decisions via `/kb-record-decision` instead)
 - `**/CHANGELOG.md` (git log is authoritative)
 - `node_modules/**`, `.venv/**`, `target/**`, `build/**`, `dist/**`, `.git/**`
 - `temp/**`, `tmp/**`, any directory whose name is a date/timestamp pattern at the corpus root
@@ -40,7 +40,7 @@ The user may override with `--include <path>` when they genuinely want a normall
 
 ## Workflow
 
-Ingest runs in **three passes**. This structure is deliberate: it keeps the main agent's context bounded regardless of corpus size, and it parallelizes the expensive pass. Do NOT collapse it into a single pass even on small corpora — the workflow is the teaching.
+Build runs in **three passes**. This structure is deliberate: it keeps the main agent's context bounded regardless of corpus size, and it parallelizes the expensive pass. Do NOT collapse it into a single pass even on small corpora — the workflow is the teaching.
 
 ### Pass 1 — Survey and group (main agent, light context)
 
@@ -64,7 +64,7 @@ Grouping rule: a domain is a set of files someone would want to understand toget
 
 Name each domain with a short kebab-case slug. 4–10 domains is typical. Fewer than 3 means you're under-segmenting; more than 15 means over-segmenting.
 
-### Pass 2 — Deep ingest per domain (dispatch subagents)
+### Pass 2 — Deep build per domain (dispatch subagents)
 
 For each domain identified in Pass 1, dispatch a subagent via the Task tool. The subagent starts with a fresh context and sees only its slice of the corpus.
 
@@ -118,7 +118,7 @@ Create `.kb/indexes/_root.md` following `templates/_root.template.md`.
 mkdir -p <corpus-root>/.kb/decisions
 ```
 
-This is empty on fresh ingest. It is populated by `/kb-distill` when the user asks to extract a decision record from a completed plan. Never populate it during ingest — ingest looks at current state, not history.
+This is empty on fresh build. It is populated by `/kb-record-decision` when the user asks to extract a decision record from a completed plan. Never populate it during build — build looks at current state, not history.
 
 #### 3d. Write `.kb-state.json`
 
@@ -131,11 +131,11 @@ date -u +"%Y-%m-%dT%H:%M:%SZ"
 
 Write to `.kb/.kb-state.json` with `schema_version: 1`. Shape: see `templates/.kb-state.template.json`.
 
-If the corpus is not a git repo, set `last_linted_sha` to the string `"no-git"` and note this to the user — `/kb-lint` and `/kb-check-drift` will not work until the corpus is in git.
+If the corpus is not a git repo, set `last_linted_sha` to the string `"no-git"` and note this to the user — `/kb-refresh` and `/kb-check-drift` will not work until the corpus is in git.
 
 ### Fallback when subagents are unavailable
 
-If the caller's environment cannot dispatch subagents, run ingest iteratively across separate Claude Code sessions, one per domain: `/kb-ingest <domain-path>`. Each session does a narrow Pass 2 for one domain and writes its own area index. A final session runs Pass 3 to write `_root.md` and `.kb-state.json`. Slower and less clean than the subagent path, but works.
+If the caller's environment cannot dispatch subagents, run build iteratively across separate Claude Code sessions, one per domain: `/kb-build <domain-path>`. Each session does a narrow Pass 2 for one domain and writes its own area index. A final session runs Pass 3 to write `_root.md` and `.kb-state.json`. Slower and less clean than the subagent path, but works.
 
 ## Discipline
 
@@ -145,7 +145,7 @@ If the caller's environment cannot dispatch subagents, run ingest iteratively ac
 
 ## Common failure modes
 
-- **Ingesting by directory** — produces indexes that mirror `ls` and add no navigational value. Re-group by task surface.
+- **Building by directory** — produces indexes that mirror `ls` and add no navigational value. Re-group by task surface.
 - **Overlong indexes** — usually the area should be split into two.
 - **Empty summaries** — if a leaf has nothing to say beyond a pointer, it's an index entry, not a summary.
 - **Reading full file bodies in Pass 1 or Pass 3** — blows the main agent's context. Pass 1 reads headers only; Pass 3 reads only briefs. All full-file reading happens inside Pass 2 subagents.

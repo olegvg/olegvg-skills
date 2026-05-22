@@ -49,9 +49,9 @@ Wait for the user to choose 1–5 (or quit).
   and print results inline rather than persisting.
 
 - **4:** Confirm: "This will delete `examples/notes-corpus/.kb/` and
-  rebuild it via `/kb-ingest`. The pre-built KB is the expected
+  rebuild it via `/kb-build`. The pre-built KB is the expected
   default state. Continue? (y/N)". On `y`, `rm -rf
-  examples/notes-corpus/.kb/` then invoke `kb-ingest` on the corpus.
+  examples/notes-corpus/.kb/` then invoke `kb-build` on the corpus.
   On `N` or anything else, abort.
 
 - **5:** Invoke `kb-bench` with no arguments (runs all tasks).
@@ -63,7 +63,7 @@ Offer to return to the menu for another option, or stop.
 ## Hard limits
 
 - Operates only on `examples/notes-corpus/`. Never accept a different
-  corpus path — that's what `/kb-query`, `/kb-ingest`, `/kb-bench`
+  corpus path — that's what `/kb-query`, `/kb-build`, `/kb-bench`
   are for.
 - Never write outside `examples/notes-corpus/` or
   `benchmarks/notes-corpus/runs/`.

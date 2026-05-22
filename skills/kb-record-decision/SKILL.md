@@ -1,15 +1,15 @@
 ---
-name: kb-distill
-description: Use when a plan is complete and its key decisions should be preserved as durable knowledge. Extracts a decision record from a completed plan, writes it to .kb/decisions/, and links it from affected summaries. Triggers on "distill the plan", "extract decisions", "создать decision record", "сохранить решения из плана".
+name: kb-record-decision
+description: Use when a completed plan's shipped decisions should be preserved as durable knowledge. Extracts a decision record from a completed plan, writes it to .kb/decisions/, and links it from affected summaries. Triggers on "record the decision", "distill the plan", "extract decisions", "создать decision record", "сохранить решения из плана".
 ---
 
-# kb-distill — Extract Decision Records from Completed Plans
+# kb-record-decision — Record Shipped Decisions from Completed Plans
 
 ## When to use
 
 A plan in `docs/plans/<timestamp>/plan-<slug>.md` (or similar) is complete — the work shipped, the checklist is ticked, the code reflects the decisions made. The user wants the durable choices preserved in the KB without carrying the operational noise of the plan itself.
 
-Manual, on-demand. Never automatic. Never invoked by ingest.
+Manual, on-demand. Never automatic. Never invoked by build.
 
 ## Input
 
@@ -33,11 +33,11 @@ Read `<plan-path>`. If a sibling `checklist-*.md` exists, read that too. Extract
 
 ### 2. Confirm the plan is complete
 
-Before distilling, verify:
+Before recording, verify:
 - Checklist items are all ticked (if a checklist exists).
 - Git log shows commits implementing the plan have landed.
 
-If neither holds, warn the user. A plan distilled before it's actually done captures intent, not decision. Intent belongs in the plan; decisions belong in `.kb/decisions/` only once they've shipped.
+If neither holds, warn the user. A plan recorded before it's actually done captures intent, not decision. Intent belongs in the plan; decisions belong in `.kb/decisions/` only once they've shipped.
 
 ### 3. Draft the decision record
 
@@ -52,7 +52,7 @@ Use `templates/decision.template.md` as shape. Fields:
 - **Affected areas** — list of `.kb/summaries/<area>/<leaf>.md` paths this decision shapes.
 - **Source plan** — path to the original plan file.
 
-Target 150–300 words total. If it's longer, you haven't distilled — you've copied.
+Target 150–300 words total. If it's longer, you haven't recorded a decision — you've copied the plan.
 
 ### 4. Propose target summaries
 
@@ -74,16 +74,25 @@ For each confirmed summary, append or update a `## Key decisions` section with a
 
 If the section already exists, append the new entry with most-recent-first ordering.
 
-### 7. Report
+### 7. Check refresh follow-up
+
+This skill never advances `.kb/.kb-state.json`. After updating summaries, check whether the source code or docs affected by the plan are newer than the current refresh watermark (`last_linted_sha`).
+
+- If the plan's affected code paths have not been refreshed, recommend `/kb-refresh <affected-path>`.
+- If `/kb-refresh` already covered the affected path, say so.
+- Do not run `/kb-refresh` automatically unless the user explicitly asked for the whole maintenance flow.
+
+### 8. Report
 
 Tell the user:
 - Record written at `.kb/decisions/<path>`.
 - Summaries updated (list paths).
+- Refresh follow-up needed, if any, with `/kb-refresh <affected-path>`.
 - Plan file left untouched.
 
 ## Discipline
 
-- **Distill shipped decisions, not intentions.** Code must reflect the decision before the record is written.
+- **Record shipped decisions, not intentions.** Code must reflect the decision before the record is written.
 - **One decision record per decision.** If the plan covered two unrelated choices, write two records. The KB separates them even when the plan doesn't.
 - **Records stand alone.** Do not write "see plan X for details". Plans may be archived or deleted; the record must remain complete.
 - **Never modify the plan.** Plans are historical artifacts. The record is a distilled copy, not a replacement.
