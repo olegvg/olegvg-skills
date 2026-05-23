@@ -45,13 +45,52 @@ git -C <corpus-root> diff --name-only --diff-filter=U
 
 **Action.** Stop. Ask the user to resolve the merge first. A refresh that runs on an unresolved tree produces summaries that match neither side of the conflict.
 
-## Refresh scope produced massive diff
+## Refresh scope exceeds budget (hard gate)
 
-The diff is so large (e.g., 50+ changed files, or a sweeping refactor) that one `kb-refresh` invocation cannot summarize the changes reviewably.
+The diff is large enough that the main agent cannot patch all affected summaries inline without running out of context. This is the failure mode that ends in "hit usage limit" — the agent reads source files, opens summaries, makes Edits, and never finishes because each step adds to the running context.
 
-**Signal.** File count from `git diff --name-only <base>..HEAD -- <path> | wc -l` is unusually high.
+The `## Scope budget` table in `SKILL.md` defines the thresholds. Step 4.5 of the workflow checks them and routes accordingly. This failure mode is the **hard-threshold** branch of that routing.
 
-**Action.** Tell the user. Suggest splitting `<path>` into narrower scopes — e.g., `src/auth/` and `src/billing/` instead of `src/`. The path arg is the user's lever; the skill should not silently split scope on their behalf.
+**Signal.** Any of these after step 3 (diff) and step 4 (grep):
+
+```bash
+# changed source files (excluding .kb/ itself)
+git -C <corpus-root> diff --name-only <base>..HEAD -- <path> | grep -v '^\.kb/' | wc -l   # >= 25
+
+# total diff size
+git -C <corpus-root> diff --shortstat <base>..HEAD -- <path>                              # >= 3000 lines
+
+# affected summaries
+grep -rl ... .kb/summaries/ | wc -l                                                        # >= 15
+
+# distinct KB areas touched
+grep -rl ... .kb/summaries/ | awk -F/ '{print $3}' | sort -u | wc -l                       # >= 5
+```
+
+**Action.** STOP. Do **not** fall back to subagent dispatch — that helps the soft band, not this one. Report to the user:
+
+- The counts that tripped.
+- The list of touched KB areas.
+- Suggested narrower invocations, one per area or sub-area, e.g.:
+  `/kb-refresh src/auth/`, `/kb-refresh src/billing/`, `/kb-refresh src/search/`.
+- If structural change is large in a specific area (new top-level concepts, renamed modules, new subdomains), recommend `kb-build` for that area instead — refresh is for patching, not rewriting.
+
+Do not silently split scope on the user's behalf and do not advance state. The path arg is the user's lever; this skill enforces the budget but does not redraw the scope.
+
+## Bare invocation with no scope
+
+User ran `/kb-refresh` with no path argument and the harness is in a non-interactive mode (auto, agentic loop), so the agent cannot ask interactively.
+
+**Antipattern.** Inferring scope from `git status`, picking "the whole corpus", or running a diff from the watermark to HEAD over everything. All three end in the scope-budget failure above, except worse — because the agent has already spent context discovering the scope before it knows the scope is too big.
+
+**Action.** Route through step 0 of the workflow:
+
+1. Invoke `kb-check-drift` with `--write-artifact`. This is read-only.
+2. Surface the drift report's grouped refresh candidates to the user as a structured proposal (one-line per candidate path, with the reason).
+3. Wait for an explicit path list from the user. Even in auto mode, surface the proposal and ask — auto mode means "don't ask trivial clarifications", not "make architecturally expensive choices alone".
+4. Once the user replies, continue with step 1 of the workflow using the approved path list.
+
+If the harness genuinely cannot surface a question, **stop and report** — write the drift report's recommended commands to stdout and exit. Do not pick a scope yourself.
 
 ## Refresh would touch a summary outside the scope
 
