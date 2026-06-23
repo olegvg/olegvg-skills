@@ -31,7 +31,7 @@ jobs:
           # Skills shipped to Claude Desktop. kb-record-decision and
           # kb-maintain are intentionally excluded — they depend on
           # plan-document layout or orchestration.
-          SKILLS=(kb-build kb-query kb-refresh kb-check-drift)
+          SKILLS=(kb-build kb-query kb-refresh kb-check-drift simplify-code)
 
           # Templates each skill needs copied alongside its SKILL.md.
           declare -A TEMPLATES=(

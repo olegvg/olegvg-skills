@@ -1,6 +1,8 @@
 # vercel-labs/skills Installer Support — Implementation Plan (executed 2026-05-22)
 
 > **Status:** Executed. This document records what was done and why; see git history for the actual changes.
+>
+> **Superseded install-surface note:** The repository was later reorganized into grouped install surfaces on 2026-06-23. Current grouping lives in `.claude-plugin/marketplace.json`, `skills.sh.json`, [README.md](../../README.md), and [CLAUDE.md](../../CLAUDE.md). The historical "six skills" counts below describe the 2026-05-22 state, before `simplify-code`, `core-dev`, and the `olegvg-skills` umbrella existed.
 
 **Goal:** Make `npx skills add olegvg/kb-for-agents` install this plugin's runtime skills cleanly across every agent supported by [vercel-labs/skills](https://github.com/vercel-labs/skills), without breaking the existing Claude Code plugin or Codex marketplace paths.
 

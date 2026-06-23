@@ -1,31 +1,45 @@
-# kb-for-agents
+# OlegVG Skills
 
 [Русская версия](README.ru.md)
 
-A Claude Code and Codex plugin that packages the three-layer knowledge base pattern as installable skills and slash commands. Point it at a codebase or notes archive and get the progressive-disclosure workflow described in [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/).
+A grouped personal skill repository for Claude Code, Codex, and agents supported by the Vercel Skills CLI. It currently ships two installable groups: `kb-for-agents` for the three-layer knowledge base pattern described in [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/) and `core-dev` for portable development workflows.
 
 ## What's inside
 
-- **Skills** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`. The pattern codified.
+- **`kb-for-agents` group** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
+- **`core-dev` group** — `simplify-code`, a portable behavior-preserving cleanup skill adapted from Claude Code's `/simplify` workflow.
+- **`olegvg-skills` umbrella** — all groups in this repository.
 - **Commands** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Thin wrappers over the skills. *(Claude Code only — installed via the plugin pathway, not via `npx skills add`.)*
 - **Templates** — starter shapes for indexes, summaries, decisions, `_root.md`, state. See [templates/README.md](templates/README.md) for manual-build steps.
 - **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [refresh strategy](docs/refresh-strategy.md).
 
 ## Install
 
-### Any agent via `npx skills add` (vercel-labs/skills CLI)
+### Any agent via `npx skills add` (Vercel Skills CLI)
 
-The six runtime skills follow the [agentskills.io](https://agentskills.io) spec and can be installed into 50+ agents through the [`skills` CLI](https://github.com/vercel-labs/skills):
+The runtime skills follow the [agentskills.io](https://agentskills.io) spec and can be installed into Claude Code, Codex, Cursor, and other agents through the [`skills` CLI](https://github.com/vercel-labs/skills). The interactive picker shows the concrete groups `kb-for-agents` and `core-dev`; select both groups to install everything. For non-interactive installs, use explicit `--skill` selections. The umbrella install is `--skill '*'` because the CLI currently assigns each skill to one visible group.
 
 ```bash
-# List what's available in the repo
+# List grouped skills in the repo
 npx skills add olegvg/kb-for-agents --list
 
-# Install everything to your detected agents (project scope)
-npx skills add olegvg/kb-for-agents
+# Install the kb-for-agents group
+npx skills add olegvg/kb-for-agents \
+  --skill kb-build \
+  --skill kb-query \
+  --skill kb-refresh \
+  --skill kb-check-drift \
+  --skill kb-record-decision \
+  --skill kb-maintain
 
-# Install one skill into Claude Code globally
-npx skills add olegvg/kb-for-agents --skill kb-query -a claude-code -g -y
+# Install the core-dev group
+npx skills add olegvg/kb-for-agents --skill simplify-code
+
+# Install the umbrella package non-interactively
+npx skills add olegvg/kb-for-agents --skill '*'
+
+# Install core-dev into Codex globally
+npx skills add olegvg/kb-for-agents --skill simplify-code -a codex -g -y
 
 # Install across multiple agents at once
 npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
@@ -33,23 +47,27 @@ npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
 
 This pathway installs **skills only**, not slash commands. The Claude Code `/kb-*` commands are available only via the `/plugin install` route below. Skills are still auto-invoked by trigger phrases — see each skill's `description` for the English and Russian phrases that activate it.
 
-### Claude Code (full plugin)
+### Claude Code plugin marketplace
 
 ```
 /plugin marketplace add olegvg/kb-for-agents
-/plugin install kb-for-agents@kb-for-agents
+/plugin install kb-for-agents@olegvg-skills
+/plugin install core-dev@olegvg-skills
+/plugin install olegvg-skills@olegvg-skills
 ```
 
-Installs every skill and slash command. Use this path when you want the `/kb-*` commands alongside the skills.
+Use `kb-for-agents` when you want the `/kb-*` commands alongside the KB skills, `core-dev` for the portable cleanup skill, or `olegvg-skills` for everything in this repository.
+
+Unlike the Vercel Skills CLI picker, the Claude Code plugin marketplace has a real umbrella install target: `olegvg-skills@olegvg-skills`.
 
 ### Codex marketplace
 
-This repository is also packaged for Codex:
+This repository is also packaged for Codex as the umbrella `olegvg-skills` plugin:
 
 - `.codex-plugin/plugin.json` — Codex plugin manifest.
 - `.agents/plugins/marketplace.json` — self-hosted Codex marketplace index pointing at this plugin repository.
 
-Codex loads the bundled skills from `skills/`. The `commands/` directory is kept for Claude Code slash-command compatibility.
+Codex loads the bundled skills from `skills/`. Use the Vercel Skills CLI with `-a codex` for group-scoped Codex installs; the Codex marketplace entry is intentionally the umbrella package because one Codex plugin manifest describes one plugin root. The `commands/` directory is kept for Claude Code slash-command compatibility.
 
 ### Claude Desktop (individual skills)
 
@@ -59,6 +77,7 @@ Claude Desktop doesn't load Claude Code plugins, so runtime skills are published
 - `kb-query-<version>.zip`
 - `kb-refresh-<version>.zip`
 - `kb-check-drift-<version>.zip`
+- `simplify-code-<version>.zip`
 
 `SHA256SUMS` is attached to each release — verify with `sha256sum -c SHA256SUMS`.
 

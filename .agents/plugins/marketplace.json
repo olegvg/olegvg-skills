@@ -1,11 +1,11 @@
 {
-  "name": "kb-for-agents",
+  "name": "olegvg-skills",
   "interface": {
-    "displayName": "KB for Agents"
+    "displayName": "OlegVG Skills"
   },
   "plugins": [
     {
-      "name": "kb-for-agents",
+      "name": "olegvg-skills",
       "source": {
         "source": "local",
         "path": "./"

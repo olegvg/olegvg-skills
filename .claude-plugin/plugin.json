@@ -1,7 +1,7 @@
 {
-  "name": "kb-for-agents",
+  "name": "olegvg-skills",
   "version": "0.3.0",
-  "description": "Three-layer knowledge base pattern (sources, summaries, indexes) as installable skills and commands. Progressive-disclosure navigation for agents over codebases and notes archives.",
+  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
   "author": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com"

@@ -1,7 +1,7 @@
 {
-  "name": "kb-for-agents",
+  "name": "olegvg-skills",
   "version": "0.3.0",
-  "description": "Three-layer knowledge base pattern as installable Codex skills. Progressive-disclosure navigation for agents over codebases and notes archives.",
+  "description": "Grouped personal Codex skills for agent workflows: kb-for-agents for three-layer knowledge management and core-dev for portable development cleanup.",
   "author": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com",
@@ -17,13 +17,16 @@
     "documentation",
     "progressive-disclosure",
     "context-management",
-    "codebase-navigation"
+    "codebase-navigation",
+    "core-dev",
+    "code-cleanup",
+    "refactoring"
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "KB for Agents",
-    "shortDescription": "Three-layer knowledge bases for agent navigation",
-    "longDescription": "Build, query, refresh, record decisions, and maintain a three-layer knowledge base inside a codebase or notes corpus so agents can navigate large context through indexes, summaries, and decision records.",
+    "displayName": "OlegVG Skills",
+    "shortDescription": "Grouped skills for KB management and core dev cleanup",
+    "longDescription": "Umbrella package for grouped agent skills. The kb-for-agents group builds, queries, refreshes, records decisions, and maintains a three-layer knowledge base inside a codebase or notes corpus. The core-dev group includes simplify-code for behavior-preserving cleanup of changed code.",
     "developerName": "Oleg Gaidukov",
     "category": "Coding",
     "capabilities": [
@@ -37,7 +40,7 @@
     "defaultPrompt": [
       "Build a KB for this codebase.",
       "Query the project knowledge base.",
-      "Check whether the KB is stale."
+      "Simplify the current diff without changing behavior."
     ],
     "brandColor": "#2563EB",
     "screenshots": []

@@ -1,15 +1,34 @@
 {
-  "name": "kb-for-agents",
-  "description": "Self-hosted marketplace for the kb-for-agents plugin",
+  "name": "olegvg-skills",
+  "description": "Self-hosted marketplace for grouped OlegVG agent skills",
   "owner": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com"
   },
   "plugins": [
     {
+      "name": "olegvg-skills",
+      "description": "Umbrella package for all grouped OlegVG agent skills",
+      "version": "0.3.0",
+      "source": "./",
+      "author": {
+        "name": "Oleg Gaidukov",
+        "email": "ogaidukov@gmail.com"
+      },
+      "skills": [
+        "./skills/kb-build",
+        "./skills/kb-query",
+        "./skills/kb-refresh",
+        "./skills/kb-check-drift",
+        "./skills/kb-record-decision",
+        "./skills/kb-maintain",
+        "./skills/simplify-code"
+      ]
+    },
+    {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "source": "./",
       "author": {
         "name": "Oleg Gaidukov",
@@ -22,6 +41,19 @@
         "./skills/kb-check-drift",
         "./skills/kb-record-decision",
         "./skills/kb-maintain"
+      ]
+    },
+    {
+      "name": "core-dev",
+      "description": "Portable core development skills for cleanup and implementation hygiene",
+      "version": "0.3.0",
+      "source": "./",
+      "author": {
+        "name": "Oleg Gaidukov",
+        "email": "ogaidukov@gmail.com"
+      },
+      "skills": [
+        "./skills/simplify-code"
       ]
     }
   ]

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "KB for Agents",
+      "description": "Three-layer knowledge base skills for building, querying, refreshing, and maintaining .kb/ inside a corpus.",
+      "skills": [
+        "kb-build",
+        "kb-query",
+        "kb-refresh",
+        "kb-check-drift",
+        "kb-record-decision",
+        "kb-maintain"
+      ]
+    },
+    {
+      "title": "Core Dev",
+      "description": "Portable development workflow skills that are useful outside the KB lifecycle.",
+      "skills": [
+        "simplify-code"
+      ]
+    }
+  ]
+}
