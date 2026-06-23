@@ -1,0 +1,4 @@
+interface:
+  display_name: "Simplify Code"
+  short_description: "Behavior-preserving cleanup review and fixes"
+  default_prompt: "Simplify the current diff without changing behavior."
