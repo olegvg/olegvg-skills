@@ -18,14 +18,14 @@ Install locally to dogfood changes:
 
 ```
 # Claude Code (plugin marketplace — grouped installs)
-/plugin marketplace add olegvg/kb-for-agents
+/plugin marketplace add olegvg/olegvg-skills
 /plugin install kb-for-agents@olegvg-skills
 /plugin install core-dev@olegvg-skills
 /plugin install olegvg-skills@olegvg-skills
 
 # Any agent (skills only, via Vercel Skills CLI)
-npx skills add olegvg/kb-for-agents --list
-npx skills add olegvg/kb-for-agents --skill simplify-code -a codex
+npx skills add olegvg/olegvg-skills --list
+npx skills add olegvg/olegvg-skills --skill simplify-code -a codex
 ```
 
 ## Critical Architectural Invariant
@@ -59,7 +59,7 @@ Why three layers: progressive disclosure. See [docs/concept.md](docs/concept.md)
 The runtime skills under `skills/` are the source of truth. Group membership is metadata layered over those source directories. They install through:
 
 1. `/plugin install <group>@olegvg-skills` — Claude Code plugin pathway. Installs skills **and**, for the KB group, the slash commands under `commands/`. This is the dogfood path.
-2. `npx skills add olegvg/kb-for-agents` — [vercel-labs/skills](https://github.com/vercel-labs/skills) CLI pathway. Installs skills into any of 50+ agents (Claude Code, Codex, Cursor, OpenCode, …). Does **not** install slash commands.
+2. `npx skills add olegvg/olegvg-skills` — [vercel-labs/skills](https://github.com/vercel-labs/skills) CLI pathway. Installs skills into any of 50+ agents (Claude Code, Codex, Cursor, OpenCode, …). Does **not** install slash commands.
 3. Codex marketplace — `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json` expose the umbrella `olegvg-skills` plugin. Use the Vercel Skills CLI with `-a codex` when a Codex install should be group-scoped.
 
 When editing a skill or adding a new one, all install surfaces must keep working. Practical consequences:

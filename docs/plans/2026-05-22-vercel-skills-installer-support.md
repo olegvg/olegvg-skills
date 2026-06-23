@@ -4,7 +4,7 @@
 >
 > **Superseded install-surface note:** The repository was later reorganized into grouped install surfaces on 2026-06-23. Current grouping lives in `.claude-plugin/marketplace.json`, `skills.sh.json`, [README.md](../../README.md), and [CLAUDE.md](../../CLAUDE.md). The historical "six skills" counts below describe the 2026-05-22 state, before `simplify-code`, `core-dev`, and the `olegvg-skills` umbrella existed.
 
-**Goal:** Make `npx skills add olegvg/kb-for-agents` install this plugin's runtime skills cleanly across every agent supported by [vercel-labs/skills](https://github.com/vercel-labs/skills), without breaking the existing Claude Code plugin or Codex marketplace paths.
+**Goal:** Make `npx skills add olegvg/olegvg-skills` install this plugin's runtime skills cleanly across every agent supported by [vercel-labs/skills](https://github.com/vercel-labs/skills), without breaking the existing Claude Code plugin or Codex marketplace paths.
 
 **Architecture:** The vercel-labs/skills CLI discovers `SKILL.md` files at standard paths — first-class is `skills/<name>/SKILL.md`, which we already use. Plugin-manifest discovery also reads `.claude-plugin/marketplace.json` `plugins[].skills` for explicit declarations. The work was: fix one strict-YAML bug, rewrite slash-command syntax in `kb-maintain` so it stays portable, document the third install pathway in READMEs and `CLAUDE.md`, declare skills explicitly in the marketplace manifest, and dogfood the result.
 

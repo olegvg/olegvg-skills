@@ -7,8 +7,8 @@
     "email": "ogaidukov@gmail.com",
     "url": "https://github.com/olegvg"
   },
-  "homepage": "https://github.com/olegvg/kb-for-agents",
-  "repository": "https://github.com/olegvg/kb-for-agents",
+  "homepage": "https://github.com/olegvg/olegvg-skills",
+  "repository": "https://github.com/olegvg/olegvg-skills",
   "license": "MIT",
   "keywords": [
     "knowledge-base",
@@ -34,7 +34,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/olegvg/kb-for-agents",
+    "websiteURL": "https://github.com/olegvg/olegvg-skills",
     "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [

@@ -21,10 +21,10 @@ The runtime skills follow the [agentskills.io](https://agentskills.io) spec and 
 
 ```bash
 # List grouped skills in the repo
-npx skills add olegvg/kb-for-agents --list
+npx skills add olegvg/olegvg-skills --list
 
 # Install the kb-for-agents group
-npx skills add olegvg/kb-for-agents \
+npx skills add olegvg/olegvg-skills \
   --skill kb-build \
   --skill kb-query \
   --skill kb-refresh \
@@ -33,16 +33,16 @@ npx skills add olegvg/kb-for-agents \
   --skill kb-maintain
 
 # Install the core-dev group
-npx skills add olegvg/kb-for-agents --skill simplify-code
+npx skills add olegvg/olegvg-skills --skill simplify-code
 
 # Install the umbrella package non-interactively
-npx skills add olegvg/kb-for-agents --skill '*'
+npx skills add olegvg/olegvg-skills --skill '*'
 
 # Install core-dev into Codex globally
-npx skills add olegvg/kb-for-agents --skill simplify-code -a codex -g -y
+npx skills add olegvg/olegvg-skills --skill simplify-code -a codex -g -y
 
 # Install across multiple agents at once
-npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
+npx skills add olegvg/olegvg-skills -a claude-code -a codex -a cursor
 ```
 
 This pathway installs **skills only**, not slash commands. The Claude Code `/kb-*` commands are available only via the `/plugin install` route below. Skills are still auto-invoked by trigger phrases — see each skill's `description` for the English and Russian phrases that activate it.
@@ -50,7 +50,7 @@ This pathway installs **skills only**, not slash commands. The Claude Code `/kb-
 ### Claude Code plugin marketplace
 
 ```
-/plugin marketplace add olegvg/kb-for-agents
+/plugin marketplace add olegvg/olegvg-skills
 /plugin install kb-for-agents@olegvg-skills
 /plugin install core-dev@olegvg-skills
 /plugin install olegvg-skills@olegvg-skills
@@ -71,7 +71,7 @@ Codex loads the bundled skills from `skills/`. Use the Vercel Skills CLI with `-
 
 ### Claude Desktop (individual skills)
 
-Claude Desktop doesn't load Claude Code plugins, so runtime skills are published as individual zips on the [Releases page](https://github.com/olegvg/kb-for-agents/releases). Download and upload the ones you need via the Claude Desktop skill UI:
+Claude Desktop doesn't load Claude Code plugins, so runtime skills are published as individual zips on the [Releases page](https://github.com/olegvg/olegvg-skills/releases). Download and upload the ones you need via the Claude Desktop skill UI:
 
 - `kb-build-<version>.zip`
 - `kb-query-<version>.zip`

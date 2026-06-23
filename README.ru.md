@@ -21,10 +21,10 @@ Runtime-навыки соответствуют спецификации [agents
 
 ```bash
 # Посмотреть сгруппированные skills в репозитории
-npx skills add olegvg/kb-for-agents --list
+npx skills add olegvg/olegvg-skills --list
 
 # Установить группу kb-for-agents
-npx skills add olegvg/kb-for-agents \
+npx skills add olegvg/olegvg-skills \
   --skill kb-build \
   --skill kb-query \
   --skill kb-refresh \
@@ -33,16 +33,16 @@ npx skills add olegvg/kb-for-agents \
   --skill kb-maintain
 
 # Установить группу core-dev
-npx skills add olegvg/kb-for-agents --skill simplify-code
+npx skills add olegvg/olegvg-skills --skill simplify-code
 
 # Установить umbrella-пакет неинтерактивно
-npx skills add olegvg/kb-for-agents --skill '*'
+npx skills add olegvg/olegvg-skills --skill '*'
 
 # Установить core-dev в Codex глобально
-npx skills add olegvg/kb-for-agents --skill simplify-code -a codex -g -y
+npx skills add olegvg/olegvg-skills --skill simplify-code -a codex -g -y
 
 # Установить сразу в несколько агентов
-npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
+npx skills add olegvg/olegvg-skills -a claude-code -a codex -a cursor
 ```
 
 Этот путь устанавливает **только навыки**, без слэш-команд. Команды `/kb-*` Claude Code доступны только через `/plugin install` ниже. Навыки всё равно срабатывают по триггер-фразам — см. поле `description` каждого навыка для русских и английских фраз.
@@ -50,7 +50,7 @@ npx skills add olegvg/kb-for-agents -a claude-code -a codex -a cursor
 ### Claude Code plugin marketplace
 
 ```
-/plugin marketplace add olegvg/kb-for-agents
+/plugin marketplace add olegvg/olegvg-skills
 /plugin install kb-for-agents@olegvg-skills
 /plugin install core-dev@olegvg-skills
 /plugin install olegvg-skills@olegvg-skills
@@ -71,7 +71,7 @@ Codex загружает навыки из `skills/`. Для установки 
 
 ### Claude Desktop (отдельные навыки)
 
-Claude Desktop не загружает плагины Claude Code, поэтому runtime-навыки выкладываются отдельными zip-архивами на странице [Releases](https://github.com/olegvg/kb-for-agents/releases). Скачай нужные и загрузи через UI навыков Claude Desktop:
+Claude Desktop не загружает плагины Claude Code, поэтому runtime-навыки выкладываются отдельными zip-архивами на странице [Releases](https://github.com/olegvg/olegvg-skills/releases). Скачай нужные и загрузи через UI навыков Claude Desktop:
 
 - `kb-build-<version>.zip`
 - `kb-query-<version>.zip`
