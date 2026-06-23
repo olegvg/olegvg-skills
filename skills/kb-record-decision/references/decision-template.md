@@ -95,4 +95,4 @@ Before writing the record, confirm:
 
 - Total length is 150–300 words. If you went long, the alternatives list usually has stowaways — split into separate records.
 - The "Alternatives considered" list does not silently reintroduce the plan's discussion. Each rejection is one short line; the *why* is enough, the history is noise.
-- The "Affected areas" list points at actual files in `.kb/summaries/` (not future paths). If a summary does not yet exist for an area the decision affects, that is a refresh follow-up — note it in the final report, but do not invent the summary path.
+- The "Affected areas" list names `.kb/summaries/` paths. Prefer actual existing summaries. If a relevant summary does not exist yet, include the intended future summary path, note it as a refresh follow-up in the final report, and do not create placeholder summary files from this skill.

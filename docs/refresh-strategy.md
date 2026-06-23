@@ -4,10 +4,10 @@
 
 The plugin separates **finding drift** from **resolving drift**:
 
-- `/kb-check-drift` — read-only. Surfaces candidates for refresh. Never modifies `.kb/` or `.kb-state.json`.
-- `/kb-refresh <path>` — write. Updates summaries and indexes affected by changes in `<path>`. Advances `.kb-state.json` to the current SHA.
+- `/kb-check-drift` — read-only. Surfaces candidates for refresh. Never modifies `.kb/` content or `.kb/.kb-state.json`.
+- `/kb-refresh <path1> [<path2> ...]` — write. Updates summaries and indexes affected by changes in the approved path scope. Advances `.kb/.kb-state.json` to the current SHA unless invoked with `--no-advance-state`.
 
-Drift stays open until refresh is explicitly run. The agent never silently refreshes the KB.
+Drift stays open until refresh is explicitly run. The agent never silently refreshes the KB. A bare `/kb-refresh` is not a whole-corpus refresh: it first routes through `/kb-check-drift --write-artifact`, surfaces candidate paths, and waits for an approved scope.
 
 ## Why manual, not automated
 
@@ -28,7 +28,7 @@ Running refresh on a cron:
 
 - **Cheap to check** — `/kb-check-drift` is fast (git diff + heuristic). Run it before a query when you want confidence the KB is current.
 - **Explicit gate** — refresh only runs when the user decides drift matters. No surprise rewrites.
-- **Composable** — the user can invoke `/kb-refresh <path>` for just the area they care about, not the whole corpus.
+- **Composable** — the user can invoke `/kb-refresh <path>` for just the area they care about, or pass several paths in one batched refresh.
 
 ## The drift-checker heuristic
 
@@ -37,6 +37,7 @@ Running refresh on a cron:
 - New files above a threshold count (default: 5) in a single area → likely new subdomain.
 - File renames or moves → index references stale.
 - Changes to files referenced by existing indexes → summaries likely stale.
+- Changes to files referenced by existing summaries → summaries likely stale.
 - New top-level directory → area structure may need a new index.
 - Migration / schema files → semantic shifts likely; areas touching data are suspect.
 - Deleted files referenced in `.kb/` → hard flag.
@@ -46,7 +47,7 @@ The heuristic is **policy, not code**. It lives in `skills/kb-check-drift/SKILL.
 
 ## State file
 
-`.kb-state.json` stores:
+`.kb/.kb-state.json` stores:
 
 ```json
 {
@@ -57,9 +58,20 @@ The heuristic is **policy, not code**. It lives in `skills/kb-check-drift/SKILL.
 ```
 
 - `/kb-check-drift` reads this but does not write it.
-- Only `/kb-refresh` writes it, and only after successful refresh. A refresh that fails halfway must not advance state.
+- `/kb-refresh` defaults its base SHA to `last_linted_sha`, unless `--base-sha <sha>` overrides the watermark.
+- Only `/kb-refresh` writes this file, and only after successful refresh. A refresh that fails halfway must not advance state.
 - `/kb-refresh` accepts `--no-advance-state` so an orchestrator can chain multiple writes against a single base SHA and advance state once at the end.
 - `schema_version` is loose intentionally — future versions may add per-area refresh timestamps.
+
+## Scope budget
+
+`kb-refresh` is a scoped patching operation, not a rebuild. After diffing the approved path scope, it counts changed source files, total insertions+deletions, affected `.kb/summaries/**` files, and distinct KB areas touched.
+
+- Below the soft thresholds, the main agent patches summaries inline.
+- Between soft and hard thresholds, refresh dispatches one subagent per affected KB area and keeps index updates in the main agent.
+- At or above a hard threshold, refresh stops and asks the user to narrow the scope or consider `kb-build` for an area that structurally changed.
+
+This gate is part of the context-window contract: a refresh that crosses the hard budget becomes a partial rebuild and should not run in one main-agent pass.
 
 ## Optional drift artifact
 
