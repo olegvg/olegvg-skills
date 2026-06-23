@@ -1,6 +1,6 @@
 {
   "name": "olegvg-skills",
-  "version": "0.3.0",
+  "version": "0.6.0",
   "description": "Grouped personal Codex skills for agent workflows: kb-for-agents for three-layer knowledge management and core-dev for portable development cleanup.",
   "author": {
     "name": "Oleg Gaidukov",

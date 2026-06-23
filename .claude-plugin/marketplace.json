@@ -9,7 +9,7 @@
     {
       "name": "olegvg-skills",
       "description": "Umbrella package for all grouped OlegVG agent skills",
-      "version": "0.3.0",
+      "version": "0.6.0",
       "source": "./",
       "author": {
         "name": "Oleg Gaidukov",
@@ -28,7 +28,7 @@
     {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.3.0",
+      "version": "0.6.0",
       "source": "./",
       "author": {
         "name": "Oleg Gaidukov",
@@ -46,7 +46,7 @@
     {
       "name": "core-dev",
       "description": "Portable core development skills for cleanup and implementation hygiene",
-      "version": "0.3.0",
+      "version": "0.6.0",
       "source": "./",
       "author": {
         "name": "Oleg Gaidukov",
