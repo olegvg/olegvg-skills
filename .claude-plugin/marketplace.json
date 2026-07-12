@@ -9,7 +9,7 @@
     {
       "name": "olegvg-skills",
       "description": "Umbrella package for all grouped OlegVG agent skills",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "source": "./",
       "strict": false,
       "author": {
@@ -37,7 +37,7 @@
     {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "source": "./",
       "strict": false,
       "author": {
@@ -64,7 +64,7 @@
     {
       "name": "core-dev",
       "description": "Portable core development skills for cleanup and implementation hygiene",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "source": "./",
       "strict": false,
       "author": {
