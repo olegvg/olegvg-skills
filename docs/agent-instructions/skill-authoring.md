@@ -23,7 +23,7 @@ Use this before adding or editing skills, groups, command shims, or skill packag
 
 ## Adding a New Group
 
-1. Add a concrete group entry to `.claude-plugin/marketplace.json` with `name`, `description`, `version`, `source`, `author`, and an explicit `skills` array.
+1. Add a concrete group entry to `.claude-plugin/marketplace.json` with `name`, `description`, `version`, `source`, `author`, `strict: false`, and explicit `skills` and `commands` arrays. When several groups use `source: "./"`, this prevents the default `commands/` scan from leaking command shims into an unrelated group; use `"commands": []` for a group with no shims.
 2. Keep the `olegvg-skills` umbrella entry first, then list concrete groups after it.
 3. Add the group to `skills.sh.json` so website grouping matches CLI grouping.
 4. Update README install examples and the install group table in `AGENTS.md`.
@@ -31,7 +31,11 @@ Use this before adding or editing skills, groups, command shims, or skill packag
 
 ## Standalone Install Constraint
 
-Vercel Skills CLI installs `skills/<name>/` for standalone skills. It does not include `templates/`, sibling skills, examples, benchmarks, or commands unless they live inside that skill directory. If that makes a skill unusable, either bundle the needed assets inside the skill directory or mark the skill internal.
+Vercel Skills CLI installs a selected root `skills/<name>/` directory only. It does not include `templates/`, sibling skills, examples, benchmarks, commands, or a plugin runtime. If a skill needs any of those at runtime, either bundle everything inside the skill directory, mark the skill internal, or make it a standalone plugin.
+
+## Standalone Runtime Plugins
+
+Use `plugins/<name>/` for a capability that cannot work as a root skill alone, such as `transcribing-audio` with its Python runtime. A standalone plugin must have its bundled `skills/`, runtime, and tests under the same directory, plus paired Claude Code and Codex manifests. Add marketplace entries that point to the plugin root, but never add its bundled skill to a root group, an umbrella `skills` array, or `skills.sh.json`. Update both READMEs and [install-surfaces.md](install-surfaces.md) with the marketplace-only installation path.
 
 ## Current Concrete Groups
 

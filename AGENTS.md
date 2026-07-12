@@ -9,9 +9,9 @@ A grouped personal skill repository for Claude Code, Codex, and Vercel Skills CL
 ## Always-On Rules
 
 - `.kb/` lives inside the user's corpus, never inside this plugin. Any change that couples `.kb/` to this plugin location is wrong.
-- Runtime skills under `skills/` are the source of truth for the `olegvg-skills` umbrella package. A standalone Codex plugin under `plugins/<plugin-name>/` is self-contained and is exposed by its own `.codex-plugin/plugin.json` plus an entry in `.agents/plugins/marketplace.json`.
+- Runtime skills under `skills/` are the source of truth for the `olegvg-skills` umbrella package. A standalone plugin under `plugins/<plugin-name>/` is self-contained and is exposed by paired manifests: `.codex-plugin/plugin.json` plus an entry in `.agents/plugins/marketplace.json` for Codex, and `.claude-plugin/plugin.json` plus an entry in the root `.claude-plugin/marketplace.json` for Claude Code.
 - `kb-for-agents` must stay KB-only. General-purpose skills belong in `core-dev` or a future non-KB group.
-- Every public root skill under `skills/` belongs to exactly one concrete group in `.claude-plugin/marketplace.json` and also appears in the `olegvg-skills` umbrella entry. Skills bundled inside a standalone Codex plugin are owned by that plugin and must not be duplicated in the root groups.
+- Every public root skill under `skills/` belongs to exactly one concrete group in `.claude-plugin/marketplace.json` and also appears in the `olegvg-skills` umbrella entry. Skills bundled inside a standalone plugin are owned by that plugin and must not be duplicated in the root groups or any `skills` array — they cannot work without the plugin runtime.
 - Vercel Skills CLI can show only one visible group per skill. Keep the umbrella entry first and concrete groups after it; umbrella install is `--skill '*'` or selecting all concrete groups interactively.
 - `CLAUDE.md` is a symlink to this file. Update `AGENTS.md`; do not create divergent Claude-only instructions.
 - Every version bump requires a matching pushed git tag, e.g. manifest `0.6.0` must ship with tag `v0.6.0`; the desktop release workflow depends on tag pushes.
@@ -32,12 +32,13 @@ Read only the file needed for the task before editing:
 | `kb-for-agents` | Three-layer KB management | `kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `kb-record-decision`, `kb-maintain` |
 | `core-dev` | General development workflow skills | `simplify-code` |
 | `olegvg-skills` | Umbrella package | every public runtime skill in this repository |
+| `transcribing-audio` | Standalone audio-transcription plugin (Claude Code and Codex), not part of the umbrella | bundled `transcribing-audio` skill plus its Python runtime |
 
 ## Repo Layout
 
 - `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` — Claude Code plugin and marketplace manifests; `.claude-plugin/marketplace.json` also drives Vercel Skills CLI grouping.
 - `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` — Codex umbrella plugin and self-hosted marketplace index.
-- `plugins/<name>/` — self-contained independently installable Codex plugins, each with its own manifest, runtime, tests, and marketplace entry.
+- `plugins/<name>/` — self-contained independently installable plugins for Claude Code and Codex, each with its own paired manifests, runtime, tests, and marketplace entries.
 - `skills.sh.json` — skills.sh website grouping only.
 - `skills/<name>/SKILL.md` — portable skill sources with strict YAML frontmatter and English/Russian trigger phrases.
 - `commands/<name>.md` — Claude Code slash-command shims only; keep them thin.
@@ -52,6 +53,7 @@ Read only the file needed for the task before editing:
 /plugin install kb-for-agents@olegvg-skills
 /plugin install core-dev@olegvg-skills
 /plugin install olegvg-skills@olegvg-skills
+/plugin install transcribing-audio@olegvg-skills
 
 # Vercel Skills CLI / any supported agent
 npx skills add olegvg/olegvg-skills --list

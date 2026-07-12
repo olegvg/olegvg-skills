@@ -1,0 +1,14 @@
+{
+  "name": "transcribing-audio",
+  "version": "0.1.0",
+  "description": "Transcribe audio with local or OpenAI ASR and local speaker diarization",
+  "author": {
+    "name": "Oleg Gaidukov",
+    "email": "ogaidukov@gmail.com",
+    "url": "https://github.com/olegvg"
+  },
+  "homepage": "https://github.com/olegvg/olegvg-skills",
+  "repository": "https://github.com/olegvg/olegvg-skills",
+  "license": "MIT",
+  "keywords": ["audio", "transcription", "asr", "diarization", "speaker-labels"]
+}

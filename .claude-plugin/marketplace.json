@@ -11,6 +11,7 @@
       "description": "Umbrella package for all grouped OlegVG agent skills",
       "version": "0.6.0",
       "source": "./",
+      "strict": false,
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
@@ -23,6 +24,14 @@
         "./skills/kb-record-decision",
         "./skills/kb-maintain",
         "./skills/simplify-code"
+      ],
+      "commands": [
+        "./commands/kb-build.md",
+        "./commands/kb-query.md",
+        "./commands/kb-check-drift.md",
+        "./commands/kb-refresh.md",
+        "./commands/kb-record-decision.md",
+        "./commands/kb-maintain.md"
       ]
     },
     {
@@ -30,6 +39,7 @@
       "description": "Three-layer knowledge base pattern as installable skills and commands",
       "version": "0.6.0",
       "source": "./",
+      "strict": false,
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
@@ -41,6 +51,14 @@
         "./skills/kb-check-drift",
         "./skills/kb-record-decision",
         "./skills/kb-maintain"
+      ],
+      "commands": [
+        "./commands/kb-build.md",
+        "./commands/kb-query.md",
+        "./commands/kb-check-drift.md",
+        "./commands/kb-refresh.md",
+        "./commands/kb-record-decision.md",
+        "./commands/kb-maintain.md"
       ]
     },
     {
@@ -48,13 +66,25 @@
       "description": "Portable core development skills for cleanup and implementation hygiene",
       "version": "0.6.0",
       "source": "./",
+      "strict": false,
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
       },
       "skills": [
         "./skills/simplify-code"
-      ]
+      ],
+      "commands": []
+    },
+    {
+      "name": "transcribing-audio",
+      "description": "Standalone audio transcription plugin with local or OpenAI ASR and local speaker diarization",
+      "version": "0.1.0",
+      "source": "./plugins/transcribing-audio",
+      "author": {
+        "name": "Oleg Gaidukov",
+        "email": "ogaidukov@gmail.com"
+      }
     }
   ]
 }

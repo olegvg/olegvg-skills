@@ -8,7 +8,9 @@ Manifest versions use plain semver without a `v` prefix. Update these together:
 
 - `.claude-plugin/plugin.json`
 - `.codex-plugin/plugin.json`
-- every `plugins[].version` entry in `.claude-plugin/marketplace.json`
+- the umbrella and concrete-group `plugins[].version` entries in `.claude-plugin/marketplace.json`
+
+The standalone `transcribing-audio` plugin versions independently of the umbrella. Keep its released base version synchronized between `plugins/transcribing-audio/.claude-plugin/plugin.json` and the `transcribing-audio` entry in `.claude-plugin/marketplace.json`. The sibling Codex manifest uses that same base version and may append Codex-specific build metadata, for example `0.1.0+codex.20260711221133`; update the base version there as part of the standalone-plugin release. Leave all three unchanged during umbrella bumps.
 
 GitHub releases use tags with a `v` prefix, such as `v0.6.0`. The Claude Desktop release workflow derives zip artifact versions from the tag name:
 
@@ -47,7 +49,7 @@ Current desktop-packaged skills:
 - `kb-check-drift`
 - `simplify-code`
 
-`kb-record-decision` and `kb-maintain` are intentionally excluded because they depend on plan-document layout or orchestration.
+`kb-record-decision` and `kb-maintain` are intentionally excluded because they depend on plan-document layout or orchestration. The `transcribing-audio` skill is also excluded: it requires the plugin runtime in `plugins/transcribing-audio/` and cannot work as a skill-only zip.
 
 ## Bump Checklist
 

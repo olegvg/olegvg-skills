@@ -18,6 +18,6 @@
     "developerName": "Oleg Gaidukov",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Use $transcribing-audio to transcribe this recording with speaker labels."
+    "defaultPrompt": "Use $transcribing-audio:transcribing-audio to transcribe this recording with speaker labels."
   }
 }

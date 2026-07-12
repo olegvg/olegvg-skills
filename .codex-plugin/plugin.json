@@ -38,9 +38,9 @@
     "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [
-      "Build a KB for this codebase.",
-      "Query the project knowledge base.",
-      "Simplify the current diff without changing behavior."
+      "Use $olegvg-skills:kb-build to build a KB for this codebase.",
+      "Use $olegvg-skills:kb-query to query the project knowledge base.",
+      "Use $olegvg-skills:simplify-code to simplify the current diff without changing behavior."
     ],
     "brandColor": "#2563EB",
     "screenshots": []
