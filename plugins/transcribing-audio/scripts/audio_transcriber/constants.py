@@ -1,0 +1,28 @@
+"""Machine-readable runtime constants shared across transcription stages."""
+
+from __future__ import annotations
+
+RUNTIME_VERSION = "1"
+STATE_SCHEMA_VERSION = 1
+OUTPUT_SCHEMA_VERSION = 1
+RUNTIME_ROOT_NAME = "transcribing-audio"
+VENV_DIRECTORY_NAME = ".venv"
+VENV_STAMP_FILENAME = ".transcribing-audio-runtime.json"
+
+REPROBE_FLAG = "--reprobe"
+RUNTIME_BOOTSTRAPPED_ENV = "TRANSCRIBING_AUDIO_RUNTIME_BOOTSTRAPPED"
+RUNTIME_RECOVERY_ATTEMPT_ENV = "TRANSCRIBING_AUDIO_RUNTIME_RECOVERY_ATTEMPT"
+
+DEFAULT_LOCAL_MODEL = "large-v3-turbo"
+DEFAULT_OPENAI_MODEL = "whisper-1"
+DEFAULT_DIARIZATION_MODEL = "pyannote/speaker-diarization-community-1"
+DEFAULT_DIARIZATION_REVISION = "3533c8cf8e369892e6b79ff1bf80f7b0286a54ee"
+DEFAULT_MAX_UPLOAD_BYTES = 24_000_000
+DEFAULT_MAX_CHUNK_DURATION_S = 600.0
+DEFAULT_OVERLAP_S = 2.0
+DEFAULT_QUALITY_POLICY_VERSION = "1"
+
+OUTPUT_JSON_SUFFIX = ".transcript.json"
+OUTPUT_TEXT_SUFFIX = ".transcript.txt"
+OUTPUT_SRT_SUFFIX = ".transcript.srt"
+OUTPUT_VTT_SUFFIX = ".transcript.vtt"

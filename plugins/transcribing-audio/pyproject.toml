@@ -1,0 +1,54 @@
+[project]
+name = "transcribing-audio-runtime"
+version = "0.1.0"
+description = "Isolated runtime for the transcribing-audio Codex plugin"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+  "openai>=2.45.0,<3",
+  "pyannote.audio>=4.0.7,<5",
+  "python-dotenv>=1.2.2,<2",
+  "torch>=2.8,<3",
+]
+
+[project.optional-dependencies]
+faster = ["faster-whisper>=1.2.1,<2; sys_platform == 'darwin' or sys_platform == 'linux'"]
+mlx = ["mlx-whisper>=0.4.3,<0.5; sys_platform == 'darwin' and platform_machine == 'arm64'"]
+
+[dependency-groups]
+dev = [
+  "pyright>=1.1.408",
+  "pytest>=9.0.2",
+  "pytest-cov>=7.0.0",
+  "pytest-mock>=3.15.1",
+  "ruff>=0.15.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["scripts"]
+markers = [
+  "network: requires OpenAI network access",
+  "models: downloads or loads large local models",
+  "smoke: uses a user-provided recording",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["scripts/audio_transcriber"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+include = ["scripts/audio_transcriber", "tests"]
+extraPaths = ["scripts"]
+venvPath = "."
+venv = ".venv"

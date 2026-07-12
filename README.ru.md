@@ -2,13 +2,14 @@
 
 [English version](README.md)
 
-Группированный личный репозиторий skills для Claude Code, Codex и агентов, поддерживаемых Vercel Skills CLI. Сейчас в нём две устанавливаемые группы: `kb-for-agents` для паттерна трёхслойной базы знаний из статьи [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/) и `core-dev` для переносимых workflow разработки.
+Группированный личный репозиторий skills для Claude Code, Codex и агентов, поддерживаемых Vercel Skills CLI. В нём две устанавливаемые группы root-skills: `kb-for-agents` для паттерна трёхслойной базы знаний из статьи [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/) и `core-dev` для переносимых workflow разработки, а также самостоятельный Codex-плагин `transcribing-audio`.
 
 ## Что внутри
 
 - **Группа `kb-for-agents`** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
 - **Группа `core-dev`** — `simplify-code`, переносимый skill для поведенчески безопасной чистки реализации, адаптированный из workflow Claude Code `/simplify`.
 - **Umbrella `olegvg-skills`** — все группы этого репозитория.
+- **Codex-плагин `transcribing-audio`** — локальный или OpenAI ASR, диаризация спикеров, таймкоды слов и возобновляемая обработка. Устанавливается отдельно, потому что содержит собственный Python runtime и зависимости.
 - **Команды** — `/kb-build`, `/kb-query`, `/kb-check-drift`, `/kb-refresh`, `/kb-record-decision`, `/kb-maintain`. Тонкие обёртки над навыками. *(Только Claude Code — устанавливаются через плагин, не через `npx skills add`.)*
 - **Шаблоны** — стартовые заготовки для индексов, саммари, решений, `_root.md`, состояния. Шаги для ручной сборки см. в [templates/README.md](templates/README.md).
 - **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия обновления](docs/refresh-strategy.md).
@@ -62,12 +63,19 @@ npx skills add olegvg/olegvg-skills -a claude-code -a codex -a cursor
 
 ### Codex marketplace
 
-Репозиторий также подготовлен для Codex как umbrella-плагин `olegvg-skills`:
+Репозиторий подготовлен для Codex как umbrella-плагин `olegvg-skills` и как самостоятельный плагин `transcribing-audio`:
 
 - `.codex-plugin/plugin.json` — манифест Codex-плагина.
 - `.agents/plugins/marketplace.json` — self-hosted индекс Codex marketplace, указывающий на этот репозиторий плагина.
 
-Codex загружает навыки из `skills/`. Для установки отдельных групп в Codex используй Vercel Skills CLI с `-a codex`; entry в Codex marketplace намеренно остаётся umbrella-пакетом, потому что один Codex plugin manifest описывает один plugin root. Директория `commands/` остаётся для совместимости со слэш-командами Claude Code.
+Codex загружает umbrella-навыки из `skills/`. Для установки отдельных групп в Codex используй Vercel Skills CLI с `-a codex`. Аудиорасшифровка устанавливается отдельным плагином из marketplace:
+
+```bash
+codex plugin marketplace add olegvg/olegvg-skills
+codex plugin add transcribing-audio@olegvg-skills
+```
+
+`transcribing-audio` хранит runtime и зависимости в `plugins/transcribing-audio/`; директория `commands/` остаётся для совместимости со слэш-командами Claude Code.
 
 ### Claude Desktop (отдельные навыки)
 

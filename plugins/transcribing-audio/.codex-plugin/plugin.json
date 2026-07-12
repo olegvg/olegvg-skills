@@ -1,0 +1,23 @@
+{
+  "name": "transcribing-audio",
+  "version": "0.1.0+codex.20260711221133",
+  "description": "Transcribe audio with local or OpenAI ASR and local speaker diarization",
+  "author": {
+    "name": "Oleg Gaidukov",
+    "email": "ogaidukov@gmail.com",
+    "url": "https://github.com/olegvg"
+  },
+  "homepage": "https://github.com/olegvg/olegvg-skills",
+  "repository": "https://github.com/olegvg/olegvg-skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Audio Transcription",
+    "shortDescription": "Transcribe and diarize speaker-labelled audio.",
+    "longDescription": "Transcribe recordings with word timestamps, local diarization, and resumable processing.",
+    "developerName": "Oleg Gaidukov",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Use $transcribing-audio to transcribe this recording with speaker labels."
+  }
+}

@@ -4,11 +4,11 @@ Use this before changing install commands, plugin manifests, marketplace metadat
 
 ## Source of Truth
 
-Runtime skills live under `skills/`. Install surfaces are metadata over those source directories:
+Runtime skills for the `olegvg-skills` umbrella live under `skills/`. Self-contained Codex plugins live under `plugins/<plugin-name>/`. Install surfaces are metadata over those source directories:
 
 1. Claude Code plugin marketplace uses `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 2. Vercel Skills CLI reads `SKILL.md` files and `.claude-plugin/marketplace.json` `plugins[].skills` declarations.
-3. Codex marketplace uses `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`.
+3. Codex marketplace uses the root `.codex-plugin/plugin.json` for the umbrella plugin, and a nested `plugins/<name>/.codex-plugin/plugin.json` for each standalone plugin; `.agents/plugins/marketplace.json` indexes both forms.
 4. skills.sh website grouping uses `skills.sh.json` only.
 
 ## Manifests to Keep in Sync
@@ -16,7 +16,7 @@ Runtime skills live under `skills/`. Install surfaces are metadata over those so
 - `.claude-plugin/plugin.json` describes the Claude Code umbrella plugin.
 - `.claude-plugin/marketplace.json` contains concrete install groups plus the umbrella entry.
 - `.codex-plugin/plugin.json` describes the Codex umbrella plugin. Do not add unsupported group fields.
-- `.agents/plugins/marketplace.json` exposes the Codex umbrella plugin in the self-hosted marketplace index.
+- `.agents/plugins/marketplace.json` exposes the Codex umbrella plugin and every standalone Codex plugin in the self-hosted marketplace index.
 - `skills.sh.json` mirrors public grouping for the website.
 
 ## Claude Code
@@ -34,7 +34,16 @@ Claude Code has real plugin install targets from `.claude-plugin/marketplace.jso
 
 ## Codex
 
-Codex marketplace packaging is the umbrella `olegvg-skills` plugin. One `.codex-plugin/plugin.json` describes one plugin root, so group-scoped Codex marketplace entries are not represented as separate plugin manifests.
+Codex marketplace packaging contains the umbrella `olegvg-skills` plugin and standalone plugins whose runtimes cannot be represented as a root skill alone. One `.codex-plugin/plugin.json` describes one plugin root.
+
+Install the audio-transcription plugin directly from this marketplace:
+
+```bash
+codex plugin marketplace add olegvg/olegvg-skills
+codex plugin add transcribing-audio@olegvg-skills
+```
+
+Its runtime is in `plugins/transcribing-audio/`; do not duplicate its skill in the umbrella or Claude Code groups.
 
 For a group-scoped Codex install, use Vercel Skills CLI with `-a codex`, for example:
 
@@ -80,7 +89,7 @@ Keep `olegvg-skills` first, then concrete groups. The Vercel Skills CLI assigns 
 For install-surface changes:
 
 ```bash
-node -e "const fs=require('fs'); for (const f of ['.claude-plugin/plugin.json','.claude-plugin/marketplace.json','.codex-plugin/plugin.json','.agents/plugins/marketplace.json','skills.sh.json']) JSON.parse(fs.readFileSync(f,'utf8')); console.log('json ok')"
+node -e "const fs=require('fs'); for (const f of ['.claude-plugin/plugin.json','.claude-plugin/marketplace.json','.codex-plugin/plugin.json','.agents/plugins/marketplace.json','plugins/transcribing-audio/.codex-plugin/plugin.json','skills.sh.json']) JSON.parse(fs.readFileSync(f,'utf8')); console.log('json ok')"
 git diff --check
 npx skills add ./ --list
 ```

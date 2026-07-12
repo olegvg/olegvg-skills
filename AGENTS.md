@@ -9,9 +9,9 @@ A grouped personal skill repository for Claude Code, Codex, and Vercel Skills CL
 ## Always-On Rules
 
 - `.kb/` lives inside the user's corpus, never inside this plugin. Any change that couples `.kb/` to this plugin location is wrong.
-- Runtime skills under `skills/` are the source of truth. Group membership and marketplace metadata are layered over those directories.
+- Runtime skills under `skills/` are the source of truth for the `olegvg-skills` umbrella package. A standalone Codex plugin under `plugins/<plugin-name>/` is self-contained and is exposed by its own `.codex-plugin/plugin.json` plus an entry in `.agents/plugins/marketplace.json`.
 - `kb-for-agents` must stay KB-only. General-purpose skills belong in `core-dev` or a future non-KB group.
-- Every public skill belongs to exactly one concrete group in `.claude-plugin/marketplace.json` and also appears in the `olegvg-skills` umbrella entry.
+- Every public root skill under `skills/` belongs to exactly one concrete group in `.claude-plugin/marketplace.json` and also appears in the `olegvg-skills` umbrella entry. Skills bundled inside a standalone Codex plugin are owned by that plugin and must not be duplicated in the root groups.
 - Vercel Skills CLI can show only one visible group per skill. Keep the umbrella entry first and concrete groups after it; umbrella install is `--skill '*'` or selecting all concrete groups interactively.
 - `CLAUDE.md` is a symlink to this file. Update `AGENTS.md`; do not create divergent Claude-only instructions.
 - Every version bump requires a matching pushed git tag, e.g. manifest `0.6.0` must ship with tag `v0.6.0`; the desktop release workflow depends on tag pushes.
@@ -37,6 +37,7 @@ Read only the file needed for the task before editing:
 
 - `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` — Claude Code plugin and marketplace manifests; `.claude-plugin/marketplace.json` also drives Vercel Skills CLI grouping.
 - `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` — Codex umbrella plugin and self-hosted marketplace index.
+- `plugins/<name>/` — self-contained independently installable Codex plugins, each with its own manifest, runtime, tests, and marketplace entry.
 - `skills.sh.json` — skills.sh website grouping only.
 - `skills/<name>/SKILL.md` — portable skill sources with strict YAML frontmatter and English/Russian trigger phrases.
 - `commands/<name>.md` — Claude Code slash-command shims only; keep them thin.
