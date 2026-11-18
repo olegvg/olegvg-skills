@@ -1,9 +1,25 @@
 {
   "name": "olegvg-skills",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
   "author": {
     "name": "Oleg Gaidukov",
-    "email": "ogaidukov@gmail.com"
-  }
+    "email": "ogaidukov@gmail.com",
+    "url": "https://github.com/olegvg"
+  },
+  "homepage": "https://github.com/olegvg/olegvg-skills",
+  "repository": "https://github.com/olegvg/olegvg-skills",
+  "license": "MIT",
+  "keywords": [
+    "knowledge-base",
+    "agents",
+    "skills",
+    "documentation",
+    "progressive-disclosure",
+    "context-management",
+    "codebase-navigation",
+    "core-dev",
+    "code-cleanup",
+    "refactoring"
+  ]
 }

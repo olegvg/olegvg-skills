@@ -48,7 +48,7 @@ def test_plugin_manifest_has_only_implemented_components_and_coherent_metadata()
     assert "word timestamps" in interface["longDescription"]
     assert "local diarization" in interface["longDescription"]
     assert interface["defaultPrompt"] == (
-        "Use $transcribing-audio to transcribe this recording with speaker labels."
+        "Use $transcribing-audio:transcribing-audio to transcribe this recording with speaker labels."
     )
     assert interface["capabilities"] == []
 

@@ -1,7 +1,7 @@
 {
   "name": "olegvg-skills",
-  "version": "0.7.0",
-  "description": "Grouped personal Codex skills for agent workflows: kb-for-agents for three-layer knowledge management and core-dev for portable development cleanup.",
+  "version": "0.8.0",
+  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
   "author": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com",
@@ -26,7 +26,7 @@
   "interface": {
     "displayName": "OlegVG Skills",
     "shortDescription": "Grouped skills for KB management and core dev cleanup",
-    "longDescription": "Umbrella package for grouped agent skills. The kb-for-agents group builds, queries, refreshes, records decisions, and maintains a three-layer knowledge base inside a codebase or notes corpus. The core-dev group includes simplify-code for behavior-preserving cleanup of changed code.",
+    "longDescription": "Umbrella package for grouped agent skills. The kb-for-agents group builds, queries, refreshes, records decisions, and maintains a three-layer knowledge base inside a codebase or notes corpus. The core-dev group covers behavior-preserving code cleanup, mobile test environments, and audits of implicit state machines.",
     "developerName": "Oleg Gaidukov",
     "category": "Coding",
     "capabilities": [
@@ -35,14 +35,16 @@
       "Write"
     ],
     "websiteURL": "https://github.com/olegvg/olegvg-skills",
-    "privacyPolicyURL": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
-    "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+    "privacyPolicyURL": "https://github.com/olegvg/olegvg-skills/blob/master/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/olegvg/olegvg-skills/blob/master/LICENSE",
     "defaultPrompt": [
       "Use $olegvg-skills:kb-build to build a KB for this codebase.",
       "Use $olegvg-skills:kb-query to query the project knowledge base.",
       "Use $olegvg-skills:simplify-code to simplify the current diff without changing behavior."
     ],
     "brandColor": "#2563EB",
-    "screenshots": []
+    "screenshots": [],
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg"
   }
 }

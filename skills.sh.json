@@ -18,7 +18,9 @@
       "title": "Core Dev",
       "description": "Portable development workflow skills that are useful outside the KB lifecycle.",
       "skills": [
-        "simplify-code"
+        "simplify-code",
+        "mobile-test-environments",
+        "audit-state-machines"
       ]
     }
   ]

@@ -7,119 +7,155 @@ A grouped personal skill repository for Claude Code, Codex, and agents supported
 ## What's inside
 
 - **`kb-for-agents` group** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
-- **`core-dev` group** — `simplify-code`, a portable behavior-preserving cleanup skill adapted from Claude Code's `/simplify` workflow.
+- **`core-dev` group** — `simplify-code` for behavior-preserving cleanup, `mobile-test-environments` for Android/iOS devices and Appium sessions, and `audit-state-machines` for evidence-based reviews of implicit state transitions. Mobile instructions load by platform, with a dependency-free discovery helper. Maestro is optional.
 - **`olegvg-skills` umbrella** — all root-skill groups in this repository.
 - **`transcribing-audio` plugin (Claude Code and Codex)** — local or OpenAI ASR, speaker diarization, word timestamps, and resumable processing. It is installed separately because it includes its own Python runtime and dependencies.
-- **Claude Code commands** — KB-only thin wrappers over the skills. Marketplace plugins namespace them, for example `/kb-for-agents:kb-build`; `core-dev` exposes no command shims. They are unavailable through `npx skills add`.
+- **Claude Code commands** — concrete groups expose native skill commands, for example `/kb-for-agents:kb-build`. The umbrella also retains KB compatibility shims in `commands/`; `core-dev` has no shims. Skills CLI installs native skills without those wrappers.
 - **Templates** — starter shapes for indexes, summaries, decisions, `_root.md`, state. See [templates/README.md](templates/README.md) for manual-build steps.
 - **Docs** — pattern rationale: [concept](docs/concept.md), [navigation rules](docs/navigation-rules.md), [refresh strategy](docs/refresh-strategy.md).
 
-## Install
+## Installation
 
-### Any agent via `npx skills add` (Vercel Skills CLI)
+Choose one installation route per host/workspace to avoid duplicate skill copies.
+Root skills live under `skills/`; `transcribing-audio` is an independent plugin
+with its Python runtime and is outside the umbrella.
 
-The root runtime skills follow the [agentskills.io](https://agentskills.io) spec and can be installed into Claude Code, Codex, Cursor, and other agents through the [`skills` CLI](https://github.com/vercel-labs/skills). The interactive picker shows the concrete groups `kb-for-agents` and `core-dev`; select both groups to install every root skill. For non-interactive installs, use explicit `--skill` selections. The umbrella install is `--skill '*'` because the CLI currently assigns each skill to one visible group.
+### Skills CLI (Bun or Node.js)
+
+Run from the project where you want the skills. `install` aliases `add`; every
+`bunx skills@latest install` example also works as `npx skills@latest add`.
 
 ```bash
-# List grouped skills in the repo
-npx skills add olegvg/olegvg-skills --list
+# Inspect remote or local skills without installing.
+bunx skills@latest install olegvg/olegvg-skills --list
+bunx skills@latest install ./olegvg-skills --list
 
-# Install the kb-for-agents group
-npx skills add olegvg/olegvg-skills \
-  --skill kb-build \
-  --skill kb-query \
-  --skill kb-refresh \
-  --skill kb-check-drift \
-  --skill kb-record-decision \
-  --skill kb-maintain
+# Select skills and agents; project scope is the default.
+bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex claude-code
 
-# Install the core-dev group
-npx skills add olegvg/olegvg-skills --skill simplify-code
+# Install the KB group.
+bunx skills@latest install olegvg/olegvg-skills --skill kb-build kb-query kb-refresh kb-check-drift kb-record-decision kb-maintain --agent codex
 
-# Install every root skill non-interactively
-npx skills add olegvg/olegvg-skills --skill '*'
+# Install all root skills into the project, or choose groups interactively.
+bunx skills@latest install olegvg/olegvg-skills --skill '*'
 
-# Install core-dev into Codex globally
-npx skills add olegvg/olegvg-skills --skill simplify-code -a codex -g -y
-
-# Install across multiple agents at once
-npx skills add olegvg/olegvg-skills -a claude-code -a codex -a cursor
+# Explicit user-wide install, without prompts.
+bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex --global --yes
 ```
 
-This pathway installs **root skills only**, not Claude Code slash commands or standalone plugins. `transcribing-audio` also requires its bundled Python runtime, so install it through a plugin marketplace. Skills are still auto-invoked by trigger phrases — see each skill's `description` for the English and Russian phrases that activate it.
+The picker shows `kb-for-agents` and `core-dev`; select both for the umbrella.
+These installs copy complete skill directories including references and local
+templates. They do not install `commands/` shims or the audio runtime. The audio
+skill is hidden from generic discovery because it cannot run alone.
 
-### Claude Code plugin marketplace
+After a matching release tag is published, pin a source version:
 
-```
-/plugin marketplace add olegvg/olegvg-skills
-/plugin install kb-for-agents@olegvg-skills
-/plugin install core-dev@olegvg-skills
-/plugin install olegvg-skills@olegvg-skills
-/plugin install transcribing-audio@olegvg-skills
-```
+```bash
+bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.8.0 --skill audit-state-machines --agent codex
 
-Use `kb-for-agents` when you want the KB command shims alongside the KB skills, `core-dev` for the portable cleanup skill, or `olegvg-skills` for every root skill in this repository. `transcribing-audio` is a standalone plugin that ships its own Python runtime, so install it separately with its own command above.
-
-Run `/reload-plugins` after installing or updating a plugin. Claude Code namespaces its commands and skills: `kb-for-agents` provides `/kb-for-agents:kb-build` through `/kb-for-agents:kb-maintain`; `olegvg-skills` provides the same KB shims under `/olegvg-skills:`; `core-dev` deliberately has no command shim. Invoke audio transcription with `/transcribing-audio:transcribing-audio` or describe the task in natural language.
-
-Unlike the Vercel Skills CLI picker, the Claude Code plugin marketplace has a real umbrella install target: `olegvg-skills@olegvg-skills`.
-
-### transcribing-audio in Claude Code
-
-`transcribing-audio` is a standalone plugin outside the `olegvg-skills` umbrella, so install it on its own:
-
-```
-/plugin marketplace add olegvg/olegvg-skills
-/plugin install transcribing-audio@olegvg-skills
-/reload-plugins
+# Update selected project installations to available upstream changes.
+bunx skills@latest update simplify-code --project
 ```
 
-Prerequisites (macOS or Linux; Windows is unsupported): Python 3.13, `uv`, `ffmpeg`, and `ffprobe` on `PATH`; local speaker diarization also needs approved Hugging Face access via `HF_TOKEN`. The plugin ships its own runtime — the first run probes the host and builds a cached plugin-local `.venv`, so the initial transcription is slower while dependencies resolve.
+Use the pinned source again when intentionally retaining an exact version. See
+[Skills CLI](https://github.com/vercel-labs/skills) for agents and update scopes.
 
-Then invoke it explicitly or describe the task in natural language:
+### Claude Code marketplace and local loading
 
+```bash
+claude plugin marketplace add olegvg/olegvg-skills --scope project
+claude plugin install kb-for-agents@olegvg-skills --scope project
+claude plugin install core-dev@olegvg-skills --scope project
+# Alternatively, install the umbrella instead of its individual groups.
+claude plugin install olegvg-skills@olegvg-skills --scope project
+# Independent runtime plugin, installed separately.
+claude plugin install transcribing-audio@olegvg-skills --scope project
+
+claude plugin marketplace update olegvg-skills
+claude plugin update olegvg-skills@olegvg-skills --scope project
+claude plugin update transcribing-audio@olegvg-skills --scope project
 ```
-/transcribing-audio:transcribing-audio /absolute/path/meeting.wav
+
+Update the specific group you installed when using individual groups, then restart
+Claude Code or run `/reload-plugins`. Interactive equivalents are
+`/plugin marketplace add olegvg/olegvg-skills` and
+`/plugin install <group>@olegvg-skills`.
+
+Test a checkout without installing it:
+
+```bash
+claude --plugin-dir ./olegvg-skills
+claude --plugin-dir ./olegvg-skills/plugins/transcribing-audio
 ```
 
-Audio stays local by default; OpenAI ASR asks for explicit consent before any chunk leaves the machine.
+KB commands use `/kb-for-agents:kb-build` or `/olegvg-skills:kb-build`;
+`core-dev` has no command shims. Concrete groups load native skills; the
+umbrella retains the legacy KB shims. Audio uses
+`/transcribing-audio:transcribing-audio /absolute/path/meeting.wav`.
+See [Claude plugins](https://code.claude.com/docs/en/plugins).
 
-### Codex marketplace
-
-This repository exposes two Codex plugins: the `olegvg-skills` umbrella at the repository root and the independent `transcribing-audio` plugin under `plugins/transcribing-audio/`.
-
-- `.codex-plugin/plugin.json` and `plugins/transcribing-audio/.codex-plugin/plugin.json` describe the two plugin roots.
-- `.agents/plugins/marketplace.json` indexes both plugins in the self-hosted Codex marketplace.
-
-Use the Vercel Skills CLI with `-a codex` for a group-scoped root-skill install. To install one or both full plugins from the marketplace:
+### Codex marketplace (remote, local or pinned)
 
 ```bash
 codex plugin marketplace add olegvg/olegvg-skills
 codex plugin add olegvg-skills@olegvg-skills
 codex plugin add transcribing-audio@olegvg-skills
+
+# For a prepared local checkout, use this source instead of the remote one.
+codex plugin marketplace add ./olegvg-skills
+
+# Or pin an existing published release tag on the remote marketplace.
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.8.0
+
+# Refresh the configured marketplace and installed plugin caches.
+codex plugin marketplace upgrade olegvg-skills
 ```
 
-`transcribing-audio` keeps its skill, runtime, and dependencies together in `plugins/transcribing-audio/`; it is not included in the umbrella plugin.
+Choose one marketplace source. `marketplace upgrade` applies to Git sources;
+for a local checkout, pull/edit that checkout and reinstall the plugin with
+`codex plugin add` to refresh its cache. Start a new session after installation/refresh.
+Invoke `$olegvg-skills:kb-build`, `$olegvg-skills:kb-query`,
+`$olegvg-skills:simplify-code` or `$transcribing-audio:transcribing-audio`.
+For group-scoped Codex installs, use the Skills CLI with `--agent codex`.
+See the [official packaging guide](https://developers.openai.com/plugins/build/plugins).
 
-Start a new Codex session after installing or updating a plugin. Codex can select a matching skill automatically, or you can invoke one explicitly: `$olegvg-skills:kb-build`, `$olegvg-skills:kb-query`, `$olegvg-skills:simplify-code`, or `$transcribing-audio:transcribing-audio`. For OpenAI ASR, the audio skill asks for explicit consent before uploading audio.
+### Runtime requirements for transcribing-audio
 
-### Claude Desktop (individual skills)
+The separate audio plugin needs macOS or Linux, Python 3.13, `uv`, `ffmpeg` and
+`ffprobe`. Local diarization needs approved Hugging Face access via `HF_TOKEN`.
+Its first run prepares a cached plugin-local `.venv`. Audio stays local by
+default; OpenAI ASR requires explicit consent before any chunk is uploaded.
+The root instruction skills do not need these dependencies.
 
-Claude Desktop doesn't load Claude Code plugins, so runtime skills are published as individual zips on the [Releases page](https://github.com/olegvg/olegvg-skills/releases). Download and upload the ones you need via the Claude Desktop skill UI:
+### ZIPs and Claude Desktop
 
-- `kb-build-<version>.zip`
-- `kb-query-<version>.zip`
-- `kb-refresh-<version>.zip`
-- `kb-check-drift-<version>.zip`
-- `simplify-code-<version>.zip`
+Download artifacts from [Releases](https://github.com/olegvg/olegvg-skills/releases)
+when the matching release has been published. A full
+`olegvg-skills-plugin-<version>.zip` includes the manifests, root skills,
+commands, docs and independent audio runtime. Extract it and use the local
+marketplace or `--plugin-dir` route above. Portable root `plugin.json` declares
+Agent Plugins 1.0.0; Codex/Claude manifests provide host compatibility.
 
-`SHA256SUMS` is attached to each release — verify with `sha256sum -c SHA256SUMS`.
+Individual `<skill>-<version>.zip` archives contain SKILL.md, every reference,
+local templates/metadata and LICENSE. Upload these five through the desktop skill UI:
+`kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `simplify-code`.
+`kb-record-decision` and `kb-maintain` archives target coding-agent hosts with
+the required plan/orchestration capabilities and companion skills.
+`mobile-test-environments` requires a host with local device/CLI access and separately installed SDKs/drivers. Audio is
+available only with its full plugin runtime, never as a skill-only ZIP.
 
-`kb-record-decision` and `kb-maintain` are Claude Code–only: decision recording relies on the plan-document layout and orchestration. `transcribing-audio` is not published as a desktop zip either — its skill needs the bundled Python runtime, so install it via the Claude Code or Codex plugin marketplace.
+Every release includes notes, a generated changelog and SHA256SUMS:
+
+```bash
+shasum -a 256 -c SHA256SUMS    # macOS; use sha256sum on Linux
+```
+
+Local preparation does not publish a tag, release assets or a directory listing.
+See [releasing](docs/releasing.md) for reproducible builds and validation.
 
 ## Quickstart
 
-After installing `kb-for-agents` in Claude Code and running `/reload-plugins`, use the KB command shims in a session opened at your corpus root:
+After installing `kb-for-agents` in Claude Code and running `/reload-plugins`, use the native KB skill commands in a session opened at your corpus root:
 
 ```
 /kb-for-agents:kb-build .
@@ -147,6 +183,17 @@ $olegvg-skills:kb-query where are fees charged?
 $transcribing-audio:transcribing-audio /absolute/path/meeting.wav
 ```
 
+For local mobile-environment work, invoke `$mobile-test-environments` (or
+`/core-dev:mobile-test-environments` in the Claude group), for example:
+“Show available Android emulators and virtual iPhones without interrupting running tests.”
+The installed SDKs/drivers remain external prerequisites; the skill does not install them automatically.
+
+To review implicit state transitions, invoke `$audit-state-machines` after a
+skill-only install, `$olegvg-skills:audit-state-machines` in the Codex plugin, or
+`/core-dev:audit-state-machines` in the Claude Code group. Open the session at
+the application root and specify a module to narrow the audit.
+See the [design rationale](docs/audit-state-machines.md).
+
 ## How it works
 
 The plugin builds a `.kb/` directory **inside your corpus** (not inside the plugin). It has three layers plus a decisions store:
@@ -173,6 +220,10 @@ A RAG library or a general-purpose agent framework.
 
 - Claude Code or Codex with skills support.
 - A corpus you want to document. A git-backed corpus is strongly recommended — `/kb-refresh` and `/kb-check-drift` both depend on git history.
+
+## Privacy and maintenance
+
+Read [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md) and the [release guide](docs/releasing.md).
 
 ## License
 

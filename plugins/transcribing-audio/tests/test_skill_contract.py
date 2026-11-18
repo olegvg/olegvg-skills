@@ -58,7 +58,7 @@ def _documented_launcher(skill_directory: Path) -> Path:
 def test_skill_metadata_and_core_workflow_are_triggerable_and_concise() -> None:
     frontmatter, body = _skill_parts()
 
-    assert set(frontmatter) == {"name", "description"}
+    assert {"name", "description"} <= set(frontmatter)
     assert frontmatter["name"] == "transcribing-audio"
     description = frontmatter["description"].casefold()
     for phrase in (

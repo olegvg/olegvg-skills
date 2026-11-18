@@ -1,4 +1,4 @@
 interface:
   display_name: "Audio Transcription"
   short_description: "Transcribe and diarize speaker-labelled audio"
-  default_prompt: "Use $transcribing-audio to transcribe this recording with speaker labels."
+  default_prompt: "Use $transcribing-audio:transcribing-audio to transcribe this recording with speaker labels."

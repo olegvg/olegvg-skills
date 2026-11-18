@@ -35,7 +35,7 @@ From the area indexes, pick the specific leaf summaries to read. Read them.
 
 ### 4. Follow warm references freely
 
-Once inside a summary, you may follow direct references to other summaries without returning to the index level. This relaxation is intentional — see [docs/navigation-rules.md](../../docs/navigation-rules.md). The indexes earn their keep on cold start; warm references are cheap.
+Once inside a summary, you may follow direct references to other summaries without returning to the index level. This relaxation is intentional — see [docs/navigation-rules.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/navigation-rules.md). The indexes earn their keep on cold start; warm references are cheap.
 
 ### 4a. Surface decisions for the current summary
 
@@ -80,5 +80,5 @@ If during a query you discover:
 
 ## References
 
-- Navigation rules: [docs/navigation-rules.md](../../docs/navigation-rules.md)
-- Drift check: [skills/kb-check-drift/SKILL.md](../kb-check-drift/SKILL.md)
+- Navigation rules: [docs/navigation-rules.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/navigation-rules.md)
+- Drift check: `kb-check-drift` (install separately when needed)

@@ -38,7 +38,7 @@ A summary survives normal edits to its source files only if its prose does not c
 - **Pin precise line numbers only in `## References` at the end of the file.** Group them by symbol or section so a refresh can patch one block instead of rewriting paragraphs.
 - **No inline `file.ext:123` citations in the body.** They become wrong the moment the next commit touches that file.
 
-This is enforceable by convention, not by code. It is the single biggest determinant of refresh cost on a maturing corpus — when prose cites lines everywhere, refresh becomes a full rewrite; when prose cites symbols, refresh becomes a targeted patch on References. See [templates/summary.template.md](../templates/summary.template.md) for the shape.
+This is enforceable by convention, not by code. It is the single biggest determinant of refresh cost on a maturing corpus — when prose cites lines everywhere, refresh becomes a full rewrite; when prose cites symbols, refresh becomes a targeted patch on References. See [templates/summary.template.md](../skills/kb-build/templates/summary.template.md) for the shape.
 
 ## Why plans are excluded but decisions are included
 

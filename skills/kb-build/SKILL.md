@@ -73,14 +73,14 @@ Based on the briefs returned from Pass 2:
 
 #### 3a. Write area indexes (Layer 3)
 
-For each domain, create `.kb/indexes/<area>.md` following [templates/index.template.md](../../templates/index.template.md).
+For each domain, create `.kb/indexes/<area>.md` following [templates/index.template.md](templates/index.template.md).
 
 - Maximum 300 tokens. Measure. If you overshoot, split the area or drop signposts.
 - Sections: what the area covers, when to enter it, list of leaves with one-line descriptions, optional "see also".
 
 #### 3b. Write `_root.md`
 
-Create `.kb/indexes/_root.md` following [templates/_root.template.md](../../templates/_root.template.md).
+Create `.kb/indexes/_root.md` following [templates/_root.template.md](templates/_root.template.md).
 
 - Maximum 300 tokens.
 - One line per area: pointer + one-sentence description.
@@ -103,7 +103,7 @@ git -C <corpus-root> rev-parse HEAD
 date -u +"%Y-%m-%dT%H:%M:%SZ"
 ```
 
-Write to `.kb/.kb-state.json` with `schema_version: 1`. Shape: [templates/.kb-state.template.json](../../templates/.kb-state.template.json).
+Write to `.kb/.kb-state.json` with `schema_version: 1`. Shape: [templates/.kb-state.template.json](templates/.kb-state.template.json).
 
 If the corpus is not a git repo, set `last_linted_sha` to the string `"no-git"` and note this to the user — `kb-refresh` and `kb-check-drift` will not work until the corpus is in git.
 
@@ -129,6 +129,6 @@ See [references/failure-modes.md](references/failure-modes.md): building by dire
 - Semantic grouping rules: [references/semantic-grouping.md](references/semantic-grouping.md)
 - Subagent prompt and contract: [references/subagent-prompt.md](references/subagent-prompt.md)
 - Failure modes: [references/failure-modes.md](references/failure-modes.md)
-- Pattern rationale: [docs/concept.md](../../docs/concept.md)
-- Navigation rules: [docs/navigation-rules.md](../../docs/navigation-rules.md)
-- Templates: [templates/](../../templates/)
+- Pattern rationale: [docs/concept.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/concept.md)
+- Navigation rules: [docs/navigation-rules.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/navigation-rules.md)
+- Templates: [templates/](templates/)

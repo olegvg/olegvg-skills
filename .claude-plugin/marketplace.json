@@ -8,13 +8,14 @@
   "plugins": [
     {
       "name": "olegvg-skills",
-      "description": "Umbrella package for all grouped OlegVG agent skills",
-      "version": "0.7.0",
+      "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
+      "version": "0.8.0",
       "source": "./",
-      "strict": false,
+      "strict": true,
       "author": {
         "name": "Oleg Gaidukov",
-        "email": "ogaidukov@gmail.com"
+        "email": "ogaidukov@gmail.com",
+        "url": "https://github.com/olegvg"
       },
       "skills": [
         "./skills/kb-build",
@@ -23,7 +24,9 @@
         "./skills/kb-check-drift",
         "./skills/kb-record-decision",
         "./skills/kb-maintain",
-        "./skills/simplify-code"
+        "./skills/simplify-code",
+        "./skills/mobile-test-environments",
+        "./skills/audit-state-machines"
       ],
       "commands": [
         "./commands/kb-build.md",
@@ -32,47 +35,57 @@
         "./commands/kb-refresh.md",
         "./commands/kb-record-decision.md",
         "./commands/kb-maintain.md"
+      ],
+      "homepage": "https://github.com/olegvg/olegvg-skills",
+      "repository": "https://github.com/olegvg/olegvg-skills",
+      "license": "MIT",
+      "keywords": [
+        "knowledge-base",
+        "agents",
+        "skills",
+        "documentation",
+        "progressive-disclosure",
+        "context-management",
+        "codebase-navigation",
+        "core-dev",
+        "code-cleanup",
+        "refactoring"
       ]
     },
     {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.7.0",
-      "source": "./",
-      "strict": false,
+      "version": "0.8.0",
+      "source": "./skills",
+      "strict": true,
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
       },
       "skills": [
-        "./skills/kb-build",
-        "./skills/kb-query",
-        "./skills/kb-refresh",
-        "./skills/kb-check-drift",
-        "./skills/kb-record-decision",
-        "./skills/kb-maintain"
+        "./kb-build",
+        "./kb-query",
+        "./kb-refresh",
+        "./kb-check-drift",
+        "./kb-record-decision",
+        "./kb-maintain"
       ],
-      "commands": [
-        "./commands/kb-build.md",
-        "./commands/kb-query.md",
-        "./commands/kb-check-drift.md",
-        "./commands/kb-refresh.md",
-        "./commands/kb-record-decision.md",
-        "./commands/kb-maintain.md"
-      ]
+      "commands": []
     },
     {
       "name": "core-dev",
-      "description": "Portable core development skills for cleanup and implementation hygiene",
-      "version": "0.7.0",
-      "source": "./",
-      "strict": false,
+      "description": "Portable development skills for code cleanup, mobile testing, and state-machine audits",
+      "version": "0.8.0",
+      "source": "./skills",
+      "strict": true,
       "author": {
         "name": "Oleg Gaidukov",
         "email": "ogaidukov@gmail.com"
       },
       "skills": [
-        "./skills/simplify-code"
+        "./simplify-code",
+        "./mobile-test-environments",
+        "./audit-state-machines"
       ],
       "commands": []
     },
@@ -86,5 +99,9 @@
         "email": "ogaidukov@gmail.com"
       }
     }
-  ]
+  ],
+  "metadata": {
+    "version": "0.8.0",
+    "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup."
+  }
 }

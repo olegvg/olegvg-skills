@@ -7,119 +7,157 @@
 ## Что внутри
 
 - **Группа `kb-for-agents`** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
-- **Группа `core-dev`** — `simplify-code`, переносимый skill для поведенчески безопасной чистки реализации, адаптированный из workflow Claude Code `/simplify`.
+- **Группа `core-dev`** — `simplify-code` для безопасной чистки реализации, `mobile-test-environments` для Android/iOS и Appium и `audit-state-machines` для аудита неявных переходов состояний со ссылками на код. Инструкции для мобильных устройств загружаются по платформе. Диагностика не требует дополнительных Python-пакетов, Maestro необязателен.
 - **Umbrella `olegvg-skills`** — все группы root-навыков этого репозитория.
 - **Плагин `transcribing-audio` (Claude Code и Codex)** — локальный или OpenAI ASR, диаризация спикеров, таймкоды слов и возобновляемая обработка. Устанавливается отдельно, потому что содержит собственный Python runtime и зависимости.
-- **Команды Claude Code** — KB-only тонкие обёртки над навыками. Marketplace-плагины добавляют namespace, например `/kb-for-agents:kb-build`; `core-dev` не содержит command shims. Через `npx skills add` они недоступны.
+- **Команды Claude Code** — конкретные группы предоставляют нативные команды навыков, например `/kb-for-agents:kb-build`. Umbrella также сохраняет KB-обёртки совместимости в `commands/`; у `core-dev` их нет. Skills CLI устанавливает нативные навыки без этих обёрток.
 - **Шаблоны** — стартовые заготовки для индексов, саммари, решений, `_root.md`, состояния. Шаги для ручной сборки см. в [templates/README.md](templates/README.md).
 - **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия обновления](docs/refresh-strategy.md).
 
 ## Установка
 
-### Любой агент через `npx skills add` (Vercel Skills CLI)
+Выбери один способ установки для каждого агента и workspace, чтобы не получить
+дубли навыков. Root-навыки лежат в `skills/`; `transcribing-audio` устанавливается
+отдельным плагином со своим Python runtime и не входит в umbrella.
 
-Root-навыки соответствуют спецификации [agentskills.io](https://agentskills.io) и устанавливаются в Claude Code, Codex, Cursor и другие агенты через [`skills` CLI](https://github.com/vercel-labs/skills). Интерактивный picker показывает конкретные группы `kb-for-agents` и `core-dev`; чтобы поставить все root-навыки, выбери обе группы. Для неинтерактивной установки используй явный список `--skill`. Umbrella-установка делается через `--skill '*'`, потому что CLI сейчас привязывает каждый skill только к одной видимой группе.
+### Skills CLI через Bun или Node.js
+
+Запускай команды из нужного проекта. `install` — алиас `add`; любую команду
+`bunx skills@latest install` можно выполнить как `npx skills@latest add`.
 
 ```bash
-# Посмотреть сгруппированные skills в репозитории
-npx skills add olegvg/olegvg-skills --list
+# Посмотреть удалённые или локальные навыки без установки.
+bunx skills@latest install olegvg/olegvg-skills --list
+bunx skills@latest install ./olegvg-skills --list
 
-# Установить группу kb-for-agents
-npx skills add olegvg/olegvg-skills \
-  --skill kb-build \
-  --skill kb-query \
-  --skill kb-refresh \
-  --skill kb-check-drift \
-  --skill kb-record-decision \
-  --skill kb-maintain
+# Выбрать навыки и агентов; по умолчанию установка в текущий проект.
+bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex claude-code
 
-# Установить группу core-dev
-npx skills add olegvg/olegvg-skills --skill simplify-code
+# Установить KB-группу.
+bunx skills@latest install olegvg/olegvg-skills --skill kb-build kb-query kb-refresh kb-check-drift kb-record-decision kb-maintain --agent codex
 
-# Установить все root-навыки неинтерактивно
-npx skills add olegvg/olegvg-skills --skill '*'
+# Все root-навыки; интерактивно можно выбрать обе группы.
+bunx skills@latest install olegvg/olegvg-skills --skill '*'
 
-# Установить core-dev в Codex глобально
-npx skills add olegvg/olegvg-skills --skill simplify-code -a codex -g -y
-
-# Установить сразу в несколько агентов
-npx skills add olegvg/olegvg-skills -a claude-code -a codex -a cursor
+# Явная глобальная установка без вопросов.
+bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex --global --yes
 ```
 
-Этот путь устанавливает **только root-навыки**, без слэш-команд Claude Code и самостоятельных плагинов. `transcribing-audio` также требует встроенный Python runtime, поэтому устанавливай его через plugin marketplace. Навыки всё равно срабатывают по триггер-фразам — см. поле `description` каждого навыка для русских и английских фраз.
+Picker показывает `kb-for-agents` и `core-dev`; выбери обе группы для umbrella.
+Устанавливается полный каталог навыка с references и локальными шаблонами.
+Этот путь не устанавливает command shims из `commands/` и аудио-runtime.
+Аудионавык скрыт из обычного поиска CLI: отдельно от runtime он не работает.
 
-### Claude Code plugin marketplace
+После публикации соответствующего тега можно закрепить версию источника:
 
-```
-/plugin marketplace add olegvg/olegvg-skills
-/plugin install kb-for-agents@olegvg-skills
-/plugin install core-dev@olegvg-skills
-/plugin install olegvg-skills@olegvg-skills
-/plugin install transcribing-audio@olegvg-skills
-```
+```bash
+bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.8.0 --skill audit-state-machines --agent codex
 
-Используй `kb-for-agents`, когда нужны KB command shims вместе с KB skills, `core-dev` для переносимого cleanup skill или `olegvg-skills` для всех root-навыков репозитория. `transcribing-audio` — самостоятельный плагин с собственным Python runtime; он не входит в umbrella и устанавливается отдельной командой выше.
-
-После установки или обновления плагина выполни `/reload-plugins`. Claude Code добавляет namespace к командам и навыкам: `kb-for-agents` предоставляет `/kb-for-agents:kb-build` … `/kb-for-agents:kb-maintain`; у `olegvg-skills` те же KB shims под `/olegvg-skills:`; в `core-dev` command shims намеренно отсутствуют. Для расшифровки аудио вызови `/transcribing-audio:transcribing-audio` или опиши задачу обычным языком.
-
-В отличие от picker в Vercel Skills CLI, в Claude Code plugin marketplace есть настоящий umbrella target: `olegvg-skills@olegvg-skills`.
-
-### transcribing-audio в Claude Code
-
-`transcribing-audio` — самостоятельный плагин вне umbrella `olegvg-skills`, поэтому устанавливай его отдельно:
-
-```
-/plugin marketplace add olegvg/olegvg-skills
-/plugin install transcribing-audio@olegvg-skills
-/reload-plugins
+# Обновить выбранную проектную установку до доступных upstream-изменений.
+bunx skills@latest update simplify-code --project
 ```
 
-Требования (macOS или Linux; Windows не поддерживается): Python 3.13, `uv`, `ffmpeg` и `ffprobe` в `PATH`; для локальной диаризации спикеров также нужен одобренный доступ к Hugging Face через `HF_TOKEN`. Плагин поставляется с собственным runtime — при первом запуске он проверяет хост и создаёт кэшируемый плагин-локальный `.venv`, поэтому первая расшифровка идёт дольше, пока разрешаются зависимости.
+Чтобы сохранить точную версию, повторно используй закреплённый источник.
+Поддерживаемые агенты и scope обновления описаны в
+[Skills CLI](https://github.com/vercel-labs/skills).
 
-Затем вызови его явно или опиши задачу обычным языком:
+### Claude Code marketplace и локальный запуск
 
+```bash
+claude plugin marketplace add olegvg/olegvg-skills --scope project
+claude plugin install kb-for-agents@olegvg-skills --scope project
+claude plugin install core-dev@olegvg-skills --scope project
+# Либо umbrella вместо отдельных групп.
+claude plugin install olegvg-skills@olegvg-skills --scope project
+# Независимый runtime-плагин ставится отдельно.
+claude plugin install transcribing-audio@olegvg-skills --scope project
+
+claude plugin marketplace update olegvg-skills
+claude plugin update olegvg-skills@olegvg-skills --scope project
+claude plugin update transcribing-audio@olegvg-skills --scope project
 ```
-/transcribing-audio:transcribing-audio /absolute/path/meeting.wav
+
+При установке отдельных групп обновляй соответствующую группу. После обновления
+перезапусти Claude Code или выполни `/reload-plugins`. Интерактивные эквиваленты:
+`/plugin marketplace add olegvg/olegvg-skills` и
+`/plugin install <group>@olegvg-skills`.
+
+Запуск checkout без установки:
+
+```bash
+claude --plugin-dir ./olegvg-skills
+claude --plugin-dir ./olegvg-skills/plugins/transcribing-audio
 ```
 
-Аудио по умолчанию остаётся локальным; перед отправкой любого фрагмента в OpenAI ASR запрашивается явное согласие.
+KB-команды: `/kb-for-agents:kb-build` или `/olegvg-skills:kb-build`;
+у `core-dev` нет command shims. Конкретные группы загружают нативные навыки;
+umbrella сохраняет прежние KB shims. Аудио:
+`/transcribing-audio:transcribing-audio /absolute/path/meeting.wav`.
+См. [документацию Claude](https://code.claude.com/docs/en/plugins).
 
-### Codex marketplace
-
-В репозитории есть два Codex-плагина: umbrella `olegvg-skills` в корне репозитория и самостоятельный `transcribing-audio` в `plugins/transcribing-audio/`.
-
-- `.codex-plugin/plugin.json` и `plugins/transcribing-audio/.codex-plugin/plugin.json` описывают корни двух плагинов.
-- `.agents/plugins/marketplace.json` индексирует оба плагина в self-hosted Codex marketplace.
-
-Для установки отдельных групп root-навыков в Codex используй Vercel Skills CLI с `-a codex`. Чтобы установить один или оба полных плагина из marketplace:
+### Codex marketplace: удалённый, локальный, закреплённый
 
 ```bash
 codex plugin marketplace add olegvg/olegvg-skills
 codex plugin add olegvg-skills@olegvg-skills
 codex plugin add transcribing-audio@olegvg-skills
+
+# Подготовленный локальный checkout вместо удалённого источника.
+codex plugin marketplace add ./olegvg-skills
+
+# Либо закрепить существующий опубликованный тег удалённого marketplace.
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.8.0
+
+# Обновить marketplace и кэши установленных плагинов.
+codex plugin marketplace upgrade olegvg-skills
 ```
 
-`transcribing-audio` хранит skill, runtime и зависимости вместе в `plugins/transcribing-audio/`; он не входит в umbrella-плагин.
+Выбери один источник marketplace. `marketplace upgrade` работает с Git-источниками;
+для локального checkout обнови файлы и повтори `codex plugin add`, чтобы обновить
+кэш плагина. После установки или обновления открой новую
+сессию. Явные вызовы: `$olegvg-skills:kb-build`, `$olegvg-skills:kb-query`,
+`$olegvg-skills:simplify-code`, `$transcribing-audio:transcribing-audio`.
+Для установки отдельной группы в Codex используй Skills CLI с `--agent codex`.
+См. [официальную документацию](https://developers.openai.com/plugins/build/plugins).
 
-После установки или обновления плагина Codex начни новую сессию. Codex может выбрать подходящий skill автоматически, либо вызови его явно: `$olegvg-skills:kb-build`, `$olegvg-skills:kb-query`, `$olegvg-skills:simplify-code` или `$transcribing-audio:transcribing-audio`. Перед загрузкой аудио в OpenAI ASR аудионавык запросит явное согласие.
+### Зависимости transcribing-audio
 
-### Claude Desktop (отдельные навыки)
+Отдельный аудиоплагин требует macOS или Linux, Python 3.13, `uv`, `ffmpeg` и
+`ffprobe`. Для локальной диаризации нужен одобренный доступ Hugging Face через
+`HF_TOKEN`. Первый запуск создаёт кэшируемую плагин-локальную `.venv`.
+По умолчанию аудио остаётся локальным; OpenAI ASR требует явного согласия перед
+отправкой любого фрагмента. Root-навыкам эти зависимости не нужны.
 
-Claude Desktop не загружает плагины Claude Code, поэтому runtime-навыки выкладываются отдельными zip-архивами на странице [Releases](https://github.com/olegvg/olegvg-skills/releases). Скачай нужные и загрузи через UI навыков Claude Desktop:
+### ZIP и Claude Desktop
 
-- `kb-build-<version>.zip`
-- `kb-query-<version>.zip`
-- `kb-refresh-<version>.zip`
-- `kb-check-drift-<version>.zip`
-- `simplify-code-<version>.zip`
+После публикации соответствующего релиза скачай архивы со страницы
+[Releases](https://github.com/olegvg/olegvg-skills/releases).
+`olegvg-skills-plugin-<version>.zip` содержит манифесты, root-навыки, команды,
+документацию и независимый аудио-runtime. Распакуй и используй локальный
+marketplace или `--plugin-dir`, как показано выше. Переносимый корневой
+`plugin.json` использует Agent Plugins 1.0.0; манифесты Codex/Claude обеспечивают
+совместимость с хостами.
 
-К каждому релизу приложен `SHA256SUMS` — проверка через `sha256sum -c SHA256SUMS`.
+Отдельные `<skill>-<version>.zip` содержат SKILL.md, все references, локальные
+шаблоны/метаданные и LICENSE. Через desktop UI загружаются пять навыков:
+`kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `simplify-code`.
+Архивы `kb-record-decision` и `kb-maintain` предназначены для coding-агентов с
+поддержкой планов, orchestration и необходимых соседних навыков.
+`mobile-test-environments` требует хост с доступом к локальным устройствам/CLI и отдельно установленные SDK/драйверы. Аудио доступно
+только вместе с полным runtime-плагином, отдельного skill-only ZIP для него нет.
 
-`kb-record-decision` и `kb-maintain` — только для Claude Code: запись решений опирается на формат plan-документов и orchestration. `transcribing-audio` тоже не публикуется desktop-zip'ом — его навыку нужен встроенный Python runtime, поэтому ставь его через plugin marketplace Claude Code или Codex.
+В релиз входят notes, сгенерированный changelog и SHA256SUMS:
+
+```bash
+shasum -a 256 -c SHA256SUMS    # macOS; на Linux используй sha256sum
+```
+
+Локальная подготовка не публикует теги, архивы релиза или запись в каталоге.
+Воспроизводимая сборка и проверки описаны в [release guide](docs/releasing.md).
 
 ## Быстрый старт
 
-После установки `kb-for-agents` в Claude Code и выполнения `/reload-plugins` используй KB command shims в сессии, открытой в корне вашего корпуса:
+После установки `kb-for-agents` в Claude Code и выполнения `/reload-plugins` используй команды KB-навыков в сессии, открытой в корне вашего корпуса:
 
 ```
 /kb-for-agents:kb-build .
@@ -147,6 +185,17 @@ $olegvg-skills:kb-query where are fees charged?
 $transcribing-audio:transcribing-audio /absolute/path/meeting.wav
 ```
 
+Для мобильного окружения вызови `$mobile-test-environments` (или
+`/core-dev:mobile-test-environments` в Claude-группе), например:
+«Покажи Android-эмуляторы и виртуальные iPhone, не прерывая текущие тесты».
+SDK и драйверы устанавливаются отдельно; навык не загружает их автоматически.
+
+Для аудита неявных переходов состояний вызови `$audit-state-machines` после
+установки отдельного навыка, `$olegvg-skills:audit-state-machines` в плагине Codex
+или `/core-dev:audit-state-machines` в группе Claude Code. Открой сессию в корне
+приложения и укажи модуль, если нужно сузить охват аудита.
+Принципы проверки описаны в [обосновании скилла](docs/audit-state-machines.md).
+
 ## Как это работает
 
 Плагин создаёт директорию `.kb/` **внутри вашего корпуса** (не внутри плагина). У неё три слоя плюс хранилище решений:
@@ -173,6 +222,10 @@ $transcribing-audio:transcribing-audio /absolute/path/meeting.wav
 
 - Claude Code или Codex с поддержкой skills.
 - Корпус, который вы хотите задокументировать. Корпус с git-историей настоятельно рекомендуется — `/kb-refresh` и `/kb-check-drift` оба зависят от git-истории.
+
+## Приватность и сопровождение
+
+См. [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md) и [release guide](docs/releasing.md).
 
 ## Лицензия
 

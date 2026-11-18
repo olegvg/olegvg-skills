@@ -104,7 +104,7 @@ For each affected summary, work in this order:
 
 1. **Read the diff hunks first**, not the full file. Use `git -C <corpus-root> diff <base_sha>..HEAD -- <source_file>` to see exactly what changed. Most refresh edits can be made from the diff alone — symbol renames, new fields, removed flags, changed defaults are all visible in the hunk.
 2. Open the full source file **only when** you need to verify a specific line number for the summary's `## References` block, or when the diff context is too thin to understand the change. Do not pre-open all changed files "to ground updates" — that is the failure mode that blows the context budget.
-3. Patch the summary with surgical `Edit` calls. Prefer targeted edits over full rewrites — the [summary stability contract in docs/concept.md](../../docs/concept.md) keeps line numbers in `## References` blocks so prose can stay unchanged when only line numbers shifted.
+3. Patch the summary with surgical `Edit` calls. Prefer targeted edits over full rewrites — the [summary stability contract in docs/concept.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/concept.md) keeps line numbers in `## References` blocks so prose can stay unchanged when only line numbers shifted.
 4. Keep one-topic-per-file discipline. If a summary's scope has grown past one topic, split it and update the parent index. If a new topic deserves its own summary (e.g. a new module that does not fit any existing leaf), write a new summary file rather than overloading an existing one.
 
 ### 5b. Update summaries via subagent dispatch (multi-area scope)
@@ -177,6 +177,6 @@ See [references/failure-modes.md](references/failure-modes.md): state file missi
 - Diff and grep recipes: [references/diff-and-grep-recipes.md](references/diff-and-grep-recipes.md)
 - Subagent dispatch contract for multi-area refresh: [references/subagent-dispatch.md](references/subagent-dispatch.md)
 - Failure modes: [references/failure-modes.md](references/failure-modes.md)
-- Pattern rationale: [docs/concept.md](../../docs/concept.md)
-- Refresh rationale: [docs/refresh-strategy.md](../../docs/refresh-strategy.md)
+- Pattern rationale: [docs/concept.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/concept.md)
+- Refresh rationale: [docs/refresh-strategy.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/refresh-strategy.md)
 - Drift-first pass: invoke the `kb-check-drift` skill (or `/kb-check-drift`).

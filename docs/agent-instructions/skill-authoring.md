@@ -15,7 +15,7 @@ Use this before adding or editing skills, groups, command shims, or skill packag
 1. Create `skills/<name>/SKILL.md` with frontmatter: `name`, `description`, and trigger phrases.
 2. Add `skills/<name>/agents/openai.yaml` only when Codex-specific interface metadata is useful.
 3. Create `commands/<name>.md` only when a Claude Code slash-command shim is required for migration or compatibility. Keep it as a thin wrapper invoking the skill with `$ARGUMENTS`.
-4. Assign the skill to exactly one concrete group in `.claude-plugin/marketplace.json`.
+4. Assign the skill to exactly one concrete group in `.claude-plugin/marketplace.json`, with a skill path relative to that group's `./skills` source.
 5. Also add the skill to the `olegvg-skills` umbrella entry in `.claude-plugin/marketplace.json`.
 6. Add the skill to the matching group in `skills.sh.json`.
 7. If the skill changes the user-visible surface, update [../../README.md](../../README.md), [../../README.ru.md](../../README.ru.md), and [../../AGENTS.md](../../AGENTS.md) routing/group summaries as needed.
@@ -23,7 +23,7 @@ Use this before adding or editing skills, groups, command shims, or skill packag
 
 ## Adding a New Group
 
-1. Add a concrete group entry to `.claude-plugin/marketplace.json` with `name`, `description`, `version`, `source`, `author`, `strict: false`, and explicit `skills` and `commands` arrays. When several groups use `source: "./"`, this prevents the default `commands/` scan from leaking command shims into an unrelated group; use `"commands": []` for a group with no shims.
+1. Add a concrete group entry to `.claude-plugin/marketplace.json` with `name`, `description`, `version`, `source: "./skills"`, `author`, `strict: true`, explicit skill paths relative to that source (for example `./simplify-code`) and `"commands": []`. A group has no own manifest and uses its marketplace name for native skill commands; the umbrella alone retains root command shims. Do not use root source `./` for concrete groups: it inherits the umbrella name and default commands.
 2. Keep the `olegvg-skills` umbrella entry first, then list concrete groups after it.
 3. Add the group to `skills.sh.json` so website grouping matches CLI grouping.
 4. Update README install examples and the install group table in `AGENTS.md`.
@@ -40,6 +40,6 @@ Use `plugins/<name>/` for a capability that cannot work as a root skill alone, s
 ## Current Concrete Groups
 
 - `kb-for-agents`: `kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `kb-record-decision`, `kb-maintain`.
-- `core-dev`: `simplify-code`.
+- `core-dev`: `simplify-code`, `mobile-test-environments`, `audit-state-machines`.
 
 General-purpose skills do not belong in `kb-for-agents`.

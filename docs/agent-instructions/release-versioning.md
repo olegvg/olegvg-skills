@@ -1,69 +1,40 @@
-# Release Versioning
+# Release versioning
 
-Use this before bumping versions, tagging releases, or changing release packaging.
+Read [the release guide](../releasing.md) before changing packaging or preparing a
+release. Tools use Python 3.10+ standard library; runtime skills do not depend on
+the build tools.
 
-## Version Surfaces
+## Version surfaces
 
-Manifest versions use plain semver without a `v` prefix. Update these together:
+Root `plugin.json` is canonical. Keep numeric X.Y.Z synchronized in both umbrella
+host manifests, the umbrella/concrete-group Claude marketplace entries, Codex
+umbrella marketplace metadata and Claude marketplace metadata.version.
 
-- `.claude-plugin/plugin.json`
-- `.codex-plugin/plugin.json`
-- the umbrella and concrete-group `plugins[].version` entries in `.claude-plugin/marketplace.json`
+The audio plugin versions independently. Its Claude manifest and marketplace
+entry share the base version; its Codex manifest can retain Codex build metadata.
+Do not change its version as part of an umbrella release.
 
-The standalone `transcribing-audio` plugin versions independently of the umbrella. Keep its released base version synchronized between `plugins/transcribing-audio/.claude-plugin/plugin.json` and the `transcribing-audio` entry in `.claude-plugin/marketplace.json`. The sibling Codex manifest uses that same base version and may append Codex-specific build metadata, for example `0.1.0+codex.20260711221133`; update the base version there as part of the standalone-plugin release. Leave all three unchanged during umbrella bumps.
+## Release boundary
 
-GitHub releases use tags with a `v` prefix, such as `v0.6.0`. The Claude Desktop release workflow derives zip artifact versions from the tag name:
+A prepared version is not a published release. Version bumps, commits, tags,
+pushes and publication are separate operations requiring explicit user release
+authorization. Never retarget an existing tag without explicit repair approval.
+After an authorized release commit, create and push the matching annotated
+`vX.Y.Z` tag; the release workflow validates that exact state. No AI coauthor
+trailers should be added.
 
-```bash
-VERSION="${TAG#v}"
-```
+`.github/workflows/release.yml` replaces the old desktop-only shell packager.
+It builds the full runtime ZIP, all nine portable root skill ZIPs, notes and
+checksums. The five desktop-compatible skill asset names are preserved;
+`kb-record-decision` and `kb-maintain` require capable agent hosts and companion
+skills. `mobile-test-environments` requires a host with access to local devices and
+installed mobile tools. Audio is never a standalone skill ZIP.
 
-Every version bump is incomplete until a matching git tag exists and is pushed. For manifest version `X.Y.Z`, create tag `vX.Y.Z` on the commit that contains the bump and push that tag. The release workflow is wired to tag pushes:
+## Checklist
 
-```yaml
-on:
-  push:
-    tags: ['v*']
-```
-
-Use annotated tags for releases:
-
-```bash
-git tag -a vX.Y.Z -m "vX.Y.Z"
-git push origin vX.Y.Z
-```
-
-Do not create the tag before committing the version bump. Do not move or replace an existing release tag unless the user explicitly asks for release repair.
-
-`.agents/plugins/marketplace.json` and `skills.sh.json` currently do not carry release version fields. If version fields are added there later, include them in the same bump.
-
-## Release Packaging
-
-`.github/workflows/release-desktop-skills.yml` packages standalone Claude Desktop skills. Keep its `SKILLS=(...)` list aligned with README promises.
-
-Current desktop-packaged skills:
-
-- `kb-build`
-- `kb-query`
-- `kb-refresh`
-- `kb-check-drift`
-- `simplify-code`
-
-`kb-record-decision` and `kb-maintain` are intentionally excluded because they depend on plan-document layout or orchestration. The `transcribing-audio` skill is also excluded: it requires the plugin runtime in `plugins/transcribing-audio/` and cannot work as a skill-only zip.
-
-## Bump Checklist
-
-1. Update all manifest version fields together.
-2. Check release workflow package list if any skill compatibility changed.
-3. Search for old and new versions:
-
-```bash
-rg --hidden -n --glob '!.git/**' '<old-version>|<new-version>'
-```
-
-4. Validate JSON manifests.
-5. Run `git diff --check`.
-6. If installer-facing metadata changed, run `npx skills add ./ --list`.
-7. Commit the version bump.
-8. Create and push the matching annotated git tag, e.g. `git tag -a vX.Y.Z -m "vX.Y.Z"` then `git push origin vX.Y.Z`.
-9. Confirm the GitHub release workflow ran for the pushed tag.
+1. Review CHANGELOG.md Unreleased and the explicit scripts/release_inventory.py.
+2. Update all umbrella metadata versions together when preparing a new release.
+3. Run validator, release tests, native checks, installer smoke and preview build.
+4. Check complete archive contents, deterministic bytes and every checksum.
+5. Only with explicit release authorization: commit, create/push the annotated
+   matching tag, and confirm the release workflow/publication outcome.

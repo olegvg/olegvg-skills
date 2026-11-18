@@ -1,6 +1,8 @@
 ---
 name: transcribing-audio
 description: Transcribe audio recordings into word-timestamped, speaker-labelled JSON and readable text with local or OpenAI ASR plus local diarization. Use for voice memos, meetings, interviews, calls, multi-speaker recordings, transcription requests, diarization requests, speaker labels, subtitles, resumable audio processing, or suspected ASR repetition and hallucination loops.
+metadata:
+  internal: true
 ---
 
 # Transcribing Audio

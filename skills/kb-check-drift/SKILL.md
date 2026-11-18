@@ -104,5 +104,5 @@ Do not touch `.kb/.kb-state.json`. Drift remains open until `kb-refresh` resolve
 
 - Heuristic signals and tuning: [references/heuristic.md](references/heuristic.md)
 - Drift report artifact schema: [references/drift-report-artifact.md](references/drift-report-artifact.md)
-- Refresh strategy rationale: [docs/refresh-strategy.md](../../docs/refresh-strategy.md)
+- Refresh strategy rationale: [docs/refresh-strategy.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/refresh-strategy.md)
 - Refresh: invoke the `kb-refresh` skill (or `/kb-refresh`).

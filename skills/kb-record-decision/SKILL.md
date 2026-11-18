@@ -119,5 +119,5 @@ See [references/failure-modes.md](references/failure-modes.md): plan covers no r
 - Decision template and field rules: [references/decision-template.md](references/decision-template.md)
 - Reading large plans: [references/large-plan-strategy.md](references/large-plan-strategy.md)
 - Failure modes: [references/failure-modes.md](references/failure-modes.md)
-- Pattern rationale: [docs/concept.md](../../docs/concept.md) (in this repo) or `templates/README.md` (in the user corpus, when bundled).
+- Pattern rationale: [docs/concept.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/concept.md).
 - Drift surfacing: invoke the `kb-check-drift` skill (or `/kb-check-drift`).

@@ -103,4 +103,4 @@ Report:
 - Drift check: invoke the `kb-check-drift` skill (or `/kb-check-drift`).
 - Refresh: invoke the `kb-refresh` skill (or `/kb-refresh`).
 - Decision recording: invoke the `kb-record-decision` skill (or `/kb-record-decision`).
-- Refresh strategy: [docs/refresh-strategy.md](../../docs/refresh-strategy.md)
+- Refresh strategy: [docs/refresh-strategy.md](https://github.com/olegvg/olegvg-skills/blob/master/docs/refresh-strategy.md)

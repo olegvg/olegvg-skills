@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobile Test Environments"
+  short_description: "Manage Android, iOS and Appium test environments"
+  default_prompt: "Use $mobile-test-environments to inspect and prepare the requested mobile test environment while preserving other running sessions."

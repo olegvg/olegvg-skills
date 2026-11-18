@@ -53,8 +53,8 @@ Your task:
      discipline.
   3. If a new topic appears that does not fit any existing leaf
      (e.g. a new module, a new subsystem), write a new summary file
-     at .kb/summaries/<area>/<new-leaf>.md. Follow
-     templates/summary.template.md.
+     at .kb/summaries/<area>/<new-leaf>.md. Match the existing area summaries: title, prose organized by topic,
+     and a final `## References` block with source paths and line ranges.
   4. If an existing summary's scope has grown past one topic, split
      it into two leaves and note the split in your brief so the main
      agent can update the area index.
