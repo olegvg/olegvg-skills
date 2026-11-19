@@ -2,8 +2,7 @@
 
 SKILLS = (
     "kb-build", "kb-query", "kb-refresh", "kb-check-drift", "kb-record-decision",
-    "kb-maintain", "simplify-code", "mobile-test-environments", "audit-state-machines",
-    "deep-code-review",
+    "kb-maintain", "simplify-code", "mobile-test-environments", "deep-code-review",
 )
 DESKTOP_SKILLS = ("kb-build", "kb-query", "kb-refresh", "kb-check-drift", "simplify-code")
 EXECUTABLE_PATHS = {"plugins/transcribing-audio/scripts/transcribe_audio.py"}
@@ -69,7 +68,6 @@ PUBLIC_PATHS = (
     'plugins/transcribing-audio/skills/transcribing-audio/references/runtime-and-backends.md',
     'plugins/transcribing-audio/uv.lock',
     'skills.sh.json',
-    'skills/audit-state-machines/SKILL.md',
     'skills/deep-code-review/SKILL.md',
     'skills/deep-code-review/references/access-control.md',
     'skills/deep-code-review/references/compatibility.md',

@@ -40,6 +40,6 @@ Use `plugins/<name>/` for a capability that cannot work as a root skill alone, s
 ## Current Concrete Groups
 
 - `kb-for-agents`: `kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `kb-record-decision`, `kb-maintain`.
-- `core-dev`: `simplify-code`, `mobile-test-environments`, `audit-state-machines`, `deep-code-review`.
+- `core-dev`: `simplify-code`, `mobile-test-environments`, `deep-code-review`.
 
 General-purpose skills do not belong in `kb-for-agents`.

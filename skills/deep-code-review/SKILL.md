@@ -1,6 +1,6 @@
 ---
 name: deep-code-review
-description: 'Use when the user requests a deep code review of a diff, PR, working tree, or named code path, or a focused audit of behavior and regressions. Triggers include "deep code review", "глубокое ревью кода", and "аудит поведения кода".'
+description: 'Use when the user requests a deep code review of a diff, PR, working tree, or named code path, or a focused audit of behavior, regressions, or implicit state machines. Triggers include "deep code review", "find implicit state machines", "audit state transitions", "глубокое ревью кода", "аудит поведения кода", "найди неявные конечные автоматы", and "аудит переходов состояний".'
 ---
 
 # Deep code review

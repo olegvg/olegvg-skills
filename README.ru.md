@@ -7,7 +7,7 @@
 ## Что внутри
 
 - **Группа `kb-for-agents`** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
-- **Группа `core-dev`** — `simplify-code` для безопасной чистки реализации, `mobile-test-environments` для Android/iOS и Appium, `deep-code-review` для глубокого ревью изменений и участков кода и `audit-state-machines` для аудита неявных переходов состояний. Инструкции для мобильных устройств загружаются по платформе. Диагностика не требует дополнительных Python-пакетов, Maestro необязателен.
+- **Группа `core-dev`** — `simplify-code` для безопасной чистки реализации, `mobile-test-environments` для Android/iOS и Appium, `deep-code-review` для глубокого ревью изменений и участков кода, включая аудит неявных переходов состояний. Инструкции для мобильных устройств загружаются по платформе. Диагностика не требует дополнительных Python-пакетов, Maestro необязателен.
 - **Umbrella `olegvg-skills`** — все группы root-навыков этого репозитория.
 - **Плагин `transcribing-audio` (Claude Code и Codex)** — локальный или OpenAI ASR, диаризация спикеров, таймкоды слов и возобновляемая обработка. Устанавливается отдельно, потому что содержит собственный Python runtime и зависимости.
 - **Команды Claude Code** — конкретные группы предоставляют нативные команды навыков, например `/kb-for-agents:kb-build`. Umbrella также сохраняет KB-обёртки совместимости в `commands/`; у `core-dev` их нет. Skills CLI устанавливает нативные навыки без этих обёрток.
@@ -51,7 +51,7 @@ Picker показывает `kb-for-agents` и `core-dev`; выбери обе �
 После публикации соответствующего тега можно закрепить версию источника:
 
 ```bash
-bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.9.0 --skill deep-code-review --agent codex
+bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
 
 # Обновить выбранную проектную установку до доступных upstream-изменений.
 bunx skills@latest update simplify-code --project
@@ -106,7 +106,7 @@ codex plugin add transcribing-audio@olegvg-skills
 codex plugin marketplace add ./olegvg-skills
 
 # Либо закрепить существующий опубликованный тег удалённого marketplace.
-codex plugin marketplace add olegvg/olegvg-skills --ref v0.9.0
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.0
 
 # Обновить marketplace и кэши установленных плагинов.
 codex plugin marketplace upgrade olegvg-skills
@@ -196,11 +196,10 @@ SDK и драйверы устанавливаются отдельно; нав�
 дерево или участок кода и поведение, которое нужно проверить. См.
 [обоснование подхода](docs/deep-code-review.md).
 
-Для аудита неявных переходов состояний вызови `$audit-state-machines` после
-установки отдельного навыка, `$olegvg-skills:audit-state-machines` в плагине Codex
-или `/core-dev:audit-state-machines` в группе Claude Code. Открой сессию в корне
-приложения и укажи модуль, если нужно сузить охват аудита.
-Принципы проверки описаны в [обосновании скилла](docs/audit-state-machines.md).
+Чтобы провести аудит неявных конечных автоматов, открой сессию в корне
+приложения и попроси `deep-code-review` проверить переходы состояний в нужном
+модуле. Начиная с v0.10.0, методика `audit-state-machines` доступна в
+[руководстве по аудиту жизненных циклов](skills/deep-code-review/references/lifecycles.md).
 
 ## Как это работает
 

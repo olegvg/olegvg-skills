@@ -7,7 +7,7 @@ A grouped personal skill repository for Claude Code, Codex, and agents supported
 ## What's inside
 
 - **`kb-for-agents` group** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
-- **`core-dev` group** — `simplify-code` for behavior-preserving cleanup, `mobile-test-environments` for Android/iOS devices and Appium sessions, `deep-code-review` for in-depth review of diffs and code paths, and `audit-state-machines` for audits of implicit state transitions. Mobile instructions load by platform, with a dependency-free discovery helper. Maestro is optional.
+- **`core-dev` group** — `simplify-code` for behavior-preserving cleanup, `mobile-test-environments` for Android/iOS devices and Appium sessions, `deep-code-review` for in-depth review of diffs and code paths, including implicit state transitions. Mobile instructions load by platform, with a dependency-free discovery helper. Maestro is optional.
 - **`olegvg-skills` umbrella** — all root-skill groups in this repository.
 - **`transcribing-audio` plugin (Claude Code and Codex)** — local or OpenAI ASR, speaker diarization, word timestamps, and resumable processing. It is installed separately because it includes its own Python runtime and dependencies.
 - **Claude Code commands** — concrete groups expose native skill commands, for example `/kb-for-agents:kb-build`. The umbrella also retains KB compatibility shims in `commands/`; `core-dev` has no shims. Skills CLI installs native skills without those wrappers.
@@ -51,7 +51,7 @@ skill is hidden from generic discovery because it cannot run alone.
 After a matching release tag is published, pin a source version:
 
 ```bash
-bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.9.0 --skill deep-code-review --agent codex
+bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
 
 # Update selected project installations to available upstream changes.
 bunx skills@latest update simplify-code --project
@@ -105,7 +105,7 @@ codex plugin add transcribing-audio@olegvg-skills
 codex plugin marketplace add ./olegvg-skills
 
 # Or pin an existing published release tag on the remote marketplace.
-codex plugin marketplace add olegvg/olegvg-skills --ref v0.9.0
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.0
 
 # Refresh the configured marketplace and installed plugin caches.
 codex plugin marketplace upgrade olegvg-skills
@@ -194,11 +194,10 @@ Invoke `$deep-code-review` after a skill-only install,
 working tree, or code path and the behavior you want reviewed. See the
 [review rationale](docs/deep-code-review.md).
 
-To review implicit state transitions, invoke `$audit-state-machines` after a
-skill-only install, `$olegvg-skills:audit-state-machines` in the Codex plugin, or
-`/core-dev:audit-state-machines` in the Claude Code group. Open the session at
-the application root and specify a module to narrow the audit.
-See the [design rationale](docs/audit-state-machines.md).
+To audit implicit state machines, open the session at the application root
+and ask `deep-code-review` to audit state transitions in the module you want to
+review. The [lifecycle audit guide](skills/deep-code-review/references/lifecycles.md)
+carries forward the workflow from `audit-state-machines` as of v0.10.0.
 
 ## How it works
 

@@ -353,8 +353,7 @@ class ReleaseTests(unittest.TestCase):
             for package in (
                 "olegvg-skills-plugin", "kb-build", "kb-query", "kb-refresh",
                 "kb-check-drift", "simplify-code", "kb-record-decision",
-                "kb-maintain", "mobile-test-environments", "audit-state-machines",
-                "deep-code-review",
+                "kb-maintain", "mobile-test-environments", "deep-code-review",
             )
         }
         expected.update(("CHANGELOG.md", "release-notes.md", "SHA256SUMS"))
@@ -383,6 +382,7 @@ class ReleaseTests(unittest.TestCase):
             names = archive.namelist()
             self.assertIn("olegvg-skills-plugin/.codex-plugin/plugin.json", names)
             self.assertIn("olegvg-skills-plugin/skills/kb-build/SKILL.md", names)
+            self.assertNotIn("olegvg-skills-plugin/skills/audit-state-machines/SKILL.md", names)
             self.assertIn("olegvg-skills-plugin/AGENTS.md", names)
             self.assertIn("olegvg-skills-plugin/docs/releasing.md", names)
             self.assertEqual((self.root / "docs/audit-state-machines.md").read_bytes(),

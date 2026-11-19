@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.10.0]
+
+- Removed the standalone `audit-state-machines` skill. Its full audit guide
+  and English and Russian trigger phrases are available through `deep-code-review`.
+
 ## [0.9.0]
 
 - Added `deep-code-review` to `core-dev`. It reviews diffs and code paths using

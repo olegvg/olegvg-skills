@@ -15,7 +15,7 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Coding",
-      "version": "0.9.0",
+      "version": "0.10.0",
       "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
       "author": {
         "name": "Oleg Gaidukov",

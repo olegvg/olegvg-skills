@@ -1,5 +1,9 @@
 # Audit State Machines Rationale
 
+Starting with v0.10.0, ask `deep-code-review` for an implicit state-machine audit.
+The [lifecycle guide](../skills/deep-code-review/references/lifecycles.md) carries
+forward the audit procedure.
+
 Applications often store lifecycle state in flags, status fields, or several layers.
 A change can look valid at one write site while breaking an invariant established
 elsewhere. The audit starts with events and follows the state they read and write.
