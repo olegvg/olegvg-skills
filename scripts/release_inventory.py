@@ -3,6 +3,7 @@
 SKILLS = (
     "kb-build", "kb-query", "kb-refresh", "kb-check-drift", "kb-record-decision",
     "kb-maintain", "simplify-code", "mobile-test-environments", "audit-state-machines",
+    "deep-code-review",
 )
 DESKTOP_SKILLS = ("kb-build", "kb-query", "kb-refresh", "kb-check-drift", "simplify-code")
 EXECUTABLE_PATHS = {"plugins/transcribing-audio/scripts/transcribe_audio.py"}
@@ -31,6 +32,7 @@ PUBLIC_PATHS = (
     'docs/agent-instructions/skill-authoring.md',
     'docs/audit-state-machines.md',
     'docs/concept.md',
+    'docs/deep-code-review.md',
     'docs/navigation-rules.md',
     'docs/refresh-strategy.md',
     'docs/releasing.md',
@@ -68,6 +70,17 @@ PUBLIC_PATHS = (
     'plugins/transcribing-audio/uv.lock',
     'skills.sh.json',
     'skills/audit-state-machines/SKILL.md',
+    'skills/deep-code-review/SKILL.md',
+    'skills/deep-code-review/references/access-control.md',
+    'skills/deep-code-review/references/compatibility.md',
+    'skills/deep-code-review/references/concurrency.md',
+    'skills/deep-code-review/references/contracts.md',
+    'skills/deep-code-review/references/data-flow.md',
+    'skills/deep-code-review/references/delivery.md',
+    'skills/deep-code-review/references/equivalence.md',
+    'skills/deep-code-review/references/lifecycles.md',
+    'skills/deep-code-review/references/module-boundaries.md',
+    'skills/deep-code-review/references/resource-cost.md',
     'skills/kb-build/SKILL.md',
     'skills/kb-build/references/default-exclusions.md',
     'skills/kb-build/references/failure-modes.md',

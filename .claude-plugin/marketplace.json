@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "olegvg-skills",
-      "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
-      "version": "0.8.0",
+      "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
+      "version": "0.9.0",
       "source": "./",
       "strict": true,
       "author": {
@@ -26,7 +26,8 @@
         "./skills/kb-maintain",
         "./skills/simplify-code",
         "./skills/mobile-test-environments",
-        "./skills/audit-state-machines"
+        "./skills/audit-state-machines",
+        "./skills/deep-code-review"
       ],
       "commands": [
         "./commands/kb-build.md",
@@ -55,7 +56,7 @@
     {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "source": "./skills",
       "strict": true,
       "author": {
@@ -74,8 +75,8 @@
     },
     {
       "name": "core-dev",
-      "description": "Portable development skills for code cleanup, mobile testing, and state-machine audits",
-      "version": "0.8.0",
+      "description": "Portable development skills for code cleanup, mobile testing, deep code reviews, and state-machine audits",
+      "version": "0.9.0",
       "source": "./skills",
       "strict": true,
       "author": {
@@ -85,7 +86,8 @@
       "skills": [
         "./simplify-code",
         "./mobile-test-environments",
-        "./audit-state-machines"
+        "./audit-state-machines",
+        "./deep-code-review"
       ],
       "commands": []
     },
@@ -101,7 +103,7 @@
     }
   ],
   "metadata": {
-    "version": "0.8.0",
-    "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup."
+    "version": "0.9.0",
+    "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows."
   }
 }

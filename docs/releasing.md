@@ -66,15 +66,15 @@ create tags/commits, push, install, change configuration or publish.
 
 ## Artifacts
 
-Each build creates thirteen files, using the current umbrella version:
+Each build creates fourteen files, using the current umbrella version:
 
 - `olegvg-skills-plugin-<version>.zip`: one `olegvg-skills-plugin/` root with
-  portable/Codex/Claude manifests, marketplace indexes, nine root skills,
+  portable/Codex/Claude manifests, marketplace indexes, ten root skills,
   commands, canonical templates, public docs, security/privacy policies, icon,
   LICENSE and the complete independent audio runtime. The audio plugin remains
   a separate marketplace target. `AGENTS.md` is human maintainer documentation;
   checkout-only `CLAUDE.md` is omitted for strict native package validation.
-- Nine `<skill>-<version>.zip` archives: each contains one complete root skill
+- Ten `<skill>-<version>.zip` archives: each contains one complete root skill
   directory with all its references, local templates/metadata and MIT LICENSE.
   The five desktop-compatible skills retain their previous asset names.
   `kb-record-decision` and `kb-maintain` are for capable coding-agent hosts;

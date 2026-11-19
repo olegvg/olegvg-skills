@@ -1,7 +1,7 @@
 {
   "name": "olegvg-skills",
-  "version": "0.8.0",
-  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
+  "version": "0.9.0",
+  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
   "author": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com",
@@ -25,8 +25,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "OlegVG Skills",
-    "shortDescription": "Grouped skills for KB management and core dev cleanup",
-    "longDescription": "Umbrella package for grouped agent skills. The kb-for-agents group builds, queries, refreshes, records decisions, and maintains a three-layer knowledge base inside a codebase or notes corpus. The core-dev group covers behavior-preserving code cleanup, mobile test environments, and audits of implicit state machines.",
+    "shortDescription": "Grouped skills for KB management and core development",
+    "longDescription": "Umbrella package for grouped agent skills. The kb-for-agents group builds, queries, refreshes, records decisions, and maintains a three-layer knowledge base inside a codebase or notes corpus. The core-dev group covers behavior-preserving code cleanup, mobile test environments, deep code reviews, and audits of implicit state machines.",
     "developerName": "Oleg Gaidukov",
     "category": "Coding",
     "capabilities": [

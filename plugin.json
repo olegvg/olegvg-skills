@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "olegvg-skills",
-  "version": "0.8.0",
-  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable core development cleanup.",
+  "version": "0.9.0",
+  "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
   "author": {
     "name": "Oleg Gaidukov",
     "email": "ogaidukov@gmail.com",

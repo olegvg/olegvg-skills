@@ -51,7 +51,7 @@ bunx skills@latest install ./ --list
 ```
 
 Then test an actual project-scoped Skills CLI install and concrete Claude group
-installs in disposable workspaces/config directories. Confirm all nine root
+installs in disposable workspaces/config directories. Confirm all ten root
 skills, complete references/templates, expected groups and no audio skill in
 Skills CLI discovery. Validate the nested audio manifests without running ASR.
 See [releasing](../releasing.md) for strict extracted-package validation,

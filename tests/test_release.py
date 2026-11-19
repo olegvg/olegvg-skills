@@ -354,6 +354,7 @@ class ReleaseTests(unittest.TestCase):
                 "olegvg-skills-plugin", "kb-build", "kb-query", "kb-refresh",
                 "kb-check-drift", "simplify-code", "kb-record-decision",
                 "kb-maintain", "mobile-test-environments", "audit-state-machines",
+                "deep-code-review",
             )
         }
         expected.update(("CHANGELOG.md", "release-notes.md", "SHA256SUMS"))
@@ -386,6 +387,8 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn("olegvg-skills-plugin/docs/releasing.md", names)
             self.assertEqual((self.root / "docs/audit-state-machines.md").read_bytes(),
                              archive.read("olegvg-skills-plugin/docs/audit-state-machines.md"))
+            self.assertEqual((self.root / "docs/deep-code-review.md").read_bytes(),
+                             archive.read("olegvg-skills-plugin/docs/deep-code-review.md"))
             self.assertFalse(any("__pycache__" in name or name.endswith("CLAUDE.md") for name in names))
             self.assertTrue(all(name.startswith("olegvg-skills-plugin/") for name in names))
 

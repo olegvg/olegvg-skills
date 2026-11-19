@@ -32,7 +32,7 @@ Read only the file needed for the task before editing:
 | Group | Purpose | Skills |
 |---|---|---|
 | `kb-for-agents` | Three-layer KB management | `kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `kb-record-decision`, `kb-maintain` |
-| `core-dev` | General development workflow skills | `simplify-code`, `mobile-test-environments`, `audit-state-machines` |
+| `core-dev` | General development workflow skills | `simplify-code`, `mobile-test-environments`, `audit-state-machines`, `deep-code-review` |
 | `olegvg-skills` | Umbrella package | every public runtime skill in this repository |
 | `transcribing-audio` | Standalone audio-transcription plugin (Claude Code and Codex), not part of the umbrella | bundled `transcribing-audio` skill plus its Python runtime |
 

@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.9.0]
+
+- Added `deep-code-review` to `core-dev`. It reviews diffs and code paths using
+  ten bundled guides, including the full implicit lifecycle audit.
+  See the [review rationale](docs/deep-code-review.md).
+
 ## [0.8.0]
 
 - Progressive-disclosure mobile-test-environments skill for Android, iOS/Device Hub and Appium, with non-starting device inventory and ownership-aware cleanup.

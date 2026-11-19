@@ -24,7 +24,7 @@ After an authorized release commit, create and push the matching annotated
 trailers should be added.
 
 `.github/workflows/release.yml` replaces the old desktop-only shell packager.
-It builds the full runtime ZIP, all nine portable root skill ZIPs, notes and
+It builds the full runtime ZIP, all ten portable root skill ZIPs, notes and
 checksums. The five desktop-compatible skill asset names are preserved;
 `kb-record-decision` and `kb-maintain` require capable agent hosts and companion
 skills. `mobile-test-environments` requires a host with access to local devices and
