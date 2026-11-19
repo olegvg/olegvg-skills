@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.10.1]
+
 - Updated the installation, runtime, and maintainer guides. Removed superseded
   development plans and folded the lifecycle audit rationale into the
   [deep code review guide](docs/deep-code-review.md).

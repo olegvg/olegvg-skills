@@ -1,6 +1,6 @@
 {
   "name": "olegvg-skills",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
   "author": {
     "name": "Oleg Gaidukov",

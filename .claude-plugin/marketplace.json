@@ -9,7 +9,7 @@
     {
       "name": "olegvg-skills",
       "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows.",
-      "version": "0.10.0",
+      "version": "0.10.1",
       "source": "./",
       "strict": true,
       "author": {
@@ -55,7 +55,7 @@
     {
       "name": "kb-for-agents",
       "description": "Three-layer knowledge base pattern as installable skills and commands",
-      "version": "0.10.0",
+      "version": "0.10.1",
       "source": "./skills",
       "strict": true,
       "author": {
@@ -75,7 +75,7 @@
     {
       "name": "core-dev",
       "description": "Portable development skills for code cleanup, mobile testing, and deep code reviews",
-      "version": "0.10.0",
+      "version": "0.10.1",
       "source": "./skills",
       "strict": true,
       "author": {
@@ -101,7 +101,7 @@
     }
   ],
   "metadata": {
-    "version": "0.10.0",
+    "version": "0.10.1",
     "description": "Grouped personal skills for agent workflows: three-layer KB management and portable development workflows."
   }
 }

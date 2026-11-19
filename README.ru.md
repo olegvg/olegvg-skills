@@ -88,7 +88,7 @@ Skills CLI помещает полный каталог навыка с руко
 После публикации соответствующего тега можно закрепить версию источника:
 
 ```bash
-bunx skills@latest add https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
+bunx skills@latest add https://github.com/olegvg/olegvg-skills/tree/v0.10.1 --skill deep-code-review --agent codex
 
 # Обновить выбранную проектную установку до доступных upstream-изменений.
 bunx skills@latest update simplify-code --project
@@ -143,7 +143,7 @@ codex plugin add transcribing-audio@olegvg-skills
 codex plugin marketplace add ./olegvg-skills
 
 # Либо закрепить существующий опубликованный тег удалённого marketplace.
-codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.0
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.1
 
 # Обновить marketplace и кэши установленных плагинов.
 codex plugin marketplace upgrade olegvg-skills

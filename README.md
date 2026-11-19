@@ -88,7 +88,7 @@ plugin routes below for Claude compatibility shims or the audio runtime.
 After a matching release tag is published, pin a source version:
 
 ```bash
-bunx skills@latest add https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
+bunx skills@latest add https://github.com/olegvg/olegvg-skills/tree/v0.10.1 --skill deep-code-review --agent codex
 
 # Update selected project installations to available upstream changes.
 bunx skills@latest update simplify-code --project
@@ -142,7 +142,7 @@ codex plugin add transcribing-audio@olegvg-skills
 codex plugin marketplace add ./olegvg-skills
 
 # Or pin an existing published release tag on the remote marketplace.
-codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.0
+codex plugin marketplace add olegvg/olegvg-skills --ref v0.10.1
 
 # Refresh the configured marketplace and installed plugin caches.
 codex plugin marketplace upgrade olegvg-skills
