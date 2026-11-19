@@ -2,6 +2,10 @@
 
 This plugin encodes a pattern for giving an agent navigable knowledge of a corpus (codebase, notes archive, docs folder) without blowing its context window.
 
+See the [KB walkthrough](kb-workflow.md) for a first build and a complete
+maintenance cycle. Read [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/)
+for the original motivation.
+
 ## The layers
 
 1. **Sources (Layer 1)** — the corpus itself. Code, notes, whatever the agent needs to reason about. Never duplicated inside `.kb/`.
@@ -20,7 +24,8 @@ Three layers deliver progressive disclosure: the agent reads the map first (inde
 
 A cold-start agent doesn't know your corpus. If it starts by reading summaries, it reads wrong ones — expensive and slow. `_root.md` costs ≤300 tokens and orients correctly in one hop.
 
-Once the agent is inside a summary and sees a reference to a related summary, it may follow the link without returning to the index level. See [navigation-rules.md](navigation-rules.md).
+For decisions about a known summary, `kb-query --decisions-for` can go
+directly to the decision records. Once the agent is inside a summary and sees a reference to a related summary, it may follow the link without returning to the index level. See [navigation-rules.md](navigation-rules.md).
 
 ## Why semantic grouping
 
@@ -42,9 +47,10 @@ This is enforceable by convention, not by code. It is the single biggest determi
 
 ## Why plans are excluded but decisions are included
 
-Plans (`docs/plans/**` and similar timestamped journals) are operational artifacts: steps, drafts, abandoned branches, debate about alternatives. 90% of a plan's content is noise to anyone who didn't execute it. Ingesting plans into the KB produces muddled summaries that mix current state with historical intent.
+Plans (`docs/plans/**` and similar timestamped journals) are operational artifacts: steps, drafts, abandoned branches, debate about alternatives. 90% of a plan's content is noise to anyone who didn't execute it. The build excludes plans by default to keep current-state summaries clear. See the
+[build skill](../skills/kb-build/SKILL.md) for exclusions and overrides.
 
-But a completed plan contains something that *is* durable knowledge: the decision made and its rationale. `/kb-record-decision` extracts that 10% — decision, context, rejected alternatives, consequences — into a standalone record in `.kb/decisions/`. Plans stay in `docs/plans/` as a journal; decisions move into the KB as knowledge.
+But a completed plan contains something that *is* durable knowledge: the decision made and its rationale. `/kb-record-decision` extracts that 10% — decision, context, rejected alternatives, consequences — into a standalone record in `.kb/decisions/`. A source plan can stay in the project's journal while the decision record serves as durable knowledge.
 
 The query "how does X work now, and based on what decisions?" resolves via a single navigation: agent enters via `_root.md`, picks the relevant area index, reads the summary for X, then greps `.kb/decisions/` for that summary's path to find the records that shaped it. No separate "decisions" area to ambiguate routing — the decision is reached through the thing it affects, but the linkage lives in the decision record (in its `Affected areas` list), not in the summary.
 

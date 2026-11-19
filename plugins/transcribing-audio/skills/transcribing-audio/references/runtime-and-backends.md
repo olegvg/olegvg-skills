@@ -2,15 +2,32 @@
 
 ## Supported host and prerequisites
 
-Version 1 supports macOS and Linux, not Windows. On macOS Apple Silicon with macOS 14 or newer, it prefers MLX ASR. On Linux with a healthy `nvidia-smi` probe, it chooses CUDA ASR. Otherwise it uses CPU ASR. pyannote uses a separately selected compute device: MPS/CUDA when healthy, otherwise CPU.
+The launcher supports macOS and Linux. On Apple Silicon with macOS 14 or newer,
+it probes MLX first. On Linux it chooses CUDA with a healthy `nvidia-smi` probe.
+Other supported hosts use CPU ASR. pyannote selects its compute device
+separately and uses MPS or CUDA when healthy, otherwise CPU.
 
-Require Python 3.13, `uv`, `ffmpeg`, and `ffprobe`. Local diarization additionally needs approved Hugging Face access through `HF_TOKEN`; OpenAI mode also needs the local diarizer. Validate these requirements before normalization, ASR, or any upload.
+Require Python 3.13, `uv`, `ffmpeg`, and `ffprobe`. Both modes need `HF_TOKEN`
+with access to the gated Hugging Face diarization model. OpenAI mode also needs
+`OPENAI_API_KEY`. The runtime loads credentials from one dotenv file selected
+by `--env-file`, then falls back to `.env` or `.env.prod` in the installed plugin
+root. Values in the process environment are not a credentials source.
 
 ## Reusable runtime and recovery
 
-The launcher owns one plugin-local `.venv`. Its base fingerprint hashes runtime version `1`, the lockfile, operating-system version, architecture, and Python version. The runtime fingerprint adds the chosen ASR backend and pyannote device. A verified cached fingerprint skips a full probe and sync; `--reprobe` refreshes the hardware decision without creating a second virtual environment.
+The launcher uses one locked, plugin-local `.venv` to isolate dependencies from
+the surrounding project while using native GPU backends. Its base fingerprint
+includes runtime version `1`, the lockfile, the host and Python version. The
+runtime fingerprint adds the chosen ASR backend and pyannote device. A verified
+cached fingerprint skips a full probe and sync. `--reprobe` refreshes the
+hardware decision using the same environment.
 
-Mutable coordination state is private to `/tmp/transcribing-audio-<uid>/`: the root, runtime children, locks, and run state are user-owned and mode `0700`. State schema version `1` and the runtime index identify the reusable cached runtime. Do not edit these files, follow symlinks, or move audio into this directory.
+Private state lives under `/tmp/transcribing-audio-<uid>/`. State directories
+use mode `0700` and lock and state files use `0600`. State schema version `1` and
+the runtime index identify reusable state. Runs can retain normalized audio,
+FLAC chunks, and transcripts under `runs/<fingerprint>/`. The run fingerprint
+uses input identity, the processing configuration, and the runtime fingerprint.
+Leave these files under runtime control to preserve resume validation.
 
 If a local ASR backend or pyannote device fails before audio work, it is recorded as unhealthy, excluded on the next probe, and the launcher re-executes once. A second recovery failure stops. Use `--reprobe` only after fixing the underlying host/model issue; it clears the recorded exclusions before re-probing.
 

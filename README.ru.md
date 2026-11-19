@@ -2,17 +2,53 @@
 
 [English version](README.md)
 
-Группированный личный репозиторий skills для Claude Code, Codex и агентов, поддерживаемых Vercel Skills CLI. В нём две устанавливаемые группы root-skills: `kb-for-agents` для паттерна трёхслойной базы знаний из статьи [Knowledge Base for Agents](https://www.linkedin.com/posts/ahaidukof_karpathy-%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D0%BB%D0%B8%D0%B7%D0%BE%D0%B2%D0%B0%D0%BB-%D1%82%D0%BE-%D1%87%D1%82%D0%BE-%D0%BC%D1%8B-%D0%BD%D0%B0%D1%89%D1%83%D0%BF%D0%B0%D0%BB%D0%B8-activity-7446836637143130112-o920/) и `core-dev` для переносимых workflow разработки, а также самостоятельный плагин `transcribing-audio` для Claude Code и Codex.
+Набор навыков для Claude Code, Codex и других агентов с поддержкой Vercel
+Skills CLI. Помогает в новой сессии разобраться в проекте, проверить последствия
+изменений и подтвердить результат на нужном мобильном устройстве. Для встреч
+и интервью есть отдельный плагин, который делает расшифровки с метками спикеров.
 
-## Что внутри
+## Какой навык выбрать
 
-- **Группа `kb-for-agents`** — `kb-build`, `kb-query`, `kb-check-drift`, `kb-refresh`, `kb-record-decision`, `kb-maintain`.
-- **Группа `core-dev`** — `simplify-code` для безопасной чистки реализации, `mobile-test-environments` для Android/iOS и Appium, `deep-code-review` для глубокого ревью изменений и участков кода, включая аудит неявных переходов состояний. Инструкции для мобильных устройств загружаются по платформе. Диагностика не требует дополнительных Python-пакетов, Maestro необязателен.
-- **Umbrella `olegvg-skills`** — все группы root-навыков этого репозитория.
-- **Плагин `transcribing-audio` (Claude Code и Codex)** — локальный или OpenAI ASR, диаризация спикеров, таймкоды слов и возобновляемая обработка. Устанавливается отдельно, потому что содержит собственный Python runtime и зависимости.
-- **Команды Claude Code** — конкретные группы предоставляют нативные команды навыков, например `/kb-for-agents:kb-build`. Umbrella также сохраняет KB-обёртки совместимости в `commands/`; у `core-dev` их нет. Skills CLI устанавливает нативные навыки без этих обёрток.
-- **Шаблоны** — стартовые заготовки для индексов, саммари, решений, `_root.md`, состояния. Шаги для ручной сборки см. в [templates/README.md](templates/README.md).
-- **Документация** — обоснование паттерна: [концепция](docs/concept.md), [правила навигации](docs/navigation-rules.md), [стратегия обновления](docs/refresh-strategy.md).
+### KB for Agents
+
+Группа `kb-for-agents` полезна, когда в разных сессиях приходится заново
+разбираться, где реализовано поведение, как связаны модули и почему команда
+приняла конкретное решение. Один раз собери карту проекта, затем обновляй
+затронутые темы по истории Git.
+
+| Навык | Когда использовать | Что получишь |
+| --- | --- | --- |
+| `kb-build` | Нужно разобраться в новом репозитории или архиве заметок. | Локальную `.kb/` с короткими индексами, саммари по темам и ссылками на первоисточники. |
+| `kb-query` | Нужно найти реализацию, проследить поведение или понять причину выбора. | Ответ по нужным саммари, связанным решениям и файлам проекта. |
+| `kb-check-drift` | Изменения уже в Git и нужно понять, где документация могла устареть. | Отчёт с подозрительными темами, битыми ссылками и поводами записать решения. |
+| `kb-refresh` | Известно, какие изменения нужно отразить в базе. | Обновлённые саммари и индексы выбранных областей, отчёт и новая отметка актуальности по умолчанию. |
+| `kb-record-decision` | В завершённом плане есть решение, к которому команда будет возвращаться. | Запись с причинами выбора, альтернативами, последствиями и связью с нужными саммари. |
+| `kb-maintain` | Хочется оценить состояние базы и выполнить согласованные обновления за один проход. | Предложение по обслуживанию, пакетное обновление выбранных путей и итог по записям решений. |
+
+[Сквозной сценарий KB](docs/kb-workflow.md) показывает все шесть навыков на
+одном проекте. Формат базы описан в [трёхслойной модели](docs/concept.md) и
+[шаблонах ручной сборки](templates/README.md).
+
+### Core Dev
+
+| Навык | Когда использовать | Что получишь |
+| --- | --- | --- |
+| [`deep-code-review`](docs/deep-code-review.md) | Нужно проверить, сохранил ли PR важный контракт, или провести аудит конкретного модуля. | Замечания с воспроизводимым сценарием, ссылками на код и пробелами покрытия. Десять методов охватывают контракты, данные, доступ, состояния, сбои и совместимость версий. |
+| [`simplify-code`](skills/simplify-code/SKILL.md) | Рабочий diff дублирует существующие функции, усложняет ветвление или добавляет лишнюю работу. | Небольшие проверенные правки с сохранением задуманного поведения. |
+| [`mobile-test-environments`](skills/mobile-test-environments/SKILL.md) | Поведение нужно проверить в Android/iOS, на реальном устройстве или в сессии Appium. | Инвентаризацию, настройку выбранного окружения, результаты проверки и точечную очистку ресурсов. |
+
+Umbrella-плагин `olegvg-skills` включает обе группы. Например, перед слиянием
+проверь рискованный diff, упрости безопасные участки и проверь нужный сценарий
+на устройстве. После слияния обнови затронутые темы KB. Группы можно
+устанавливать и использовать независимо.
+
+### Расшифровка аудио
+
+[Плагин `transcribing-audio`](plugins/transcribing-audio/skills/transcribing-audio/SKILL.md)
+помогает искать и цитировать сказанное на встрече или подготовить субтитры.
+Он распознаёт речь локально или через OpenAI, локально размечает спикеров,
+сохраняет таймкоды слов и поддерживает возобновление. Плагин устанавливается
+отдельно в Claude Code или Codex и включает собственный рантайм.
 
 ## Установка
 
@@ -22,36 +58,37 @@
 
 ### Skills CLI через Bun или Node.js
 
-Запускай команды из нужного проекта. `install` — алиас `add`; любую команду
-`bunx skills@latest install` можно выполнить как `npx skills@latest add`.
+Запускай команды из нужного проекта. Используй Bun или Node.js 22.20+
+с `npx`. Для Node.js замени `bunx` на `npx` в примерах ниже.
 
 ```bash
 # Посмотреть удалённые или локальные навыки без установки.
-bunx skills@latest install olegvg/olegvg-skills --list
-bunx skills@latest install ./olegvg-skills --list
+bunx skills@latest add olegvg/olegvg-skills --list
+bunx skills@latest add ./olegvg-skills --list
 
 # Выбрать навыки и агентов; по умолчанию установка в текущий проект.
-bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex claude-code
+bunx skills@latest add olegvg/olegvg-skills --skill simplify-code --agent codex claude-code
 
 # Установить KB-группу.
-bunx skills@latest install olegvg/olegvg-skills --skill kb-build kb-query kb-refresh kb-check-drift kb-record-decision kb-maintain --agent codex
+bunx skills@latest add olegvg/olegvg-skills --skill kb-build kb-query kb-refresh kb-check-drift kb-record-decision kb-maintain --agent codex
 
 # Все root-навыки; интерактивно можно выбрать обе группы.
-bunx skills@latest install olegvg/olegvg-skills --skill '*'
+bunx skills@latest add olegvg/olegvg-skills --skill '*'
 
 # Явная глобальная установка без вопросов.
-bunx skills@latest install olegvg/olegvg-skills --skill simplify-code --agent codex --global --yes
+bunx skills@latest add olegvg/olegvg-skills --skill simplify-code --agent codex --global --yes
 ```
 
 Picker показывает `kb-for-agents` и `core-dev`; выбери обе группы для umbrella.
-Устанавливается полный каталог навыка с references и локальными шаблонами.
-Этот путь не устанавливает command shims из `commands/` и аудио-runtime.
-Аудионавык скрыт из обычного поиска CLI: отдельно от runtime он не работает.
+Skills CLI помещает полный каталог навыка с руководствами и шаблонами в
+`.agents/skills/` и создаёт ссылки для агентов с отдельными каталогами skills.
+Так устанавливаются переносимые навыки. Для обёрток совместимости Claude
+или аудио-runtime используй установку плагина ниже.
 
 После публикации соответствующего тега можно закрепить версию источника:
 
 ```bash
-bunx skills@latest install https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
+bunx skills@latest add https://github.com/olegvg/olegvg-skills/tree/v0.10.0 --skill deep-code-review --agent codex
 
 # Обновить выбранную проектную установку до доступных upstream-изменений.
 bunx skills@latest update simplify-code --project
@@ -123,10 +160,11 @@ codex plugin marketplace upgrade olegvg-skills
 ### Зависимости transcribing-audio
 
 Отдельный аудиоплагин требует macOS или Linux, Python 3.13, `uv`, `ffmpeg` и
-`ffprobe`. Для локальной диаризации нужен одобренный доступ Hugging Face через
-`HF_TOKEN`. Первый запуск создаёт кэшируемую плагин-локальную `.venv`.
-По умолчанию аудио остаётся локальным; OpenAI ASR требует явного согласия перед
-отправкой любого фрагмента. Root-навыкам эти зависимости не нужны.
+`ffprobe`. Для локальной диаризации в обоих режимах нужен `HF_TOKEN`.
+Для OpenAI ASR также нужны `OPENAI_API_KEY` и явное согласие на отправку аудио.
+Передай учётные данные через `--env-file` или dotenv-файл плагина. При первом
+запуске может создаваться локальная `.venv` внутри плагина. См.
+[настройку рантайма](plugins/transcribing-audio/skills/transcribing-audio/references/runtime-and-backends.md).
 
 ### ZIP и Claude Desktop
 
@@ -143,8 +181,9 @@ marketplace или `--plugin-dir`, как показано выше. Перен�
 `kb-build`, `kb-query`, `kb-refresh`, `kb-check-drift`, `simplify-code`.
 Архивы `kb-record-decision` и `kb-maintain` предназначены для coding-агентов с
 поддержкой планов, orchestration и необходимых соседних навыков.
-`mobile-test-environments` требует хост с доступом к локальным устройствам/CLI и отдельно установленные SDK/драйверы. Аудио доступно
-только вместе с полным runtime-плагином, отдельного skill-only ZIP для него нет.
+`mobile-test-environments` требует доступа к устройствам и локальным CLI.
+`deep-code-review` требует coding-агента с доступом к проверяемому diff или
+участкам кода. Для аудио установи полный плагин, как описано выше.
 
 В релиз входят notes, сгенерированный changelog и SHA256SUMS:
 
@@ -157,76 +196,56 @@ shasum -a 256 -c SHA256SUMS    # macOS; на Linux используй sha256sum
 
 ## Быстрый старт
 
-После установки `kb-for-agents` в Claude Code и выполнения `/reload-plugins` используй команды KB-навыков в сессии, открытой в корне вашего корпуса:
+### Разберись в проекте и поддерживай базу актуальной
 
-```
+Открой сессию в корне корпуса. В Claude Code с группой `kb-for-agents` собери
+базу и задай вопрос о проекте.
+
+~~~text
 /kb-for-agents:kb-build .
-/kb-for-agents:kb-query where are fees charged?
-```
+/kb-for-agents:kb-query Где планируются повторные попытки возврата?
+~~~
 
-После того как вы внесли изменения в корпус:
+После коммита проверь, где возник дрейф, и обнови затронутые разделы.
+Если в завершённом плане есть важное решение, укажи путь к этому плану.
 
-```
+~~~text
 /kb-for-agents:kb-check-drift
-/kb-for-agents:kb-refresh src/billing/
-```
+/kb-for-agents:kb-refresh src/billing/ src/workers/
+/kb-for-agents:kb-record-decision planning/refund-retry.md
+~~~
 
-Когда запланированная работа завершена и нужно сохранить её ключевые решения:
+`/kb-for-agents:kb-maintain` предложит, что обновить, и выполнит выбранные
+действия. В umbrella-плагине Codex используй имена
+`$olegvg-skills:kb-build`, `$olegvg-skills:kb-query` и так далее. Входные
+данные, результаты и варианты запуска разобраны в [сценарии KB](docs/kb-workflow.md).
 
-```
-/kb-for-agents:kb-record-decision docs/plans/2026-03-19-1400/plan-billing-rewrite.md
-```
+### Проверь diff, упрости код или запусти мобильную проверку
 
-После установки umbrella-плагина Codex начни новую сессию и используй эквивалентные skills:
+| Задача | Пример запроса |
+| --- | --- |
+| Проверить повторы в PR | «Используй `deep-code-review` для ревью PR относительно main. Проверь, что произойдёт при повторе задачи после успешного ответа провайдера». |
+| Упростить рабочий diff | «Используй `simplify-code` для этого diff. Сохрани поведение и запусти целевые тесты». |
+| Проверить сценарий на устройстве | «Используй `mobile-test-environments`, найди запущенный Android-эмулятор и проверь форму с открытой экранной клавиатурой». |
 
-```
-$olegvg-skills:kb-build .
-$olegvg-skills:kb-query where are fees charged?
-$transcribing-audio:transcribing-audio /absolute/path/meeting.wav
-```
+При отдельной установке достаточно назвать навык. В плагинах можно вызвать
+его по полному имени, например `/core-dev:deep-code-review` в Claude Code
+или `$olegvg-skills:deep-code-review` в Codex. Все методы и примеры их
+совместного применения описаны в [руководстве по ревью](docs/deep-code-review.md#methods-and-references).
 
-Для мобильного окружения вызови `$mobile-test-environments` (или
-`/core-dev:mobile-test-environments` в Claude-группе), например:
-«Покажи Android-эмуляторы и виртуальные iPhone, не прерывая текущие тесты».
-SDK и драйверы устанавливаются отдельно; навык не загружает их автоматически.
+### Расшифруй запись
 
-Вызови `$deep-code-review` после установки отдельного навыка,
-`$olegvg-skills:deep-code-review` в плагине Codex или
-`/core-dev:deep-code-review` в группе Claude Code. Укажи diff, PR, рабочее
-дерево или участок кода и поведение, которое нужно проверить. См.
-[обоснование подхода](docs/deep-code-review.md).
-
-Чтобы провести аудит неявных конечных автоматов, открой сессию в корне
-приложения и попроси `deep-code-review` проверить переходы состояний в нужном
-модуле. Начиная с v0.10.0, методика `audit-state-machines` доступна в
-[руководстве по аудиту жизненных циклов](skills/deep-code-review/references/lifecycles.md).
-
-## Как это работает
-
-Плагин создаёт директорию `.kb/` **внутри вашего корпуса** (не внутри плагина). У неё три слоя плюс хранилище решений:
-
-1. **Источники (sources)** — сам корпус. Не дублируется.
-2. **Саммари (summaries)** (`.kb/summaries/<area>/*.md`) — проза по темам, по одному файлу на тему.
-3. **Индексы (indexes)** (`.kb/indexes/*.md`) — навигация, ≤300 токенов на файл. Точка входа — `.kb/indexes/_root.md`.
-
-Рядом: **Решения (decisions)** (`.kb/decisions/*.md`) — дистиллированные записи, извлечённые из завершённых планов. Каждая запись сама перечисляет затронутые саммари в своём блоке `## Affected areas`; сами саммари при записи решения не редактируются. Чтобы найти решения для конкретного саммари, агент делает grep по `.kb/decisions/` по пути этого саммари — `kb-query` выполняет этот поиск автоматически.
-
-На любой запрос агент сначала читает индексы, затем спускается глубже. Если вопрос звучит как «как работает X и почему это было сделано именно так?», навигация приводит к саммари, а оттуда — к решениям, которые ссылаются на это саммари (обратная ссылка). Контекст остаётся ограниченным, а путь навигации можно проверить.
-
-Полное обоснование — в [docs/concept.md](docs/concept.md).
-
-## Что это
-
-Стартовый набор: навыки, команды, шаблоны, концептуальная документация. Паттерн, оформленный так, чтобы применять его без повторного чтения статьи.
-
-## Что это не
-
-Это не RAG-библиотека и не универсальный фреймворк для агентов.
+После установки отдельного плагина используй
+`/transcribing-audio:transcribing-audio /absolute/path/meeting.wav` в Claude Code
+или `$transcribing-audio:transcribing-audio /absolute/path/meeting.wav` в Codex.
+Выбери режим распознавания и способ задать число спикеров.
 
 ## Требования
 
-- Claude Code или Codex с поддержкой skills.
-- Корпус, который вы хотите задокументировать. Корпус с git-историей настоятельно рекомендуется — `/kb-refresh` и `/kb-check-drift` оба зависят от git-истории.
+- Агент с поддержкой skills. Выше описана установка в Claude Code, Codex и
+  другие среды через Skills CLI.
+- Для навыков KB нужен корпус. `kb-refresh` и `kb-check-drift` требуют историю
+  Git. Сборка и поиск работают и для корпуса без Git.
 
 ## Приватность и сопровождение
 

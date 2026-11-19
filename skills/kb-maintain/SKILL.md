@@ -31,7 +31,8 @@ Then choose a path:
 - **Plan path provided** (`/kb-maintain docs/plans/.../plan-X.md` or `--record <plan>`) → **record path**, see step 2b. Skip drift-check.
 - **No arguments** → **discovery path**, see step 2c. Invoke `kb-check-drift` to surface candidates first.
 
-The drift-check is read-only and never modifies `.kb/`. Skipping it on the fast/record paths is safe: the user already specified what to do.
+The discovery path writes only a temporary drift report. On the fast and
+record paths, the supplied paths already define the work.
 
 ### 2a. Fast path — direct refresh
 
@@ -49,9 +50,10 @@ After it returns, surface any refresh follow-up it recommended and ask whether t
 
 ### 2c. Discovery path — drift-first
 
-Invoke the `kb-check-drift` skill with `--write-artifact` so it writes `.kb/.drift-report.json` alongside the human-readable report. `kb-refresh` will reuse the artifact in step 4, skipping a second `git diff` over the same range.
-
-The drift report is read-only and gives the user a maintenance menu. Then go to step 3.
+Invoke `kb-check-drift` with `--write-artifact` to save `.kb/.drift-report.json`
+alongside the human-readable report. `kb-refresh` checks the artifact in its
+step 2 and can reuse the file and reference lists. Use the report to propose
+the plan in step 3.
 
 ### 3. Propose an explicit maintenance plan (discovery path only)
 
@@ -93,8 +95,8 @@ Report:
 
 ## Discipline
 
-- **No hidden writes.** Every `.kb/` mutation must be attributable to either `kb-refresh` or `kb-record-decision`.
-- **No automatic escalation.** A read-only drift check never turns into writes without user approval.
+- Report the opt-in drift artifact and any refresh or decision writes.
+- Ask for approval before using discovery results to refresh or record a decision.
 - **Do not merge atomic skills.** This orchestrator exists so `kb-refresh` and `kb-record-decision` can stay simple, auditable, and independently invokable.
 - **Batch refresh by default.** When multiple paths need refreshing, send them all in a single `kb-refresh` call — not N calls — to avoid N `git diff`s and N state advances.
 

@@ -385,8 +385,7 @@ class ReleaseTests(unittest.TestCase):
             self.assertNotIn("olegvg-skills-plugin/skills/audit-state-machines/SKILL.md", names)
             self.assertIn("olegvg-skills-plugin/AGENTS.md", names)
             self.assertIn("olegvg-skills-plugin/docs/releasing.md", names)
-            self.assertEqual((self.root / "docs/audit-state-machines.md").read_bytes(),
-                             archive.read("olegvg-skills-plugin/docs/audit-state-machines.md"))
+            self.assertNotIn("olegvg-skills-plugin/docs/audit-state-machines.md", names)
             self.assertEqual((self.root / "docs/deep-code-review.md").read_bytes(),
                              archive.read("olegvg-skills-plugin/docs/deep-code-review.md"))
             self.assertFalse(any("__pycache__" in name or name.endswith("CLAUDE.md") for name in names))

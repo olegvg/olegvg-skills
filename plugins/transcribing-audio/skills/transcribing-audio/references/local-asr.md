@@ -8,8 +8,14 @@ Both adapters require word timestamps and pass `condition_on_previous_text=false
 
 CUDA uses `float16`; CPU uses `int8`. MLX is selected only on a healthy supported Apple-Silicon host. The backend choice does not control the separate pyannote device.
 
+With the locked MLX Whisper 0.4.3, decoding rejects the beam size this runtime
+passes, even when the hardware probe succeeds and a valid MLX model is selected.
+
 ## Optional model smoke
 
-Do not download a model merely to validate this skill. With an external, non-sensitive recording and an already-authorized local model, run the resolved launcher in an interactive terminal with `--mode local` and an exact `--speakers` count. Inspect canonical JSON provenance for the backend, model, device, and language before treating the smoke as successful.
+Use an external, non-sensitive recording and an already-authorized model on a
+host that selects CPU or CUDA. Run the resolved launcher in a terminal with
+`--mode local` and an exact `--speakers` count. Check the ASR backend, model,
+detected language, and separate diarization device in the canonical JSON.
 
 Read the primary backend documentation when changing a model or its capabilities: [MLX Whisper](https://github.com/ml-explore/mlx-examples/tree/main/whisper) and [faster-whisper](https://github.com/SYSTRAN/faster-whisper).

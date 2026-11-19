@@ -16,9 +16,9 @@ metadata:
 
 ## Choose the mode
 
-- Use local ASR when the user requires local processing or has not explicitly approved an upload.
-- Use OpenAI ASR only after explicit consent. Every TTY run asks for local/OpenAI even when `--mode` supplies a default; a non-TTY OpenAI run requires `--allow-cloud-upload`.
-- Select `--speakers N` for an exact count, `--min-speakers` with optional `--max-speakers` for a range, or omit speaker flags for automatic diarization.
+- Select local ASR when the user requires local processing or has not explicitly approved an upload. Pass `--mode local` when stdin is not a TTY.
+- Use OpenAI ASR only after explicit consent. A TTY run prompts for the ASR mode and accepts `--mode` as a default. A non-TTY run requires an explicit mode and needs `--allow-cloud-upload` for OpenAI.
+- Use `--speakers N` for an exact count or omit the speaker flags for automatic diarization. TTY runs accept `auto`, `N` or `MIN-MAX`. Non-TTY runs accept either or both of `--min-speakers` and `--max-speakers`.
 
 ## Run the pipeline
 
@@ -29,12 +29,15 @@ SKILL_DIR="<absolute path to this skill directory>"
 "$SKILL_DIR/../../scripts/transcribe_audio.py" --help
 ```
 
-Run the launcher from that resolved path. Use `--resume` after an interruption; it validates and reuses prior committed stages. Canonical JSON is authoritative; TXT, SRT, and VTT are derived only after the JSON validates.
+The first launch can prepare the runtime even for `--help`. Resume is enabled
+by default and can be requested explicitly with `--resume`. It validates prior
+committed stages before reuse. TXT, SRT, and VTT are derived from validated
+canonical JSON.
 
 ## Stop conditions
 
 - Stop before any upload if consent is absent, declined, or ambiguous.
-- Stop and report the exact failed intervals if the one allowed quality retry remains unresolved. Do not present derived output as successful.
+- Stop and report the recorded intervals if the one allowed quality retry fails. Do not present derived output as successful.
 - Stop on unsafe paths, missing prerequisites, failed local model access, or a provider failure; report the redacted error and the safe recovery option.
 
 ## Common commands
@@ -42,8 +45,8 @@ Run the launcher from that resolved path. Use `--resume` after an interruption; 
 Replace the placeholders with real paths. The first command is interactive; every TTY run still asks for input, mode, and speaker policy.
 
 ```sh
-# Interactive local run
-"$SKILL_DIR/../../scripts/transcribe_audio.py" /absolute/path/recording.wav
+# Interactive run with local selected as the default
+"$SKILL_DIR/../../scripts/transcribe_audio.py" /absolute/path/recording.wav --mode local
 
 # Explicit non-interactive local run
 "$SKILL_DIR/../../scripts/transcribe_audio.py" /absolute/path/recording.wav \
@@ -59,14 +62,15 @@ Replace the placeholders with real paths. The first command is interactive; ever
 # Explicit non-interactive OpenAI run, only after upload consent
 "$SKILL_DIR/../../scripts/transcribe_audio.py" /absolute/path/non-sensitive.wav \
   --mode openai --openai-model whisper-1 --env-file /absolute/path/credentials.env \
-  --allow-cloud-upload --debug
+  --allow-cloud-upload
 
 # Reprobe an unhealthy local runtime component
 "$SKILL_DIR/../../scripts/transcribe_audio.py" /absolute/path/recording.wav \
   --mode local --reprobe
 ```
 
-Use `--max-speakers` without `--min-speakers` for an upper bound. Use `--help` for the complete flag contract.
+Use `--help` for the complete flag contract. The current launcher accepts
+`--debug` as a reserved flag.
 
 ## Read references only when needed
 

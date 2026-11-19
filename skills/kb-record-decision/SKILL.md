@@ -19,7 +19,7 @@ Manual, on-demand. Never automatic. Never invoked by build.
 
 - **One** decision record at `.kb/decisions/<YYYY-MM-slug>.md`. That is the only file this skill writes.
 - The source plan is left untouched. Never modify `docs/plans/`.
-- The summaries listed in the record's `## Affected areas` block are **not edited** — they remain the agent's view of the present, the decision-record carries the link to them, not the other way around. `kb-query` reaches a decision via that backreference (`grep -l "<summary-path>" .kb/decisions/`).
+- The summaries listed in the record's `## Affected areas` block are **not edited** — they remain the agent's view of the present, the decision-record carries the link to them, not the other way around. `kb-query` reaches a decision via that backreference (`rg -l -F -g '*.md' -- "<summary-path>" .kb/decisions/`).
 
 ## Workflow
 
@@ -75,7 +75,7 @@ That is the **only** write this skill performs.
 The `Affected areas` block is the backreference. Verify it works by running:
 
 ```bash
-grep -l "<one-of-the-affected-summary-paths>" .kb/decisions/
+rg -l -F -g '*.md' -- "<one-of-the-affected-summary-paths>" .kb/decisions/
 ```
 
 The just-written record should appear. If it does not, the paths in `Affected areas` are wrong — fix them and rewrite. **Never** edit the summaries themselves to add a forward link; that is the inverted contract this skill exists to enforce.

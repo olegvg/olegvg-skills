@@ -4,7 +4,8 @@
 
 The plugin separates **finding drift** from **resolving drift**:
 
-- `/kb-check-drift` — read-only. Surfaces candidates for refresh. Never modifies `.kb/` content or `.kb/.kb-state.json`.
+- `kb-check-drift` surfaces candidates for refresh. With `--write-artifact` it
+  also saves `.kb/.drift-report.json`. The refresh watermark stays unchanged.
 - `/kb-refresh <path1> [<path2> ...]` — write. Updates summaries and indexes affected by changes in the approved path scope. Advances `.kb/.kb-state.json` to the current SHA unless invoked with `--no-advance-state`.
 
 Drift stays open until refresh is explicitly run. The agent never silently refreshes the KB. A bare `/kb-refresh` is not a whole-corpus refresh: it first routes through `/kb-check-drift --write-artifact`, surfaces candidate paths, and waits for an approved scope.
@@ -32,18 +33,20 @@ Running refresh on a cron:
 
 ## The drift-checker heuristic
 
-`kb-check-drift` applies the following signals to `git log --stat <last_linted_sha>..HEAD` (plus a scan of `docs/plans/**` for decision-record candidates):
+`kb-check-drift` uses `git log --stat`, `git diff --name-status`, KB references
+and completed plans to identify candidates between the watermark and HEAD.
 
-- New files above a threshold count (default: 5) in a single area → likely new subdomain.
+- At least five new files in a single area by default → likely new subdomain.
 - File renames or moves → index references stale.
-- Changes to files referenced by existing indexes → summaries likely stale.
+- Area indexes pointing to affected or missing summaries → navigation may need repair.
 - Changes to files referenced by existing summaries → summaries likely stale.
 - New top-level directory → area structure may need a new index.
 - Migration / schema files → semantic shifts likely; areas touching data are suspect.
 - Deleted files referenced in `.kb/` → hard flag.
 - Completed plan with no matching decision record in `.kb/decisions/` → recommend `/kb-record-decision`. Soft flag — not every plan yields a durable decision.
 
-The heuristic is **policy, not code**. It lives in `skills/kb-check-drift/SKILL.md` as a checklist the agent applies. Users tune it by editing that file. That's the intended extension point — no configuration knobs, no YAML schema.
+The agent applies a [heuristic checklist](../skills/kb-check-drift/references/heuristic.md)
+and adapts its search patterns to the corpus.
 
 ## State file
 
@@ -59,9 +62,11 @@ The heuristic is **policy, not code**. It lives in `skills/kb-check-drift/SKILL.
 
 - `/kb-check-drift` reads this but does not write it.
 - `/kb-refresh` defaults its base SHA to `last_linted_sha`, unless `--base-sha <sha>` overrides the watermark.
-- Only `/kb-refresh` writes this file, and only after successful refresh. A refresh that fails halfway must not advance state.
-- `/kb-refresh` accepts `--no-advance-state` so an orchestrator can chain multiple writes against a single base SHA and advance state once at the end.
-- `schema_version` is loose intentionally — future versions may add per-area refresh timestamps.
+- `kb-build` initializes the state with schema version 1. `kb-refresh` advances
+  the corpus-wide watermark only after a successful refresh.
+- Prefer one batch of approved paths. For separate refreshes in the same batch,
+  keep the original base SHA and use `--no-advance-state` until the final
+  successful refresh.
 
 ## Scope budget
 
@@ -75,9 +80,13 @@ This gate is part of the context-window contract: a refresh that crosses the har
 
 ## Optional drift artifact
 
-When `/kb-check-drift` is invoked by `/kb-maintain` (or with `--write-artifact`), it also writes `.kb/.drift-report.json` — a structured copy of its findings. The downstream `/kb-refresh` reuses this artifact if it matches the current HEAD and base SHA, skipping its own `git diff` and `.kb/` greps.
+With `--write-artifact`, including during `kb-maintain` discovery, the drift check
+writes `.kb/.drift-report.json`. `kb-refresh` can reuse the file and reference lists
+when HEAD and the base SHA match and the artifact covers the approved paths.
+Refresh still reads the hunk evidence and counts needed for its scope budget.
 
-This lets a `drift → refresh` chain do the diff work exactly once instead of twice. The artifact is ephemeral and recomputable from git history; it stays out of git via `.gitignore`. A stale artifact is silently ignored by consumers — there is no "freshness warning" surface.
+The artifact is ephemeral and recomputable. Keep it out of Git and ignore it
+when the stored SHAs or scope no longer match.
 
 See [skills/kb-check-drift/references/drift-report-artifact.md](../skills/kb-check-drift/references/drift-report-artifact.md) for the schema and lifecycle.
 
@@ -89,4 +98,6 @@ See [skills/kb-check-drift/references/drift-report-artifact.md](../skills/kb-che
 Recommendation: /kb-refresh src/billing/ src/auth/ src/search/
 ```
 
-This produces one `git diff` over the union of scopes, one round of `.kb/` greps, and one state advance — instead of three of each. The orchestrator (`/kb-maintain`) follows the same convention.
+This checks the union of the approved paths and advances the watermark once.
+The [maintenance skill](../skills/kb-maintain/SKILL.md) uses the same batch
+when refreshing explicit paths or paths selected from the drift report.

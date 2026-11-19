@@ -1,8 +1,7 @@
 # Release preparation
 
-The release tools use Python 3.10+ standard library and Git. Root skills have no
-build-time runtime dependency; the independent audio runtime keeps its own
-`pyproject.toml` and `uv.lock`.
+The release tools use Python 3.10+ and Git. The independent audio runtime has
+its own `pyproject.toml` and `uv.lock`.
 
 ```bash
 python3 scripts/validate_plugin.py
@@ -66,21 +65,22 @@ create tags/commits, push, install, change configuration or publish.
 
 ## Artifacts
 
-Each build creates thirteen files, using the current umbrella version:
+Builds use the current umbrella version for ZIP filenames.
 
 - `olegvg-skills-plugin-<version>.zip`: one `olegvg-skills-plugin/` root with
-  portable/Codex/Claude manifests, marketplace indexes, nine root skills,
+  portable/Codex/Claude manifests, marketplace indexes, all public root skills,
   commands, canonical templates, public docs, security/privacy policies, icon,
   LICENSE and the complete independent audio runtime. The audio plugin remains
   a separate marketplace target. `AGENTS.md` is human maintainer documentation;
   checkout-only `CLAUDE.md` is omitted for strict native package validation.
-- Nine `<skill>-<version>.zip` archives: each contains one complete root skill
+- One `<skill>-<version>.zip` per public root skill contains the complete skill
   directory with all its references, local templates/metadata and MIT LICENSE.
   The five desktop-compatible skills retain their previous asset names.
   `kb-record-decision` and `kb-maintain` are for capable coding-agent hosts;
   orchestration still requires the companion KB skills. Neither archive includes
   a sibling skill or installs Claude Code command shims. `mobile-test-environments`
-  requires a host with local device and mobile-tool access.
+  requires local device and mobile-tool access. `deep-code-review` uses a
+  coding agent with access to the diff or source paths being reviewed.
 - Generated `CHANGELOG.md`, `release-notes.md` and `SHA256SUMS`. The curated source
   changelog is preserved unchanged in the full plugin archive. Every other
   output file is covered by SHA256SUMS.
@@ -104,13 +104,21 @@ supported installation route, pin and update command.
 ```bash
 claude plugin validate .claude-plugin/plugin.json
 claude plugin validate .claude-plugin/marketplace.json --strict
-bunx skills@latest install ./ --list
+bunx skills@latest add ./ --list
 ```
 
 The source plugin can warn that root CLAUDE.md is not loaded as plugin context;
 strict source validation can fail on that warning. Validate the extracted runtime
 archive strictly too: it omits that maintainer pointer. Validate nested audio
 manifests and exercise each concrete Claude group to verify its installed skills.
+
+When changing the audio plugin, run its fixture-based test suite from a source
+checkout with Python 3.13 and the locked development dependencies. The tests
+exercise the pipeline with synthetic inputs and adapter doubles.
+
+~~~bash
+uv run --project plugins/transcribing-audio --frozen --group dev pytest plugins/transcribing-audio/tests -q
+~~~
 
 ## CI and publication
 

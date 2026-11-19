@@ -21,8 +21,11 @@
 | `retry_window_s` | `15.0` | Use smaller independent recovery windows. |
 | `retry_overlap_s` | `0.5` | Preserve bounded overlap between recovery windows. |
 
-Every planned chunk must produce exactly one matching ASR result. Empty output passes only with measured low volume or backend no-speech probability of at least `0.80`. The report runs these issue codes: `coverage`, `timestamps`, `silence`, `segment_duration`, `words_per_second`, `repetition`, `unique_token_ratio`, `compression_ratio`, and `confidence`. Every issue contains exact source intervals and chunk identifiers.
+Every planned chunk must produce exactly one matching ASR result. Empty output passes only with measured low volume or backend no-speech probability of at least `0.80`. The report runs these issue codes: `coverage`, `timestamps`, `silence`, `segment_duration`, `words_per_second`, `repetition`, `unique_token_ratio`, `compression_ratio`, and `confidence`. Issues carry intervals and chunk identifiers. Transcript-wide repetition, diversity, compression, and confidence checks associate their findings with the first chunk for recovery.
 
-On a failure, retry only the affected planned chunks once with 15-second independent windows, 0.5-second overlap, deterministic temperature zero, and beam size five. Re-run every gate on the full result. If any error remains, persist the exact unresolved intervals and stop before diarization and rendering.
+On a failure, the pipeline retries the affected chunks once with the selected
+ASR mode, 15-second windows, 0.5-second overlap, and temperature zero. The
+runtime passes a beam size of five to local adapters. It runs every gate again
+on the full result and records unresolved intervals before stopping.
 
 The deterministic Russian repetition fixture exercises the loop detectors without embedding user audio. It protects against repeated ASR phrases while keeping the acceptance test offline and reproducible.

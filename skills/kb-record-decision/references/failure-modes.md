@@ -22,14 +22,12 @@ The plan was pure execution — pre-agreed scope, no choice points, no rejected 
 
 A newer decision supersedes this one. Recording the old one without acknowledgment misleads future readers.
 
-**Signal.** `grep -l "<slug-or-topic>" .kb/decisions/` shows a newer record that overrides this one. Or the user mentions "we walked this back."
+**Signal.** `rg -l -F -g '*.md' -- "<slug-or-topic>" .kb/decisions/` shows a newer record that overrides this one. Or the user mentions "we walked this back."
 
-**Action.** Two options, ask the user which:
-
-1. Add a `> Superseded by [<new-record>](<path>).` line at the top of the older record (write it anyway, with the supersedure note).
-2. Skip the record entirely. Mention the newer record in the *Source plan*'s checklist comments if useful.
-
-If distilling a plan that the user already knows was reversed: confirm intent before writing.
+**Action.** Point to the newer record and confirm whether the user wants the
+older decision preserved for its historical rationale. If so, cite the newer
+record in the new historical record's *Consequences*. Keep the source plan
+and existing records intact.
 
 ## Plan not yet complete
 
@@ -53,7 +51,8 @@ Two plans landed in the same area within days of each other and the user wants b
 
 **Signal.** Two `docs/plans/<timestamp>/...` directories with overlapping scope.
 
-**Action.** Write two separate records. Decisions are atomic — bundling them under one record hides the fact that two choices were made. The records may cross-reference each other in *Consequences* if one constrained the other.
+**Action.** Use a separate invocation for each approved plan. Cite an existing
+decision in *Consequences* if it constrained the decision being recorded.
 
 ## User asks to record an in-progress plan "to lock in the decision"
 
@@ -61,4 +60,5 @@ Tempting, especially if the user is confident about the choice. But intent is no
 
 **Signal.** User says "we're going to do X, write the record now."
 
-**Action.** Refuse politely and explain: "Records capture shipped decisions, not intentions. The plan itself already captures intent. We'll record once the code lands." If the user insists after explanation, write the record but add `> Status: provisional — code not yet shipped` at the top, and recommend re-validating when the work merges.
+**Action.** Keep the decision in the plan while work is in progress. Record
+the decision after the implementation lands.

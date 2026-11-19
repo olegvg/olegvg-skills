@@ -26,14 +26,14 @@ The link between a decision and affected summaries lives in the decision record'
 |---|---|---|---|
 | `kb-build` | one-shot, fresh build | yes, creates | yes, initializes |
 | `kb-query` | read-only | no | no |
-| `kb-refresh` | scoped, manual | yes, updates | yes, advances `last_linted_sha` |
-| `kb-check-drift` | read-only | no | no |
+| `kb-refresh` | scoped, manual | yes, updates | advances `last_linted_sha` unless `--no-advance-state` is set |
+| `kb-check-drift` | inspection | optional `.drift-report.json` with `--write-artifact` | no |
 | `kb-record-decision` | manual, post-plan | yes, adds decision only | no |
 | `kb-maintain` | orchestrated, manual | delegates only | delegates only |
 
-The `kb-check-drift` / `kb-refresh` split is deliberate. Drift detection is read-only and reports candidates; only `kb-refresh` mutates and advances state. Never collapse them.
+The `kb-check-drift` / `kb-refresh` split is deliberate. Drift detection reports candidates and can emit the optional report artifact. Only `kb-refresh` updates existing summaries and advances the refresh watermark. Never collapse them.
 
-`kb-build` uses a strict three-pass workflow: survey, parallel subagent deep-build, then main-agent index assembly. The main agent never reads full file bodies in passes 1 or 3. Do not collapse those passes even on small corpora.
+`kb-build` uses a strict three-pass workflow: survey, deep-build with parallel subagents where supported, then main-agent index assembly. The main agent never reads full file bodies in passes 1 or 3. Do not collapse those passes even on small corpora.
 
 `kb-check-drift` heuristic policy lives in [../../skills/kb-check-drift/SKILL.md](../../skills/kb-check-drift/SKILL.md). Do not add config files or YAML schemas for it.
 

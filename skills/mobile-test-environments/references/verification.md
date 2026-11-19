@@ -5,7 +5,10 @@
 Use the application's existing startup/test commands and public synthetic test configuration. Record its source revision, URL, environment and any required test-user context. The skill manages the mobile environment; it does not authorize changing app code, production data, deployment or accounts.
 
 - Android Emulator: `10.0.2.2` refers to the host loopback interface. `127.0.0.1` refers to that emulator itself.
-- A device-specific `adb reverse tcp:<device-port> tcp:<host-port>` is another option. Inspect `adb -s "$DEVICE_SERIAL" reverse --list` first; add only an unused mapping and record it. Remove that exact mapping only if it is still the task's mapping. Preserve existing mappings.
+- Inspect `adb -s "$DEVICE_SERIAL" reverse --list` before adding a mapping.
+  Use `adb -s "$DEVICE_SERIAL" reverse --no-rebind "tcp:$DEVICE_PORT" "tcp:$HOST_PORT"`
+  for an unused port. If it is still the task's mapping at teardown, remove it
+  with `adb -s "$DEVICE_SERIAL" reverse --remove "tcp:$DEVICE_PORT"`.
 - iOS Simulator can normally reach a Mac-hosted loopback service at its host URL; verify the actual route on the selected simulator. A physical phone needs an explicitly reachable address/forwarding route; do not assume its localhost is the Mac.
 - For Docker-hosted apps, inspect the project's existing published ports and readiness endpoint. Reuse its approved stack. Start or stop only scoped services/resources that this task owns; avoid broad compose teardown. A container bridge IP is not a portable host address for a phone.
 

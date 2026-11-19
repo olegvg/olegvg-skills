@@ -43,7 +43,7 @@ trade-offs accepted.
 - **Context.** Why the choice was forced. Constraints and failure modes, not the history of how you got here.
 - **Alternatives considered.** Each rejection is one line. If a rejection needs three paragraphs, write a separate decision record for the alternative path that was rejected — and link both.
 - **Consequences.** The shape change in code, process, obligations.
-- **Affected areas.** Paths under `.kb/summaries/`. This is the **only** backreference between a decision and the summaries it shapes; the summaries themselves do not list decisions. The agent finds decisions by grepping this list (`grep -l "summaries/auth/session.md" .kb/decisions/`).
+- **Affected areas.** Paths under `.kb/summaries/`. This is the **only** backreference between a decision and the summaries it shapes; the summaries themselves do not list decisions. The agent finds decisions by grepping this list (`rg -l -F -g '*.md' -- "summaries/auth/session.md" .kb/decisions/`).
 - **Source plan.** Path to the original. The record stands on its own; the plan path is provided for archaeologists.
 
 ## A worked example

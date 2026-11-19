@@ -18,10 +18,11 @@ The umbrella entry uses source `./` and explicit skills/command arrays.
 Concrete groups use source `./skills`, skill paths relative to that root and
 `commands: []`: native skills preserve the same namespaced slash invocations,
 without inheriting root command shims or the umbrella manifest name.
-All entries use `strict: true`; current Claude rejects strict:false with a
-manifest plus marketplace component declarations. See the
-[official precedence rules](https://code.claude.com/docs/en/plugins/marketplace-reference). Keep the umbrella first, then concrete groups: Skills CLI assigns each
-skill to the last entry mentioning it. A root skill belongs to exactly one
+Set `strict: true` explicitly for the umbrella and concrete groups. The
+audio entry uses Claude Code's default strict mode and its own manifest.
+See the [marketplace field reference](https://code.claude.com/docs/en/plugins/marketplace-reference).
+Keep the umbrella first, followed by concrete groups, so Skills CLI shows
+each skill under its concrete group. A root skill belongs to exactly one
 concrete group and the umbrella. Website `skills.sh.json` mirrors concrete groups.
 Codex indexes the umbrella and independent runtime plugins, not artificial groups.
 
@@ -47,13 +48,15 @@ python3 scripts/validate_plugin.py
 python3 -m unittest discover -s tests -v
 claude plugin validate .claude-plugin/plugin.json
 claude plugin validate .claude-plugin/marketplace.json --strict
-bunx skills@latest install ./ --list
+bunx skills@latest add ./ --list
 ```
 
-Then test an actual project-scoped Skills CLI install and concrete Claude group
-installs in disposable workspaces/config directories. Confirm all nine root
-skills, complete references/templates, expected groups and no audio skill in
-Skills CLI discovery. Validate the nested audio manifests without running ASR.
+In disposable workspaces and host configuration directories, install a complete
+skill with Skills CLI, install both concrete Claude groups, and install both
+Codex marketplace entries. Compare skill directories and group membership
+with the source. Check that Skills CLI lists all public root skills, with
+the audio skill available only through its plugin. Validate the nested audio
+manifests without running ASR.
 See [releasing](../releasing.md) for strict extracted-package validation,
 reproducibility, archive boundaries and checksums. Remote/pinned commands require
 the corresponding remote contents/tag; do not claim unpublished local edits are

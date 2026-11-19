@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+- Updated the installation, runtime, and maintainer guides. Removed superseded
+  development plans and folded the lifecycle audit rationale into the
+  [deep code review guide](docs/deep-code-review.md).
+- Added a [KB walkthrough](docs/kb-workflow.md), documented all ten review
+  methods, and explained when to use each skill in both READMEs.
+
 ## [0.10.0]
 
 - Removed the standalone `audit-state-machines` skill. Its full audit guide
@@ -16,7 +22,7 @@
 ## [0.8.0]
 
 - Progressive-disclosure mobile-test-environments skill for Android, iOS/Device Hub and Appium, with non-starting device inventory and ownership-aware cleanup.
-- `audit-state-machines` skill for reconstructing implicit lifecycles from code and reporting evidence, Mermaid diagrams and refactoring priorities. See the [design rationale](docs/audit-state-machines.md).
+- `audit-state-machines` skill for reconstructing implicit lifecycles from code and reporting evidence, Mermaid diagrams and refactoring priorities. See the [design rationale](https://github.com/olegvg/olegvg-skills/blob/v0.8.0/docs/audit-state-machines.md).
 - Deterministic full runtime and nine portable skill ZIPs (including five desktop-compatible skills), including every reference, skill-local template and MIT license.
 - Validated portable/Codex/Claude metadata, group ownership and standalone references.
 - Atomic builds, strict numeric release tags, Git-scoped notes and SHA256SUMS.

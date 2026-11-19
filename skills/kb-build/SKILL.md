@@ -30,7 +30,9 @@ If `.kb/` already exists at the target path, STOP. Ask the user whether to overw
 
 ## Default exclusions
 
-Build never ingests dated planning artifacts, vendored directories, build outputs, or timestamped scratch directories. Full list and rationale: [references/default-exclusions.md](references/default-exclusions.md). Override individual paths with `--include`.
+Build excludes dated planning artifacts, vendored directories, build outputs,
+and timestamped scratch directories by default. Include a specific excluded
+path with `--include`. See [default exclusions](references/default-exclusions.md).
 
 ## Workflow
 
@@ -109,7 +111,10 @@ If the corpus is not a git repo, set `last_linted_sha` to the string `"no-git"` 
 
 ### Fallback when subagents are unavailable
 
-If the host environment cannot dispatch subagents, run build iteratively across separate sessions, one per domain: invoke `kb-build <domain-path>` once per area. Each session does a narrow Pass 2 for one domain and writes its own area index. A final session runs Pass 3 to write `_root.md` and `.kb-state.json`. Slower and less clean than the subagent path, but works.
+If the host cannot dispatch subagents, share the Pass 1 map across separate
+sessions. Each session performs Pass 2 for one area, writes to the same
+`<corpus-root>/.kb/summaries/<area>/`, and returns its brief. A final
+session runs Pass 3 using those briefs to write all indexes and the state.
 
 ## Discipline
 

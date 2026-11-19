@@ -4,7 +4,11 @@
 
 Use `xcode-select -p` and the current process's `DEVELOPER_DIR`, when set, to identify the intended Xcode. Do not switch the global developer directory to solve a task-local problem. Inspect CLI help for the installed toolchain when commands differ.
 
-`xcrun simctl list devices available --json` identifies available devices and their actual states. Existing device records do not prove a booted phone or a viewer window. Missing runtimes, incomplete first-launch setup, license errors and denied CoreSimulator access must remain explicit diagnostics, not an empty inventory.
+`xcrun simctl list devices available --json` identifies available devices and
+their states. An empty successful list calls for a separate check of installed
+runtimes with `xcrun simctl list runtimes --json`. Report command errors such
+as incomplete first-launch setup, license prompts or denied CoreSimulator
+access. Check device boot state and viewer visibility separately.
 
 For viewer discovery, inspect the selected Xcode bundle:
 

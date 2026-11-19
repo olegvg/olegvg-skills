@@ -23,16 +23,14 @@ After an authorized release commit, create and push the matching annotated
 `vX.Y.Z` tag; the release workflow validates that exact state. No AI coauthor
 trailers should be added.
 
-`.github/workflows/release.yml` replaces the old desktop-only shell packager.
-It builds the full runtime ZIP, all nine portable root skill ZIPs, notes and
-checksums. The five desktop-compatible skill asset names are preserved;
-`kb-record-decision` and `kb-maintain` require capable agent hosts and companion
-skills. `mobile-test-environments` requires a host with access to local devices and
-installed mobile tools. Audio is never a standalone skill ZIP.
+`.github/workflows/release.yml` builds the full runtime ZIP, one ZIP per
+portable root skill, release notes and checksums. See the
+[artifact guide](../releasing.md#artifacts) for host requirements and packaging.
 
 ## Checklist
 
-1. Review CHANGELOG.md Unreleased and the explicit scripts/release_inventory.py.
+1. Review the Unreleased section of [CHANGELOG.md](../../CHANGELOG.md) and the
+   [release inventory](https://github.com/olegvg/olegvg-skills/blob/master/scripts/release_inventory.py).
 2. Update all umbrella metadata versions together when preparing a new release.
 3. Run validator, release tests, native checks, installer smoke and preview build.
 4. Check complete archive contents, deterministic bytes and every checksum.

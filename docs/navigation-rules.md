@@ -2,7 +2,8 @@
 
 ## Cold-start rule: indexes-first
 
-On the first access to the KB in a given task or query, the agent MUST read `.kb/indexes/_root.md` before reading anything else in `.kb/`.
+For a question about the corpus, start at `.kb/indexes/_root.md`. For a
+decision lookup about a known summary, use `kb-query --decisions-for <summary-path>`.
 
 This is enforced in the `kb-query` skill and observable in traces: every first-touch on a summary file should be preceded by reads on `_root.md` plus one or more area indexes.
 
@@ -21,7 +22,7 @@ Decisions live in `.kb/decisions/<YYYY-MM-slug>.md`. Each record names the summa
 When the agent is inside a summary and wants to know what decisions shaped it, the query is one grep:
 
 ```bash
-grep -l "<path-to-current-summary>" .kb/decisions/
+rg -l -F -g '*.md' -- "<path-to-current-summary>" .kb/decisions/
 ```
 
 This returns the list of records to read. The agent may follow those records freely under warm-reference relaxation — entering a decision through its summary is still a warm reference, just one that resolves via grep instead of an inline `[link]`.

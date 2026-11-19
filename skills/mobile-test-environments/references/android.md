@@ -2,13 +2,19 @@
 
 ## Inventory and selection
 
-Use the bundled inventory for a compact first look. For detail, resolve `adb` and `emulator` from PATH or the existing `ANDROID_HOME`/`ANDROID_SDK_ROOT`; common SDK roots are `~/Library/Android/sdk` on macOS and `~/Android/Sdk` on Linux. Inspect actual paths before using them.
+Use the bundled inventory for a compact first look. For detail, resolve `adb`
+and `emulator` from PATH, `ANDROID_HOME`, or the legacy `ANDROID_SDK_ROOT`.
+Common SDK roots are `~/Library/Android/sdk` on macOS and `~/Android/Sdk` on Linux.
 
 - `emulator -list-avds` lists installed AVD configurations, not running phones.
-- `adb devices -l` lists connected devices but can start the ADB daemon. The inventory helper reads the documented local ADB host service directly after a readiness check, so even a disappearing daemon is not restarted. A custom ADB endpoint is reported for explicit inspection rather than silently replaced.
+- `adb devices -l` lists connected devices and can start the ADB daemon. The
+  inventory helper queries the host service at `127.0.0.1` directly, using
+  `ANDROID_ADB_SERVER_PORT` or its default port. It skips the query when
+  `ADB_SERVER_SOCKET` is set. Inspect other endpoint settings such as
+  `ANDROID_ADB_SERVER_ADDRESS` before using the ADB CLI.
 - Preserve `offline` and `unauthorized` states. They are not ready test devices. Trust prompts on a physical phone belong to its user.
 
-Choose the exact AVD and serial. Reuse the project-approved booted emulator when available. When starting an AVD, choose an unused emulator port and record the process/session plus eventual serial. Run the discovered emulator executable with `-avd "$AVD_NAME" -port "$EMULATOR_PORT"`; use a foreground/background tool session whose process identity can be recovered. Add `-no-window` only when a hidden screen was requested. It prevents a native emulator window from appearing.
+Choose the exact AVD and serial. Reuse the project-approved booted emulator when available. When starting an AVD, select a free even console port with the next port free for ADB. Record the process/session and eventual serial. Run `-avd "$AVD_NAME" -port "$EMULATOR_PORT"` with the discovered emulator executable in a managed tool session. Add `-no-window` only for a hidden screen.
 
 Poll `adb -s "$DEVICE_SERIAL" shell getprop sys.boot_completed` with a bounded deadline and check the device remains connected. A process starting is not a completed boot. Preserve existing user data; `-wipe-data` and snapshot reload are not troubleshooting defaults. For an explicitly disposable run, `-read-only -no-snapshot-save` can avoid persisting changes; record that choice and its limitations.
 

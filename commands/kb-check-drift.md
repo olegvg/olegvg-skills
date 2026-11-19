@@ -1,5 +1,8 @@
 ---
-description: Check whether .kb/ is stale — read-only, returns refresh candidates
+description: Check .kb/ for drift and report refresh candidates
+argument-hint: "[--write-artifact]"
 ---
 
-Invoke the `kb-check-drift` skill on the current corpus. This is a read-only operation — it will not modify `.kb/` or `.kb-state.json`.
+Invoke the `kb-check-drift` skill on the current corpus with `$ARGUMENTS`.
+Pass `--write-artifact` through when supplied so the skill can write its optional
+report. The check leaves the refresh watermark unchanged.

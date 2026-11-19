@@ -1,6 +1,6 @@
 # <Project Name> — Knowledge Base
 
-Top-level map. Entry point for all KB navigation. Read this first on any query.
+Top-level map. Read this first for questions about the corpus.
 
 ## Areas
 
@@ -10,8 +10,9 @@ Top-level map. Entry point for all KB navigation. Read this first on any query.
 
 ## Navigation rules
 
-- First access to the KB: always read this file, then pick 1–3 area indexes.
+- For a question about the corpus, read this file, then pick 1–3 area indexes.
+- For decisions about a known summary, use `kb-query --decisions-for <summary-path>`.
 - Once inside a summary, you may follow direct references between summaries without returning here.
-- If none of the areas match your question, the answer isn't in the KB — fall back to reading sources directly.
+- If none of the areas match your question, report that the KB does not cover the question.
 
 <!-- Keep this file under 300 tokens. If it grows, an area probably needs its own sub-root — split and link. -->

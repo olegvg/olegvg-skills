@@ -48,7 +48,7 @@ For each changed file path, grep `.kb/summaries/` for references to it:
 
 ```bash
 # One file
-grep -rln "<changed-file-path>" .kb/summaries/
+grep -rln -F -- "<changed-file-path>" .kb/summaries/
 
 # Many files, batched. Reads each summary once, regardless of how many
 # changed files it references.
@@ -62,8 +62,8 @@ The `-F` flag treats patterns as literal strings (avoids regex interpretation of
 Indexes mention summary names, not source file paths. After identifying affected summaries:
 
 ```bash
-# affected_summaries = paths from the previous step
-grep -rln -F -f <(printf '%s\n' "${affected_summaries[@]}") .kb/indexes/
+# affected_summaries = nonempty Bash array of paths from the previous step
+grep -rln -F -f <(printf '%s\n' "${affected_summaries[@]#.kb/summaries/}") .kb/indexes/
 ```
 
 Or, equivalently, scan all indexes once for any matching summary name.
@@ -74,14 +74,16 @@ A hard flag: a summary references a file that no longer exists.
 
 ```bash
 # For each deleted-file path (from --name-status above):
-grep -l "<deleted-path>" .kb/summaries/ .kb/indexes/
+grep -rFl -- "<deleted-path>" .kb/summaries/ .kb/indexes/
 ```
 
 If a match returns, the affected summary or index is broken until refreshed.
 
 ## Drift-report reuse (when `.kb/.drift-report.json` is present)
 
-If a drift artifact exists and its `head_sha` matches the current HEAD and its `base_sha` matches the watermark, the refresh skill reuses the artifact's pre-computed file lists and skips both `git diff` and the `.kb/` greps. See the main SKILL.md step "Reuse drift artifact when available".
+If the artifact's HEAD, base SHA, and scope match the refresh, reuse the
+recorded file and reference lists. Read the diff hunks and line counts needed
+to verify the scope budget and patch the summaries.
 
 ## Advancing state
 
@@ -99,4 +101,5 @@ NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # }
 ```
 
-Skip this step when invoked with `--no-advance-state` (the orchestrator wants to advance once at the end of a multi-refresh pass).
+Skip this step when invoked with `--no-advance-state`, for example before the
+final refresh in a split pass.

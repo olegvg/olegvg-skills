@@ -14,8 +14,8 @@ If the user did not specify any path, **do not infer the scope from `git status`
 ## Input
 
 - **One or more paths** — subdirectories or files within the corpus. Multi-path is the preferred form when several scopes need refreshing in the same pass; it does **one** `git diff` and **one** state advance over the union of paths.
-- **`--base-sha <sha>`** (optional) — override the refresh watermark. Defaults to `.kb/.kb-state.json:last_linted_sha`. Used by the `kb-maintain` orchestrator to run a multi-call sequence against a single base.
-- **`--no-advance-state`** (optional) — perform all the work but skip the final state write. Used by the orchestrator when chaining refresh with other writes; the orchestrator advances state once at the end.
+- **`--base-sha <sha>`** (optional) — override `.kb/.kb-state.json:last_linted_sha`. Use the same base for each invocation when splitting one batch.
+- **`--no-advance-state`** (optional) — refresh without writing the watermark. Use it on each split invocation before the final successful one.
 
 ## Scope budget (hard gates)
 
@@ -58,7 +58,10 @@ See [references/failure-modes.md](references/failure-modes.md) for "base SHA not
 
 ### 2. Reuse drift artifact when available
 
-If `.kb/.drift-report.json` exists, and its `head_sha` matches `git rev-parse HEAD`, and its `base_sha` matches `<base_sha>`, reuse its pre-computed file lists. The drift skill already ran `git diff` and the `.kb/` greps; the artifact carries the results. Skip steps 3 and 4 and jump to step 4.5.
+Reuse the file-status and KB-reference lists in `.kb/.drift-report.json` when
+its `head_sha` matches `git rev-parse HEAD`, its `base_sha` matches `<base_sha>`,
+and its scope covers the approved paths. Filter the results to that scope and
+gather the diff hunks and counts the report does not carry.
 
 If the artifact is missing or stale, proceed with steps 3 and 4 normally. A stale artifact is not a warning — just ignore it.
 
@@ -137,7 +140,7 @@ If the diff scope includes completed plans (`docs/plans/**` or similar) or commi
 
 ### 8. Advance state
 
-Skip this step entirely if invoked with `--no-advance-state` — the orchestrator (`kb-maintain`) wants to advance once at the end of a chained pass.
+Skip this step when invoked with `--no-advance-state`.
 
 Otherwise, rewrite `.kb/.kb-state.json`:
 
@@ -154,7 +157,7 @@ Summarize to the user:
 - Summaries updated (with paths).
 - Indexes updated (with paths).
 - Decision candidates found, if any, with `kb-record-decision <plan-path>` recommendations.
-- State advanced to SHA `<new-sha>` — or "state NOT advanced (--no-advance-state)" when the orchestrator is chaining.
+- New watermark SHA, or whether `--no-advance-state` was used.
 
 ## Discipline
 

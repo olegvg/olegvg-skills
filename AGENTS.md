@@ -47,7 +47,7 @@ Read only the file needed for the task before editing:
 - `commands/<name>.md` — Claude Code slash-command shims only; keep them thin.
 - `skills/kb-build/templates/` — canonical build templates included in skill-only installs. `templates/README.md` links there for manual users.
 - `scripts/`, `tests/`, `.github/workflows/` — validated reproducible builds, release-boundary tests and CI/publication workflows.
-- `docs/` — rationale, plans, and progressive-disclosure instructions.
+- `docs/` — maintained rationale, release guidance and progressive-disclosure instructions.
 
 ## Dogfood Commands
 
@@ -71,7 +71,7 @@ npx skills add ./ --list
 
 Run `python3 scripts/validate_plugin.py`, `python3 -m unittest discover -s tests -v`,
 `git diff --check` and a preview build with a fresh output directory outside the
-checkout. For installer changes also run `bunx skills@latest install ./ --list`
+checkout. For installer changes also run `bunx skills@latest add ./ --list`
 and verify actual copied skill contents in a disposable project. Validate explicit
 Claude manifests and the marketplace; source CLAUDE.md may warn, so validate the
 extracted runtime ZIP strictly too. See [docs/releasing.md](docs/releasing.md) for

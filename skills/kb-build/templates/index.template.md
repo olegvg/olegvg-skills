@@ -10,9 +10,11 @@ One or two sentences: what this area covers.
 
 ## Leaves
 
-- **[overview](<area>/overview.md)** — orientation, how pieces fit together.
-- **[<leaf-1>](<area>/<leaf-1>.md)** — one-line description.
-- **[<leaf-2>](<area>/<leaf-2>.md)** — one-line description.
+<!-- Replace area and leaf placeholders with paths in .kb/summaries/. -->
+
+- **[overview](../summaries/<area>/overview.md)** — orientation, how pieces fit together.
+- **[<leaf-1>](../summaries/<area>/<leaf-1>.md)** — one-line description.
+- **[<leaf-2>](../summaries/<area>/<leaf-2>.md)** — one-line description.
 
 ## See also
 

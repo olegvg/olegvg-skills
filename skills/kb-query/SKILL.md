@@ -13,13 +13,13 @@ If `.kb/` does not exist, suggest `/kb-build` and stop.
 
 ## Input
 
-- **Question** — natural language, from the user.
+- A natural-language question or `--decisions-for <summary-path>`.
 
 ## Workflow (strict order)
 
 ### 1. Read `_root.md` first
 
-Open `.kb/indexes/_root.md`. Always. No exceptions on first access to the KB.
+For a question, open `.kb/indexes/_root.md` before other KB files. For a named summary, use the direct decision lookup below.
 
 This is the indexes-first rule. It's cheap (≤300 tokens) and orients you correctly in one hop. Skipping it to "save time" costs more time when you pick the wrong summaries.
 
@@ -42,7 +42,7 @@ Once inside a summary, you may follow direct references to other summaries witho
 After reading a summary, also check whether any decision records reference it. Decisions live in `.kb/decisions/<YYYY-MM-slug>.md`; each record's `## Affected areas` block names the summaries it shapes. The lookup is one grep:
 
 ```bash
-grep -l "<path-to-current-summary>" .kb/decisions/
+rg -l -F -g '*.md' -- "<path-to-current-summary>" .kb/decisions/
 ```
 
 Read whichever records the grep returns. **Do not** look for a `## Key decisions` section inside the summary — the linkage lives in the decision record, not in the summary. Decisions are immutable history; summaries describe the present.
@@ -54,7 +54,7 @@ For questions of the form "how does X work now, and why was it built that way?" 
 If the user invokes the skill with a literal `--decisions-for <summary-path>` (or the equivalent natural-language form: "what decisions shaped `<summary-path>`?"), skip steps 1–4 and run the grep against `.kb/decisions/` directly:
 
 ```bash
-grep -l "<summary-path>" .kb/decisions/ | xargs -I {} sh -c 'echo "## {}"; cat {}'
+rg -l -F -g '*.md' -- "<summary-path>" .kb/decisions/
 ```
 
 This is the explicit form of step 4a — a one-shot lookup with no indexes-first read. Print or summarize the matching records in order of filename (newest YYYY-MM first). If grep returns nothing, say so: "no decisions reference `<summary-path>` yet" is a valid answer.
@@ -65,7 +65,7 @@ Answer the question using what you read. Cite sources (file paths, line numbers)
 
 ## Discipline
 
-- **Always `_root.md` first on cold start.** Observable in traces. If you skipped it, you broke the pattern.
+- **Start questions at `_root.md`.** Use the direct mode for a decision lookup about a named summary.
 - **Bounded summary reads.** If you find yourself wanting to open 5+ summaries, stop. Either the question is too broad (ask the user to narrow) or an index is pointing at too many leaves (refresh candidate).
 - **If nothing matches, say so.** Don't hallucinate an answer. "The KB has no coverage for this — the answer isn't here" is valid.
 

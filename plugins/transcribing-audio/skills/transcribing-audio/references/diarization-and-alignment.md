@@ -4,9 +4,15 @@
 
 The local diarizer uses `pyannote/speaker-diarization-community-1` at revision `3533c8cf8e369892e6b79ff1bf80f7b0286a54ee`. It requires gated-model access through `HF_TOKEN`. It runs on the runtime's independently selected MPS, CUDA, or CPU device and never receives an OpenAI credential.
 
-`--speakers N` sends matching `min_speakers=N` and `max_speakers=N`. A range forwards either or both `--min-speakers` and `--max-speakers`; no speaker flags requests automatic inference. Exact mode validates that the resulting distinct raw labels match the requested count.
+`--speakers N` sends matching `min_speakers=N` and `max_speakers=N`. A non-TTY run
+can pass either or both bounds. A TTY run takes both bounds as `MIN-MAX`.
+An automatic request leaves both unset. The runtime validates the raw label
+count against an exact count or any supplied bounds.
 
-Raw labels such as `SPEAKER_00` are opaque output labels. `--speaker-names` maps a returned raw label to a unique display name after diarization; it cannot create labels, repeat raw labels, or assign one display name to multiple raw labels. Do not create biometric speaker profiles or infer real-world identities.
+Raw labels such as `SPEAKER_00` are opaque output labels. `--speaker-names`
+accepts labels assigned to at least one transcript word and maps each to a
+unique display name. Do not create biometric speaker profiles or infer
+real-world identities.
 
 ## Word alignment
 

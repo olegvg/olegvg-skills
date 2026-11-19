@@ -30,6 +30,9 @@ Save screenshots and useful bounded diagnostics to the task's artifact directory
 
 ## Optional viewer
 
-Appium Inspector is not required for CLI tests. To observe a running session, use **Attach to Session** with its known ID and exact server address. Appium 3 session auto-discovery may require an insecure feature; manual ID attachment avoids enabling it. Do not start or end someone else's session from the Inspector. A screenshot viewer does not replace actual test assertions.
+Appium Inspector is optional for CLI tests. Inspector 2026.5.1 and later can
+attach manually using a known session ID and exact server address. Use this
+option to observe the session without enabling Appium 3 session discovery.
+Keep the existing session running and verify app behavior separately.
 
 Sources: [driver list](https://appium.io/docs/en/latest/ecosystem/drivers/), [server requirements](https://appium.io/docs/en/latest/quickstart/requirements/), [XCUITest device setup](https://appium.github.io/appium-xcuitest-driver/latest/getting-started/device-setup/), [WebDriver protocol](https://appium.io/docs/en/latest/reference/api/webdriver/), [Inspector attachment](https://appium.github.io/appium-inspector/latest/session-builder/attach-to-session/).

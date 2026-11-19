@@ -1,6 +1,8 @@
 # Drift Report Artifact (`.kb/.drift-report.json`)
 
-Optional structured output that `kb-check-drift` writes when invoked by `kb-maintain` (or with `--write-artifact`). It lets the downstream `kb-refresh` skip its own `git diff` and `.kb/` greps — the work has already been done.
+Optional structured output that `kb-check-drift` writes with `--write-artifact`,
+including during `kb-maintain` discovery. It lets `kb-refresh` reuse the file-status
+and KB-reference lists for a matching scope.
 
 This is **opt-in performance fuel**, not a contract. A user running `kb-check-drift` standalone for human inspection does not need the artifact and may suppress it.
 
@@ -86,7 +88,9 @@ If any condition fails, the consumer silently ignores the artifact and runs its 
 - Written by `kb-check-drift` (opt-in).
 - Read by `kb-refresh` (opt-in, silently ignored if stale).
 - Read by `kb-maintain` to produce the maintenance menu (when present, avoids re-running drift).
-- Deleted by `kb-refresh` after a **successful** state advance — the artifact is now obsolete (head SHA moved). Optional: leave it and rely on the consumer's staleness check. Both behaviors are valid; the former is tidier.
+- After a successful state advance, the artifact's base SHA no longer matches
+  the default refresh watermark. It can also be left for the consumer's
+  staleness check.
 - Never committed to git. Add to `.gitignore` in the user's corpus.
 
 ## Why JSON, not markdown

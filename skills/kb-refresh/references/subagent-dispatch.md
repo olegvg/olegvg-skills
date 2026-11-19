@@ -100,7 +100,9 @@ This is the context-window guarantee of multi-area refresh: the main agent holds
 
 Dispatch subagents in parallel where the host environment supports it. Each subagent is independent — its inputs (file list, summary list) and outputs (patched summaries + brief) do not depend on other subagents. Parallelism is the difference between a refresh that takes minutes and one that takes an hour.
 
-If the environment does not support subagents, fall back to running `kb-refresh` once per area in separate sessions, each with an explicit area-scoped path. Slower but produces the same artifacts and keeps each session's context bounded.
+If the host does not support subagents, run approved area-scoped refreshes in
+separate sessions. Pass the same `--base-sha` to each and use
+`--no-advance-state` until the final successful refresh.
 
 ## When NOT to dispatch
 

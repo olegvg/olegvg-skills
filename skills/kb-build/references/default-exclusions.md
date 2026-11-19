@@ -17,7 +17,7 @@ Paths the build skill never ingests by default. These are not knowledge — they
 
 Plans contain steps, drafts, abandoned branches, and the debate about alternatives. 90% of a plan's content is noise to anyone who didn't execute it. Summaries built from plans inherit that noise.
 
-A completed plan does contain durable knowledge: the decision made and its rationale. `kb-record-decision` extracts that 10% into `.kb/decisions/`. The plan stays in `docs/plans/` as a journal; the decision moves into the KB as knowledge. This is why `docs/plans/**` is excluded by default but `.kb/decisions/` is not — different lifecycles, different relevance horizons.
+A completed plan does contain durable knowledge: the decision made and its rationale. `kb-record-decision` extracts that 10% into `.kb/decisions/`. The default build excludes plans. Decision records are stored separately in `.kb/decisions/` and linked to current-state summaries through each record's affected-area list.
 
 ## Overriding an exclusion
 
